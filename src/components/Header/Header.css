@@ -1,0 +1,52 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #1a1a2e;
+  color: #eee;
+  border-bottom: 3px solid #e94560;
+}
+
+.header__brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.header__logo {
+  color: #e94560;
+  text-decoration: none;
+}
+
+.header__logo:hover {
+  color: #ff6b6b;
+}
+
+.header__nav-list {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 1.5rem;
+}
+
+.header__nav-link {
+  color: #eee;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.header__nav-link:hover {
+  background-color: #16213e;
+}
+
+.header__cart-link {
+  background-color: #e94560;
+  color: #fff;
+}
+
+.header__cart-link:hover {
+  background-color: #ff6b6b;
+}
