@@ -1,0 +1,30 @@
+// ==========================================================================
+// Main Stylesheet Entry Point
+// ==========================================================================
+// Architecture: ITCSS-inspired (Inverted Triangle CSS)
+// All @use statements must come first in modern SCSS
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// Module Imports (@use must be first)
+// --------------------------------------------------------------------------
+
+@use 'variables';
+@use 'mixins';
+@use 'base';
+@use 'animations';
+@use 'utilities';
+
+// --------------------------------------------------------------------------
+// Google Fonts Import
+// --------------------------------------------------------------------------
+// Orbitron: Display font for headings (tech/futuristic feel)
+// Inter: Body font for readability
+// Using display=swap for better performance (FOUT over FOIT)
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
+// ==========================================================================
+// Note: Component-specific styles are imported in their respective
+// component files to maintain modularity and enable code-splitting.
+// ==========================================================================

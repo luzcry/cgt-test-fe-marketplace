@@ -1,0 +1,47 @@
+// ==========================================================================
+// App Component Styles
+// ==========================================================================
+
+@use './styles/variables' as *;
+@use './styles/mixins' as *;
+
+// --------------------------------------------------------------------------
+// App Layout
+// --------------------------------------------------------------------------
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-background);
+}
+
+.app__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--header-height);
+}
+
+// --------------------------------------------------------------------------
+// Skip Link (Accessibility)
+// --------------------------------------------------------------------------
+
+.app__skip-link {
+  @include visually-hidden;
+
+  &:focus {
+    position: fixed;
+    top: var(--space-4);
+    left: var(--space-4);
+    z-index: 9999;
+    width: auto;
+    height: auto;
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-accent);
+    color: var(--color-background);
+    font-weight: var(--font-semibold);
+    border-radius: var(--radius-md);
+    clip: auto;
+  }
+}

@@ -4,14 +4,18 @@ import Header from './components/Header';
 import HomePage from './pages/HomePage';
 import ProductPage from './pages/ProductPage';
 import CartPage from './pages/CartPage';
-import './App.css';
+import './App.scss';
 
 function App() {
   return (
     <CartProvider>
       <div className="app">
+        {/* Skip link for keyboard accessibility */}
+        <a href="#main-content" className="app__skip-link">
+          Skip to main content
+        </a>
         <Header />
-        <main className="app__main">
+        <main id="main-content" className="app__main">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/products/:productId" element={<ProductPage />} />
