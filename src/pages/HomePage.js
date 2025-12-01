@@ -21,12 +21,24 @@ function HomePage() {
       {/* Hero Section */}
       <section className="hero" aria-labelledby="hero-title">
         {/* Animated Background */}
-        <div className="hero__background" aria-hidden="true" />
+        <div className="hero__background" aria-hidden="true">
+          <div className="hero__pattern-grid" />
+          <div className="hero__scanlines" />
+        </div>
 
-        {/* Floating Particles - 20 particles like original */}
+        {/* Floating Particles - 20 dots like original */}
         <div className="hero__particles" aria-hidden="true">
           {[...Array(20)].map((_, i) => (
-            <div key={i} className="hero__particle" />
+            <div
+              key={i}
+              className="hero__particle"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${50 + Math.random() * 50}%`,
+                animationDelay: `${Math.random() * 5}s`,
+                animationDuration: `${5 + Math.random() * 5}s`,
+              }}
+            />
           ))}
         </div>
 

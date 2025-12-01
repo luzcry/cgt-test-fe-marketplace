@@ -21,40 +21,24 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
+}
 
-  // Grid pattern
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-      repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        hsl(210 15% 75% / 0.03) 2px,
-        hsl(210 15% 75% / 0.03) 4px
-      ),
-      repeating-linear-gradient(
-        90deg,
-        transparent,
-        transparent 2px,
-        hsl(210 15% 75% / 0.03) 2px,
-        hsl(210 15% 75% / 0.03) 4px
-      );
-    opacity: 0.3;
-  }
+// Animated dots grid pattern
+.hero__pattern-grid {
+  position: absolute;
+  inset: 0;
+  background: var(--pattern-grid);
+  opacity: 0.15;
+}
 
-  // Animated scanlines
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: linear-gradient(180deg, transparent 50%, hsl(210 90% 55% / 0.05) 50%);
-    background-size: 100% 4px;
-    opacity: 0.5;
-    animation: scanlines 8s linear infinite;
-  }
+// Animated scanlines
+.hero__scanlines {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(180deg, transparent 50%, hsl(210 90% 55% / 0.05) 50%);
+  background-size: 100% 4px;
+  opacity: 0.5;
+  animation: scanlines 8s linear infinite;
 }
 
 @keyframes scanlines {
@@ -80,33 +64,24 @@
   background: var(--color-primary);
   border-radius: 50%;
   opacity: 0;
-  animation: float-particle 8s ease-in-out infinite;
-
-  // Generate styles for 20 particles
-  @for $i from 1 through 20 {
-    &:nth-child(#{$i}) {
-      left: #{random(100)}%;
-      top: #{50 + random(50)}%;
-      animation-delay: #{random(5)}s;
-      animation-duration: #{5 + random(5)}s;
-    }
-  }
+  animation-name: float-particle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  // Position and timing set via inline styles in JS for true randomness
 }
 
 @keyframes float-particle {
-  0%, 100% {
+  0% {
     opacity: 0;
-    transform: translateY(0);
+    transform: translateY(0) translateX(0);
   }
-  10% {
-    opacity: 0.6;
-  }
-  90% {
-    opacity: 0.6;
+  50% {
+    opacity: 1;
+    transform: translateY(-100px) translateX(25px);
   }
   100% {
     opacity: 0;
-    transform: translateY(-100px);
+    transform: translateY(0) translateX(0);
   }
 }
 
@@ -116,10 +91,10 @@
   position: relative;
   z-index: 1;
   padding-inline: 1.5rem;  // px-6
-  padding-block: 6rem;     // py-24
+  padding-block: 3rem;     // py-12
 
   @include lg {
-    padding-block: 8rem;   // lg:py-32
+    padding-block: 5rem;   // lg:py-20
   }
 }
 
