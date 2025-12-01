@@ -31,7 +31,7 @@ describe('App', () => {
     it('renders home page at /', () => {
       renderApp('/');
       expect(screen.getByText('Next-Gen')).toBeInTheDocument();
-      expect(screen.getByText('Digital Assets')).toBeInTheDocument();
+      expect(screen.getByText('3D Assets')).toBeInTheDocument();
     });
 
     it('renders product page at /products/:id', () => {

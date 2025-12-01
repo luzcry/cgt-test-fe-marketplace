@@ -23,9 +23,9 @@ function HomePage() {
         {/* Animated Background */}
         <div className="hero__background" aria-hidden="true" />
 
-        {/* Floating Particles */}
+        {/* Floating Particles - 20 particles like original */}
         <div className="hero__particles" aria-hidden="true">
-          {[...Array(12)].map((_, i) => (
+          {[...Array(20)].map((_, i) => (
             <div key={i} className="hero__particle" />
           ))}
         </div>
@@ -35,30 +35,31 @@ function HomePage() {
           <div className="hero__grid">
             {/* Left: Text Content */}
             <div className="hero__text">
-              <span className="hero__badge">Premium Marketplace</span>
+              <span className="hero__badge">Premium 3D Marketplace</span>
 
               <h1 id="hero-title" className="hero__title">
                 <span className="hero__title-line">Next-Gen</span>
-                <span className="hero__title-line hero__title-gradient">Digital Assets</span>
+                <span className="hero__title-line hero__title-gradient">3D Assets</span>
               </h1>
 
               <p className="hero__description">
-                Professional-grade digital products optimized for your projects.
-                High-quality assets, instant downloads, industry-standard formats.
+                Professional-grade 3D models optimized for real-time rendering,
+                game development, and digital visualization. Industry-standard
+                formats, instant downloads.
               </p>
 
               <div className="hero__features">
                 <div className="hero__feature">
                   <span className="hero__feature-dot" aria-hidden="true" />
-                  <span>Premium Quality</span>
+                  <span>High-Poly Models</span>
                 </div>
                 <div className="hero__feature">
                   <span className="hero__feature-dot" aria-hidden="true" />
-                  <span>Instant Download</span>
+                  <span>PBR Textures</span>
                 </div>
                 <div className="hero__feature">
                   <span className="hero__feature-dot" aria-hidden="true" />
-                  <span>Secure Payment</span>
+                  <span>Multi-Format</span>
                 </div>
               </div>
 
@@ -86,9 +87,9 @@ function HomePage() {
       {/* Products Section */}
       <section className="products" aria-labelledby="products-title">
         <header className="products__header">
-          <h2 id="products-title" className="products__title">All Products</h2>
+          <h2 id="products-title" className="products__title">All Models</h2>
           <p className="products__count">
-            {products.length} {products.length === 1 ? 'product' : 'products'} available
+            {products.length} {products.length === 1 ? 'model' : 'models'} available
           </p>
         </header>
 

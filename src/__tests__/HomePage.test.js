@@ -18,26 +18,26 @@ describe('HomePage', () => {
     it('renders hero title', () => {
       renderHomePage();
       expect(screen.getByText('Next-Gen')).toBeInTheDocument();
-      expect(screen.getByText('Digital Assets')).toBeInTheDocument();
+      expect(screen.getByText('3D Assets')).toBeInTheDocument();
     });
 
     it('renders hero badge', () => {
       renderHomePage();
-      expect(screen.getByText('Premium Marketplace')).toBeInTheDocument();
+      expect(screen.getByText('Premium 3D Marketplace')).toBeInTheDocument();
     });
 
     it('renders feature indicators', () => {
       renderHomePage();
-      expect(screen.getByText('Premium Quality')).toBeInTheDocument();
-      expect(screen.getByText('Instant Download')).toBeInTheDocument();
-      expect(screen.getByText('Secure Payment')).toBeInTheDocument();
+      expect(screen.getByText('High-Poly Models')).toBeInTheDocument();
+      expect(screen.getByText('PBR Textures')).toBeInTheDocument();
+      expect(screen.getByText('Multi-Format')).toBeInTheDocument();
     });
   });
 
   describe('Products section', () => {
     it('renders products title', () => {
       renderHomePage();
-      expect(screen.getByRole('heading', { name: 'All Products' })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'All Models' })).toBeInTheDocument();
     });
 
     it('renders all products', () => {
@@ -99,7 +99,7 @@ describe('HomePage', () => {
 
     it('has labeled sections', () => {
       renderHomePage();
-      expect(screen.getByRole('region', { name: /products/i })).toBeInTheDocument();
+      expect(screen.getByRole('region', { name: /models/i })).toBeInTheDocument();
     });
   });
 });
