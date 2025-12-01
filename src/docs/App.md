@@ -2,7 +2,7 @@
 
 ## Overview
 
-The App component serves as the main application shell, providing routing configuration and global state management through the CartProvider.
+The App component serves as the main application shell, providing routing configuration and global state management through the CartProvider. The app features a tech-forward dark theme with chrome silver and electric blue accents.
 
 ## Location
 
@@ -11,109 +11,88 @@ The App component serves as the main application shell, providing routing config
 ## Files
 
 - `App.js` - Main application component
-- `App.css` - Global styles
-- `index.js` - Entry point with BrowserRouter
+- `App.scss` - App-level styles (layout, skip link)
+- `index.js` - Entry point with BrowserRouter and global styles
+- `styles/main.scss` - Design system entry point
 
-## Refactoring Changes
+## Visual Redesign (2024)
 
-### Before
-```jsx
-// 81 lines of monolithic code with:
-// - Hardcoded products
-// - window.location.pathname routing hack
-// - Non-functional cart (always empty array)
-// - Inline styles
-// - Duplicate code for Product A and B
+### Design System
 
-function cartItems() {
-  return []
-}
+The app now uses a comprehensive SCSS design system:
 
-function App() {
-  return (
-    <main>
-      <header>
-        90s shop
-        <nav>
-          <ul style={{listStyleType: 'none', display: 'flex'}}>
-            <li><a href="/">Home</a></li>
-            |
-            <li><a href="/cart">Cart ({cartItems().length})</a></li>
-          </ul>
-        </nav>
-        <hr/>
-      </header>
-
-      {window.location.pathname === '/' && (...)}
-      {window.location.pathname === '/products/b' && (...)}
-      {window.location.pathname === '/products/a' && (...)}
-      {window.location.pathname === '/cart' && (...)}
-    </main>
-  );
-}
+```
+src/styles/
+├── main.scss           # Entry point
+├── _variables.scss     # CSS custom properties (colors, spacing, etc.)
+├── _mixins.scss        # Reusable SCSS patterns
+├── _base.scss          # Reset and typography
+├── _animations.scss    # Keyframe animations
+└── _utilities.scss     # Utility classes
 ```
 
-### After
-```jsx
-// 26 lines - clean, modular architecture
+### Color Palette
 
-function App() {
-  return (
-    <CartProvider>
-      <div className="app">
-        <Header />
-        <main className="app__main">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/products/:productId" element={<ProductPage />} />
-            <Route path="/cart" element={<CartPage />} />
-          </Routes>
-        </main>
-      </div>
-    </CartProvider>
-  );
-}
-```
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--color-background` | `hsl(220 30% 4%)` | Main background |
+| `--color-primary` | `hsl(210 15% 75%)` | Chrome silver |
+| `--color-accent` | `hsl(210 90% 55%)` | Electric blue |
+| `--color-foreground` | `hsl(210 20% 98%)` | Text |
 
-## Key Improvements
+### Typography
 
-1. **Proper React Router** - Replaced `window.location.pathname` with React Router v6
-2. **State Management** - CartProvider wraps app for global cart state
-3. **Component Architecture** - Extracted into reusable components
-4. **Clean Routing** - Declarative Routes configuration
-5. **Dynamic Product Pages** - Single route handles all products via `:productId`
-6. **CSS File** - Global styles extracted to App.css
-7. **BrowserRouter in index.js** - Proper router setup at entry point
-8. **From 81 lines to 26 lines** - Cleaner, more maintainable code
-
-## Dependencies
-
-- `react-router-dom` - Routing (Routes, Route)
-- `CartContext` - Global cart state
-- `Header` - Navigation component
-- `HomePage` - Home page component
-- `ProductPage` - Product detail component
-- `CartPage` - Shopping cart component
+- **Display Font**: Orbitron (headings, branding)
+- **Body Font**: Inter (body text, UI)
+- **Fluid Typography**: Using `clamp()` for responsive sizing
 
 ## Architecture
 
 ```
-index.js (BrowserRouter)
+index.js (BrowserRouter, Global Styles)
 └── App.js (CartProvider)
-    ├── Header (uses useCart for count)
+    ├── Skip Link (Accessibility)
+    ├── Header (Frosted glass, animated logo)
     └── Routes
-        ├── / → HomePage
-        ├── /products/:productId → ProductPage (uses useCart)
-        └── /cart → CartPage (uses useCart)
+        ├── / → HomePage (Hero + Product Grid)
+        ├── /products/:productId → ProductPage (Detail view)
+        └── /cart → CartPage (Shopping cart)
 ```
+
+## Key Features
+
+### Accessibility
+- Skip link for keyboard navigation
+- Proper heading hierarchy (h1 → h2 → h3)
+- ARIA labels on interactive elements
+- Focus states with visible outlines
+- Reduced motion support
+
+### SEO Best Practices
+- Semantic HTML (`<main>`, `<header>`, `<nav>`, `<article>`)
+- Proper document outline
+- Meaningful link text
+- Image alt attributes
+
+### Performance
+- SCSS with CSS custom properties for theming
+- Lazy loading for images (`loading="lazy"`)
+- Font loading with `display=swap`
+- Animation performance with `transform` and `opacity`
 
 ## Routes
 
 | Path | Component | Description |
 |------|-----------|-------------|
-| `/` | HomePage | Product listing grid |
-| `/products/:productId` | ProductPage | Product detail with add to cart |
-| `/cart` | CartPage | Shopping cart with checkout |
+| `/` | HomePage | Hero section + product grid |
+| `/products/:productId` | ProductPage | Product detail with specs |
+| `/cart` | CartPage | Cart with order summary |
+
+## Dependencies
+
+- `react-router-dom` - Client-side routing
+- `CartContext` - Global cart state management
+- `sass` - SCSS compilation
 
 ## Tests
 
@@ -122,6 +101,7 @@ Located at `src/App.test.js`
 ### Layout Tests
 - Renders header on all pages
 - Renders navigation links
+- Skip link is present
 
 ### Routing Tests
 - Renders home page at /
@@ -130,4 +110,4 @@ Located at `src/App.test.js`
 
 ### Integration Tests
 - Shows products on home page
-- Cart count starts at 0
+- Cart count updates correctly

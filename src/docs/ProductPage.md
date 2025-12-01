@@ -2,7 +2,7 @@
 
 ## Overview
 
-The ProductPage displays detailed information about a single product and allows users to add it to their cart. It's a dynamic page that works for any product based on the URL parameter.
+The ProductPage displays detailed information about a single product with a modern two-column layout featuring a sticky image viewer and comprehensive product information with specifications, features, and purchase actions.
 
 ## Location
 
@@ -11,81 +11,98 @@ The ProductPage displays detailed information about a single product and allows 
 ## Files
 
 - `ProductPage.js` - Main component
-- `ProductPage.css` - Styles
+- `ProductPage.scss` - Component styles
 
-## Refactoring Changes
+## Visual Design
 
-### Before (in App.js)
-```jsx
-{
-  window.location.pathname === '/products/b' && (
-    <div>
-      <h1>Product B</h1>
-      <p>Price: 30 USD</p>
+### Layout
+- **Two-column grid**: Image viewer (left) + Product info (right) on desktop
+- **Sticky image viewer**: Stays visible while scrolling product details
+- **Single column**: Stacks vertically on mobile
 
-      <button onClick={() => console.warn('Not implemented!')}>
-        Add to cart
-      </button>
+### Image Viewer
+- **Container**: Rounded corners with gradient background
+- **Grid pattern overlay**: Subtle tech aesthetic
+- **Placeholder text**: Animated "3D" when no image
+- **Image**: Full-size product image
 
-      <div><img src={pictureB} width={640}/></div>
-    </div>
-  )
-}
-{
-  window.location.pathname === '/products/a' && (
-    <div>
-      <h1>Product A</h1>
-      <p>Price: 10 USD</p>
+### Product Information
+- **Header**: Category badge, gradient title, rating with star
+- **Description**: Full product description
+- **Tags**: Hashtag-style badges
+- **Specifications card**: Grid of product details
+- **Features list**: Checkmark items with animations
+- **Sticky price section**: Frosted glass effect at bottom
 
-      <button onClick={() => console.warn('Not implemented!')}>
-        Add to cart
-      </button>
+## CSS Classes (BEM)
 
-      <div><img src={pictureA} width={640}/></div>
-    </div>
-  )
-}
+```scss
+// Layout
+.product-page
+.product-page__nav
+.product-page__content
+.product-page__grid
+.product-page__viewer
+.product-page__details
+
+// Image Viewer
+.product-page__image-container
+.product-page__image-bg
+.product-page__image
+.product-page__image-hint
+
+// Product Info
+.product-page__header
+.product-page__category
+.product-page__title
+.product-page__rating
+.product-page__description
+.product-page__tags
+.product-page__tag
+.product-page__specs
+.product-page__specs-grid
+.product-page__features
+.product-page__feature
+.product-page__feature-icon
+
+// Actions
+.product-page__actions
+.product-page__price
+.product-page__add-btn
+
+// Not Found State
+.product-page--not-found
+.product-page__not-found-title
 ```
 
-### After
-```jsx
-<Route path="/products/:productId" element={<ProductPage />} />
-```
+## Accessibility
 
-## Key Improvements
+- Proper heading hierarchy (h1 for title, h2 for sections)
+- `aria-label` on back navigation
+- `aria-labelledby` linking sections to headings
+- `aria-hidden="true"` on decorative SVG icons
+- Descriptive button labels with price info
 
-1. **Single reusable component** - Handles all products via URL parameter
-2. **Eliminated code duplication** - One component instead of one per product
-3. **Uses URL parameters** - `useParams()` hook for dynamic routing
-4. **Functional add to cart** - Actually adds items using CartContext
-5. **Product not found handling** - Shows friendly error for invalid products
-6. **Uses product data** - Pulls from `data/products.js`
-7. **Back navigation** - Link to return to product listing
-8. **Responsive design** - Grid layout adapts to screen size
-9. **Accessible** - Proper alt text, semantic HTML
+## SEO Best Practices
+
+- Semantic HTML (`<main>`, `<article>`, `<section>`, `<nav>`)
+- Single h1 with product name
+- Image with meaningful alt text
+- Proper document outline
+- Breadcrumb navigation
+
+## Responsive Behavior
+
+| Breakpoint | Layout | Image Viewer |
+|------------|--------|--------------|
+| Mobile | Single column | Static |
+| Desktop (1024px+) | Two columns | Sticky |
 
 ## Dependencies
 
-- `react-router-dom` - For `useParams`, `Link`
+- `react-router-dom` - For `useParams`, `Link`, `useNavigate`
 - `CartContext` - For add to cart functionality
 - `data/products` - Product data source
-
-## Usage
-
-```jsx
-import { Routes, Route } from 'react-router-dom';
-import ProductPage from './pages/ProductPage';
-
-function App() {
-  return (
-    <CartProvider>
-      <Routes>
-        <Route path="/products/:productId" element={<ProductPage />} />
-      </Routes>
-    </CartProvider>
-  );
-}
-```
 
 ## URL Parameters
 
@@ -93,27 +110,24 @@ function App() {
 
 ## Props
 
-None. Uses `useParams()` for product ID and `useCart()` for cart actions.
+None. Uses hooks for routing and cart state.
+
+## Not Found State
+
+Displays when product ID doesn't exist:
+- Centered layout
+- "Product Not Found" message
+- "Back to Products" button
 
 ## Tests
 
 Located at `src/__tests__/ProductPage.test.js`
 
-### Product A Tests
-- Renders product name
-- Renders product price
-- Renders product image with alt text
-- Renders add to cart button
-- Renders back link
-
-### Product B Tests
-- Renders product name
-- Renders product price
-
-### Non-existent Product Tests
-- Renders not found message
-- Renders back to home link
-
-### Add to Cart Tests
-- Adds item to cart when button clicked
-- Increments quantity when adding same product twice
+- Renders product name and title
+- Renders product price with formatting
+- Renders product image
+- Renders specifications
+- Renders features list
+- Add to cart functionality works
+- Back navigation works
+- Not found state for invalid products

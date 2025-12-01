@@ -24,7 +24,7 @@ describe('ProductPage', () => {
 
     it('renders product price', () => {
       renderProductPage('a');
-      expect(screen.getByText('10 USD')).toBeInTheDocument();
+      expect(screen.getByText('$10')).toBeInTheDocument();
     });
 
     it('renders product image with alt text', () => {
@@ -35,12 +35,29 @@ describe('ProductPage', () => {
 
     it('renders add to cart button', () => {
       renderProductPage('a');
-      expect(screen.getByRole('button', { name: /add to cart/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /add .+ to cart/i })).toBeInTheDocument();
     });
 
     it('renders back link', () => {
       renderProductPage('a');
       expect(screen.getByRole('link', { name: /back to products/i })).toBeInTheDocument();
+    });
+
+    it('renders category', () => {
+      renderProductPage('a');
+      // Category appears in multiple places, check the main category badge
+      const categoryBadge = document.querySelector('.product-page__category');
+      expect(categoryBadge).toHaveTextContent('Digital Asset');
+    });
+
+    it('renders specifications section', () => {
+      renderProductPage('a');
+      expect(screen.getByRole('heading', { name: 'Specifications' })).toBeInTheDocument();
+    });
+
+    it('renders features section', () => {
+      renderProductPage('a');
+      expect(screen.getByRole('heading', { name: /what's included/i })).toBeInTheDocument();
     });
   });
 
@@ -52,25 +69,24 @@ describe('ProductPage', () => {
 
     it('renders product price', () => {
       renderProductPage('b');
-      expect(screen.getByText('30 USD')).toBeInTheDocument();
+      expect(screen.getByText('$30')).toBeInTheDocument();
     });
   });
 
   describe('Non-existent product', () => {
     it('renders not found message', () => {
       renderProductPage('xyz');
-      expect(screen.getByText('Product not found')).toBeInTheDocument();
+      expect(screen.getByText('Product Not Found')).toBeInTheDocument();
     });
 
-    it('renders back to home link', () => {
+    it('renders back to products button', () => {
       renderProductPage('xyz');
-      expect(screen.getByRole('link', { name: /back to home/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /back to products/i })).toBeInTheDocument();
     });
   });
 
   describe('Add to cart functionality', () => {
     it('calls addToCart when button is clicked', () => {
-      // Create a test component to verify cart state
       const CartDisplay = () => {
         const { cartItems } = useCart();
         return <div data-testid="cart-count">{cartItems.length}</div>;
@@ -87,14 +103,11 @@ describe('ProductPage', () => {
         </MemoryRouter>
       );
 
-      // Initially cart should be empty
       expect(screen.getByTestId('cart-count')).toHaveTextContent('0');
 
-      // Click add to cart
-      const addButton = screen.getByRole('button', { name: /add to cart/i });
+      const addButton = screen.getByRole('button', { name: /add .+ to cart/i });
       fireEvent.click(addButton);
 
-      // Cart should now have 1 item
       expect(screen.getByTestId('cart-count')).toHaveTextContent('1');
     });
 
@@ -120,14 +133,12 @@ describe('ProductPage', () => {
         </MemoryRouter>
       );
 
-      const addButton = screen.getByRole('button', { name: /add to cart/i });
+      const addButton = screen.getByRole('button', { name: /add .+ to cart/i });
 
       fireEvent.click(addButton);
       fireEvent.click(addButton);
 
-      // Should still be 1 item (same product)
       expect(screen.getByTestId('cart-items')).toHaveTextContent('1');
-      // But count should be 2
       expect(screen.getByTestId('cart-count')).toHaveTextContent('2');
     });
   });

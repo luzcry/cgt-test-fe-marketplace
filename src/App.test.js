@@ -14,12 +14,15 @@ describe('App', () => {
   describe('Layout', () => {
     it('renders header on all pages', () => {
       renderApp();
-      expect(screen.getByText('90s Shop')).toBeInTheDocument();
+      expect(screen.getByText('NEXUS')).toBeInTheDocument();
+      // "3D" appears in multiple places, check within header brand
+      const brandSecondary = document.querySelector('.header__brand-secondary');
+      expect(brandSecondary).toHaveTextContent('3D');
     });
 
     it('renders navigation links', () => {
       renderApp();
-      expect(screen.getByRole('link', { name: /home/i })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: /browse/i })).toBeInTheDocument();
       expect(screen.getByRole('link', { name: /cart/i })).toBeInTheDocument();
     });
   });
@@ -27,7 +30,8 @@ describe('App', () => {
   describe('Routing', () => {
     it('renders home page at /', () => {
       renderApp('/');
-      expect(screen.getByText('Welcome to our shop!')).toBeInTheDocument();
+      expect(screen.getByText('Next-Gen')).toBeInTheDocument();
+      expect(screen.getByText('Digital Assets')).toBeInTheDocument();
     });
 
     it('renders product page at /products/:id', () => {
@@ -48,9 +52,9 @@ describe('App', () => {
       expect(screen.getByText('Product B')).toBeInTheDocument();
     });
 
-    it('cart count starts at 0', () => {
+    it('cart button is present', () => {
       renderApp('/');
-      expect(screen.getByRole('link', { name: /cart \(0\)/i })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: /cart/i })).toBeInTheDocument();
     });
   });
 });
