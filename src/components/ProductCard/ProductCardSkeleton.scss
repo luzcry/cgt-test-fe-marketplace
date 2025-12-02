@@ -1,0 +1,202 @@
+@use '../../styles/variables' as *;
+
+.product-card-skeleton {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-background-elevated);
+
+  // Staggered entrance animation
+  animation: skeletonFadeIn 0.4s ease-out both;
+  animation-delay: var(--animation-delay, 0s);
+
+  // Preview Section
+  &__preview {
+    position: relative;
+    aspect-ratio: 1;
+    width: 100%;
+    overflow: hidden;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.03) 0%,
+      rgba(255, 255, 255, 0.06) 50%,
+      rgba(255, 255, 255, 0.03) 100%
+    );
+  }
+
+  &__shimmer {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.08) 50%,
+      transparent 100%
+    );
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  &__rating {
+    position: absolute;
+    top: var(--space-3);
+    right: var(--space-3);
+    width: 48px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-full);
+  }
+
+  // Content Section
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-5);
+  }
+
+  &__category {
+    width: 60px;
+    height: 14px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-sm);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  &__name {
+    width: 70%;
+    height: 22px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-sm);
+    animation: pulse 2s ease-in-out infinite;
+    animation-delay: 0.1s;
+  }
+
+  &__description {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-top: var(--space-1);
+  }
+
+  &__line {
+    height: 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-sm);
+    animation: pulse 2s ease-in-out infinite;
+    animation-delay: 0.2s;
+
+    &--full {
+      width: 100%;
+    }
+
+    &--partial {
+      width: 75%;
+      animation-delay: 0.3s;
+    }
+  }
+
+  &__specs {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+  }
+
+  &__spec {
+    width: 80px;
+    height: 26px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-full);
+    animation: pulse 2s ease-in-out infinite;
+    animation-delay: 0.4s;
+
+    &--small {
+      width: 50px;
+      animation-delay: 0.5s;
+    }
+  }
+
+  &__price {
+    width: 80px;
+    height: 36px;
+    margin-top: var(--space-3);
+    background: linear-gradient(
+      90deg,
+      rgba(var(--color-primary-rgb), 0.15),
+      rgba(var(--color-accent-rgb), 0.15)
+    );
+    border-radius: var(--radius-sm);
+    animation: pulse 2s ease-in-out infinite;
+    animation-delay: 0.6s;
+  }
+
+  // CTA Section
+  &__cta {
+    padding: 0 var(--space-5) var(--space-5);
+  }
+
+  &__btn {
+    width: 100%;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-md);
+    animation: pulse 2s ease-in-out infinite;
+    animation-delay: 0.7s;
+  }
+}
+
+// Shimmer animation - moves across the preview
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+// Pulse animation - subtle opacity change
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+// Fade in animation for skeleton cards
+@keyframes skeletonFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Reduce motion preference
+@media (prefers-reduced-motion: reduce) {
+  .product-card-skeleton {
+    animation: none;
+
+    &__shimmer {
+      animation: none;
+    }
+
+    &__category,
+    &__name,
+    &__line,
+    &__spec,
+    &__price,
+    &__btn {
+      animation: none;
+    }
+  }
+}

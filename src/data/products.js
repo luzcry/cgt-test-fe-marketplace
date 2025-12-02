@@ -1,6 +1,3 @@
-import pictureA from '../a.jpg';
-import pictureB from '../b.jpg';
-
 /**
  * Base URLs for 3D model sources (all free/CC licensed)
  */
@@ -10,33 +7,43 @@ const THREEJS_EXAMPLES = 'https://threejs.org/examples/models/gltf';
 /**
  * 3D Model library - organized by category
  * Each model has a name for display and url for loading
+ *
+ * Scale values normalize models to appear consistently sized (~2 units tall)
+ * in the viewer. These values were determined empirically based on each model's
+ * native dimensions:
+ * - Values < 1: Model is natively large (e.g., architectural scenes, large animals)
+ * - Values = 1: Model is already properly sized
+ * - Values > 1: Model is natively small (e.g., small props, accessories)
+ *
+ * The wide range (0.006 to 80) reflects the diverse source model dimensions
+ * from different 3D libraries and artists.
  */
 export const MODEL_LIBRARY = {
   // === THREE.JS EXAMPLES (Higher quality, some animated) ===
-  littlestTokyo: { name: 'Littlest Tokyo', url: `${THREEJS_EXAMPLES}/LittlestTokyo.glb` },
-  soldier: { name: 'Soldier', url: `${THREEJS_EXAMPLES}/Soldier.glb` },
-  robotExpressive: { name: 'Robot Expressive', url: `${THREEJS_EXAMPLES}/RobotExpressive/RobotExpressive.glb` },
-  horse: { name: 'Horse', url: `${THREEJS_EXAMPLES}/Horse.glb` },
-  flamingo: { name: 'Flamingo', url: `${THREEJS_EXAMPLES}/Flamingo.glb` },
-  stork: { name: 'Stork', url: `${THREEJS_EXAMPLES}/Stork.glb` },
-  parrot: { name: 'Parrot', url: `${THREEJS_EXAMPLES}/Parrot.glb` },
-  materialsBall: { name: 'Materials Ball', url: `${THREEJS_EXAMPLES}/MaterialsVariantsShoe/glTF/MaterialsVariantsShoe.gltf` },
-  nefertiti: { name: 'Nefertiti', url: `${THREEJS_EXAMPLES}/Nefertiti/Nefertiti.glb` },
-  flower: { name: 'Flower', url: `${THREEJS_EXAMPLES}/Flower/Flower.glb` },
+  littlestTokyo: { name: 'Littlest Tokyo', url: `${THREEJS_EXAMPLES}/LittlestTokyo.glb`, scale: 0.008 },
+  soldier: { name: 'Soldier', url: `${THREEJS_EXAMPLES}/Soldier.glb`, scale: 1.2 },
+  robotExpressive: { name: 'Robot Expressive', url: `${THREEJS_EXAMPLES}/RobotExpressive/RobotExpressive.glb`, scale: 1.5 },
+  horse: { name: 'Horse', url: `${THREEJS_EXAMPLES}/Horse.glb`, scale: 0.015 },
+  flamingo: { name: 'Flamingo', url: `${THREEJS_EXAMPLES}/Flamingo.glb`, scale: 0.02 },
+  stork: { name: 'Stork', url: `${THREEJS_EXAMPLES}/Stork.glb`, scale: 0.02 },
+  parrot: { name: 'Parrot', url: `${THREEJS_EXAMPLES}/Parrot.glb`, scale: 0.03 },
+  materialsBall: { name: 'Materials Ball', url: `${THREEJS_EXAMPLES}/MaterialsVariantsShoe/glTF/MaterialsVariantsShoe.gltf`, scale: 8 },
+  nefertiti: { name: 'Nefertiti', url: `${THREEJS_EXAMPLES}/Nefertiti/Nefertiti.glb`, scale: 0.006 },
+  flower: { name: 'Flower', url: `${THREEJS_EXAMPLES}/Flower/Flower.glb`, scale: 1 },
 
   // === KHRONOS SAMPLES (Reliable, well-tested) ===
-  damagedHelmet: { name: 'Damaged Helmet', url: `${GLTF_SAMPLES}/DamagedHelmet/glTF-Binary/DamagedHelmet.glb` },
-  flightHelmet: { name: 'Flight Helmet', url: `${GLTF_SAMPLES}/FlightHelmet/glTF/FlightHelmet.gltf` },
-  fox: { name: 'Fox', url: `${GLTF_SAMPLES}/Fox/glTF-Binary/Fox.glb` },
-  duck: { name: 'Duck', url: `${GLTF_SAMPLES}/Duck/glTF-Binary/Duck.glb` },
-  boomBox: { name: 'Boom Box', url: `${GLTF_SAMPLES}/BoomBox/glTF-Binary/BoomBox.glb` },
-  lantern: { name: 'Lantern', url: `${GLTF_SAMPLES}/Lantern/glTF-Binary/Lantern.glb` },
-  waterBottle: { name: 'Water Bottle', url: `${GLTF_SAMPLES}/WaterBottle/glTF-Binary/WaterBottle.glb` },
-  avocado: { name: 'Avocado', url: `${GLTF_SAMPLES}/Avocado/glTF-Binary/Avocado.glb` },
-  toyCar: { name: 'Toy Car', url: `${GLTF_SAMPLES}/ToyCar/glTF-Binary/ToyCar.glb` },
-  milkTruck: { name: 'Milk Truck', url: `${GLTF_SAMPLES}/CesiumMilkTruck/glTF-Binary/CesiumMilkTruck.glb` },
-  buggy: { name: 'Buggy', url: `${GLTF_SAMPLES}/Buggy/glTF-Binary/Buggy.glb` },
-  cesiumMan: { name: 'Cesium Man', url: `${GLTF_SAMPLES}/CesiumMan/glTF-Binary/CesiumMan.glb` },
+  damagedHelmet: { name: 'Damaged Helmet', url: `${GLTF_SAMPLES}/DamagedHelmet/glTF-Binary/DamagedHelmet.glb`, scale: 1.5 },
+  flightHelmet: { name: 'Flight Helmet', url: `${GLTF_SAMPLES}/FlightHelmet/glTF/FlightHelmet.gltf`, scale: 5 },
+  fox: { name: 'Fox', url: `${GLTF_SAMPLES}/Fox/glTF-Binary/Fox.glb`, scale: 0.02 },
+  duck: { name: 'Duck', url: `${GLTF_SAMPLES}/Duck/glTF-Binary/Duck.glb`, scale: 0.015 },
+  boomBox: { name: 'Boom Box', url: `${GLTF_SAMPLES}/BoomBox/glTF-Binary/BoomBox.glb`, scale: 80 },
+  lantern: { name: 'Lantern', url: `${GLTF_SAMPLES}/Lantern/glTF-Binary/Lantern.glb`, scale: 0.08 },
+  waterBottle: { name: 'Water Bottle', url: `${GLTF_SAMPLES}/WaterBottle/glTF-Binary/WaterBottle.glb`, scale: 8 },
+  avocado: { name: 'Avocado', url: `${GLTF_SAMPLES}/Avocado/glTF-Binary/Avocado.glb`, scale: 30 },
+  toyCar: { name: 'Toy Car', url: `${GLTF_SAMPLES}/ToyCar/glTF-Binary/ToyCar.glb`, scale: 80 },
+  milkTruck: { name: 'Milk Truck', url: `${GLTF_SAMPLES}/CesiumMilkTruck/glTF-Binary/CesiumMilkTruck.glb`, scale: 0.6 },
+  buggy: { name: 'Buggy', url: `${GLTF_SAMPLES}/Buggy/glTF-Binary/Buggy.glb`, scale: 0.015 },
+  cesiumMan: { name: 'Cesium Man', url: `${GLTF_SAMPLES}/CesiumMan/glTF-Binary/CesiumMan.glb`, scale: 1.2 },
 };
 
 /**
@@ -76,7 +83,6 @@ export const products = [
     name: 'Cyber Warrior',
     price: 89,
     currency: 'USD',
-    image: pictureA,
     description: 'Highly detailed cyberpunk character model with modular armor pieces and multiple texture sets.',
     category: 'Characters',
     rating: 4.8,
@@ -92,7 +98,6 @@ export const products = [
     name: 'Hover Bike X-7',
     price: 129,
     currency: 'USD',
-    image: pictureB,
     description: 'Futuristic hover bike with animated hover effects and PBR materials.',
     category: 'Vehicles',
     rating: 4.9,
@@ -108,7 +113,6 @@ export const products = [
     name: 'Crystal Formation Pack',
     price: 45,
     currency: 'USD',
-    image: pictureA,
     description: 'Collection of 12 unique crystal formations with emission maps for magical environments.',
     category: 'Nature',
     rating: 4.7,
@@ -124,7 +128,6 @@ export const products = [
     name: 'Orbital Station Alpha',
     price: 249,
     currency: 'USD',
-    image: pictureB,
     description: 'Modular space station with detailed interiors, docking bays, and animated components.',
     category: 'Architecture',
     rating: 5.0,
@@ -140,7 +143,6 @@ export const products = [
     name: 'Medieval Knight',
     price: 75,
     currency: 'USD',
-    image: pictureA,
     description: 'Fully rigged medieval knight with interchangeable weapons and armor variants.',
     category: 'Characters',
     rating: 4.6,
@@ -156,7 +158,6 @@ export const products = [
     name: 'Alien Flora Bundle',
     price: 59,
     currency: 'USD',
-    image: pictureB,
     description: 'Exotic alien plant collection with bioluminescent materials and wind animation.',
     category: 'Nature',
     rating: 4.8,
@@ -172,7 +173,6 @@ export const products = [
     name: 'Industrial Mech Suit',
     price: 189,
     currency: 'USD',
-    image: pictureA,
     description: 'Heavy industrial mech with cockpit interior, animated joints, and damage variants.',
     category: 'Vehicles',
     rating: 4.9,
@@ -188,7 +188,6 @@ export const products = [
     name: 'Neon City Props',
     price: 35,
     currency: 'USD',
-    image: pictureB,
     description: '20+ cyberpunk street props including signs, vending machines, and trash elements.',
     category: 'Props',
     rating: 4.5,
@@ -204,7 +203,6 @@ export const products = [
     name: 'Sci-Fi Corridor Kit',
     price: 149,
     currency: 'USD',
-    image: pictureA,
     description: 'Modular corridor system with doors, panels, lighting, and damage variations.',
     category: 'Architecture',
     rating: 4.7,
@@ -220,7 +218,6 @@ export const products = [
     name: 'Robot Companion',
     price: 65,
     currency: 'USD',
-    image: pictureB,
     description: 'Cute robot companion with expressive animations and customizable parts.',
     category: 'Characters',
     rating: 4.9,
@@ -236,7 +233,6 @@ export const products = [
     name: 'Ancient Temple Ruins',
     price: 199,
     currency: 'USD',
-    image: pictureA,
     description: 'Detailed temple ruins with vegetation overgrowth and multiple LOD levels.',
     category: 'Architecture',
     rating: 4.8,
@@ -252,7 +248,6 @@ export const products = [
     name: 'Sci-Fi Weapon Pack',
     price: 79,
     currency: 'USD',
-    image: pictureB,
     description: '8 detailed sci-fi weapons with reload animations and customizable attachments.',
     category: 'Props',
     rating: 4.6,

@@ -44,7 +44,7 @@ function Loader() {
 }
 
 // Animated model component with animation support
-const AnimatedModel = memo(function AnimatedModel({ url, wireframe, onLoad }) {
+const AnimatedModel = memo(function AnimatedModel({ url, wireframe, onLoad, scale = 1 }) {
   const group = useRef();
   const { scene, animations } = useGLTF(url);
   const { actions, names } = useAnimations(animations, group);
@@ -75,7 +75,7 @@ const AnimatedModel = memo(function AnimatedModel({ url, wireframe, onLoad }) {
   return (
     <group ref={group}>
       <Center>
-        <primitive object={scene} scale={1} />
+        <primitive object={scene} scale={scale} />
       </Center>
     </group>
   );
@@ -324,6 +324,7 @@ const ModelViewer = memo(function ModelViewer({
                 url={model.url}
                 wireframe={wireframe}
                 onLoad={handleModelLoad}
+                scale={model.scale || 1}
               />
             )}
             <ContactShadows
