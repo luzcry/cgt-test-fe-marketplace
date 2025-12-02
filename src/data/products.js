@@ -2,6 +2,44 @@ import pictureA from '../a.jpg';
 import pictureB from '../b.jpg';
 
 /**
+ * Base URLs for 3D model sources (all free/CC licensed)
+ */
+const GLTF_SAMPLES = 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0';
+const THREEJS_EXAMPLES = 'https://threejs.org/examples/models/gltf';
+
+/**
+ * 3D Model library - organized by category
+ * Each model has a name for display and url for loading
+ */
+export const MODEL_LIBRARY = {
+  // === THREE.JS EXAMPLES (Higher quality, some animated) ===
+  littlestTokyo: { name: 'Littlest Tokyo', url: `${THREEJS_EXAMPLES}/LittlestTokyo.glb` },
+  soldier: { name: 'Soldier', url: `${THREEJS_EXAMPLES}/Soldier.glb` },
+  robotExpressive: { name: 'Robot Expressive', url: `${THREEJS_EXAMPLES}/RobotExpressive/RobotExpressive.glb` },
+  horse: { name: 'Horse', url: `${THREEJS_EXAMPLES}/Horse.glb` },
+  flamingo: { name: 'Flamingo', url: `${THREEJS_EXAMPLES}/Flamingo.glb` },
+  stork: { name: 'Stork', url: `${THREEJS_EXAMPLES}/Stork.glb` },
+  parrot: { name: 'Parrot', url: `${THREEJS_EXAMPLES}/Parrot.glb` },
+  materialsBall: { name: 'Materials Ball', url: `${THREEJS_EXAMPLES}/MaterialsVariantsShoe/glTF/MaterialsVariantsShoe.gltf` },
+  nefertiti: { name: 'Nefertiti', url: `${THREEJS_EXAMPLES}/Nefertiti/Nefertiti.glb` },
+  flower: { name: 'Flower', url: `${THREEJS_EXAMPLES}/Flower/Flower.glb` },
+
+  // === KHRONOS SAMPLES (Reliable, well-tested) ===
+  damagedHelmet: { name: 'Damaged Helmet', url: `${GLTF_SAMPLES}/DamagedHelmet/glTF-Binary/DamagedHelmet.glb` },
+  flightHelmet: { name: 'Flight Helmet', url: `${GLTF_SAMPLES}/FlightHelmet/glTF/FlightHelmet.gltf` },
+  fox: { name: 'Fox', url: `${GLTF_SAMPLES}/Fox/glTF-Binary/Fox.glb` },
+  duck: { name: 'Duck', url: `${GLTF_SAMPLES}/Duck/glTF-Binary/Duck.glb` },
+  boomBox: { name: 'Boom Box', url: `${GLTF_SAMPLES}/BoomBox/glTF-Binary/BoomBox.glb` },
+  lantern: { name: 'Lantern', url: `${GLTF_SAMPLES}/Lantern/glTF-Binary/Lantern.glb` },
+  waterBottle: { name: 'Water Bottle', url: `${GLTF_SAMPLES}/WaterBottle/glTF-Binary/WaterBottle.glb` },
+  avocado: { name: 'Avocado', url: `${GLTF_SAMPLES}/Avocado/glTF-Binary/Avocado.glb` },
+  toyCar: { name: 'Toy Car', url: `${GLTF_SAMPLES}/ToyCar/glTF-Binary/ToyCar.glb` },
+  milkTruck: { name: 'Milk Truck', url: `${GLTF_SAMPLES}/CesiumMilkTruck/glTF-Binary/CesiumMilkTruck.glb` },
+  buggy: { name: 'Buggy', url: `${GLTF_SAMPLES}/Buggy/glTF-Binary/Buggy.glb` },
+  cesiumMan: { name: 'Cesium Man', url: `${GLTF_SAMPLES}/CesiumMan/glTF-Binary/CesiumMan.glb` },
+};
+
+/**
  * Available categories for filtering
  */
 export const CATEGORIES = [
@@ -47,6 +85,7 @@ export const products = [
     fileFormat: ['FBX', 'OBJ', 'BLEND'],
     tags: ['cyberpunk', 'character', 'game-ready', 'rigged'],
     featured: true,
+    model: MODEL_LIBRARY.soldier,
   },
   {
     id: 'hover-bike',
@@ -62,6 +101,7 @@ export const products = [
     fileFormat: ['FBX', 'GLTF', 'MAX'],
     tags: ['vehicle', 'sci-fi', 'animated', 'game-ready'],
     featured: true,
+    model: MODEL_LIBRARY.toyCar,
   },
   {
     id: 'crystal-formation',
@@ -77,6 +117,7 @@ export const products = [
     fileFormat: ['FBX', 'OBJ', 'GLTF'],
     tags: ['nature', 'fantasy', 'props', 'low-poly'],
     featured: false,
+    model: MODEL_LIBRARY.avocado,
   },
   {
     id: 'space-station',
@@ -92,6 +133,7 @@ export const products = [
     fileFormat: ['FBX', 'BLEND', 'MAX'],
     tags: ['architecture', 'sci-fi', 'modular', 'animated'],
     featured: true,
+    model: MODEL_LIBRARY.littlestTokyo,
   },
   {
     id: 'medieval-knight',
@@ -107,6 +149,7 @@ export const products = [
     fileFormat: ['FBX', 'OBJ'],
     tags: ['character', 'medieval', 'rigged', 'fantasy'],
     featured: false,
+    model: MODEL_LIBRARY.horse,
   },
   {
     id: 'alien-flora',
@@ -122,6 +165,7 @@ export const products = [
     fileFormat: ['FBX', 'GLTF', 'BLEND'],
     tags: ['nature', 'sci-fi', 'animated', 'environment'],
     featured: false,
+    model: MODEL_LIBRARY.flamingo,
   },
   {
     id: 'mech-suit',
@@ -137,6 +181,7 @@ export const products = [
     fileFormat: ['FBX', 'MAX', 'BLEND'],
     tags: ['mech', 'vehicle', 'rigged', 'game-ready'],
     featured: true,
+    model: MODEL_LIBRARY.robotExpressive,
   },
   {
     id: 'neon-props',
@@ -152,6 +197,7 @@ export const products = [
     fileFormat: ['FBX', 'OBJ', 'GLTF'],
     tags: ['props', 'cyberpunk', 'urban', 'low-poly'],
     featured: false,
+    model: MODEL_LIBRARY.boomBox,
   },
   {
     id: 'sci-fi-corridor',
@@ -167,6 +213,7 @@ export const products = [
     fileFormat: ['FBX', 'GLTF', 'MAX'],
     tags: ['architecture', 'sci-fi', 'modular', 'interior'],
     featured: false,
+    model: MODEL_LIBRARY.damagedHelmet,
   },
   {
     id: 'robot-companion',
@@ -182,6 +229,7 @@ export const products = [
     fileFormat: ['FBX', 'BLEND', 'GLTF'],
     tags: ['character', 'robot', 'animated', 'stylized'],
     featured: true,
+    model: MODEL_LIBRARY.fox,
   },
   {
     id: 'ancient-temple',
@@ -197,6 +245,7 @@ export const products = [
     fileFormat: ['FBX', 'OBJ', 'MAX'],
     tags: ['architecture', 'ancient', 'ruins', 'environment'],
     featured: false,
+    model: MODEL_LIBRARY.nefertiti,
   },
   {
     id: 'sci-fi-weapons',
@@ -212,6 +261,7 @@ export const products = [
     fileFormat: ['FBX', 'GLTF', 'BLEND'],
     tags: ['props', 'weapons', 'sci-fi', 'animated'],
     featured: false,
+    model: MODEL_LIBRARY.lantern,
   },
 ];
 

@@ -1,7 +1,10 @@
-import React, { memo } from 'react';
+import React, { memo, lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import './ProductCard.scss';
+
+// Lazy load ModelPreview to avoid loading Three.js until needed
+const ModelPreview = lazy(() => import('../ModelPreview'));
 
 /**
  * ProductCard Component
@@ -44,26 +47,51 @@ const ProductCard = memo(function ProductCard({ product, index = 0 }) {
       >
         {/* Preview Section */}
         <div className="product-card__preview">
-          <div
-            className="product-card__preview-bg"
-            style={{ background: product.previewColor }}
-            aria-hidden="true"
-          >
-            <div className="product-card__preview-pattern" aria-hidden="true" />
-            <span className="product-card__preview-text" aria-hidden="true">
-              3D
-            </span>
-          </div>
-
-          {/* Product Image with lazy loading */}
-          <img
-            src={product.image}
-            alt={`${product.name} - ${product.category} 3D model`}
-            className="product-card__image"
-            loading="lazy"
-            decoding="async"
-            itemProp="image"
-          />
+          {/* 3D Model Preview or Static Image */}
+          {product.model ? (
+            <Suspense
+              fallback={
+                <div
+                  className="product-card__preview-bg"
+                  style={{ background: product.previewColor }}
+                  aria-hidden="true"
+                >
+                  <div className="product-card__preview-pattern" aria-hidden="true" />
+                  <span className="product-card__preview-text" aria-hidden="true">
+                    3D
+                  </span>
+                </div>
+              }
+            >
+              <ModelPreview
+                model={product.model}
+                fallbackImage={product.image}
+                previewColor={product.previewColor}
+                alt={`${product.name} - ${product.category} 3D model`}
+              />
+            </Suspense>
+          ) : (
+            <>
+              <div
+                className="product-card__preview-bg"
+                style={{ background: product.previewColor }}
+                aria-hidden="true"
+              >
+                <div className="product-card__preview-pattern" aria-hidden="true" />
+                <span className="product-card__preview-text" aria-hidden="true">
+                  3D
+                </span>
+              </div>
+              <img
+                src={product.image}
+                alt={`${product.name} - ${product.category} 3D model`}
+                className="product-card__image"
+                loading="lazy"
+                decoding="async"
+                itemProp="image"
+              />
+            </>
+          )}
 
           {/* Rating Badge */}
           <div className="product-card__rating" aria-label={`Rating: ${product.rating} out of 5 stars`}>

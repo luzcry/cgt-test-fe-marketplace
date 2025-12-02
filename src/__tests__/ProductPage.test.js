@@ -1,7 +1,33 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { CartProvider, useCart } from '../context/CartContext';
 import ProductPage from '../pages/ProductPage';
+
+// Mock ModelViewer component since Three.js requires WebGL
+jest.mock('../components/ModelViewer', () => {
+  return function MockModelViewer({ model, productName, fallbackImage, previewColor }) {
+    return (
+      <div
+        data-testid="model-viewer"
+        className="model-viewer"
+        role="img"
+        aria-label={`Interactive 3D model of ${productName}. Use mouse to rotate and zoom.`}
+      >
+        {fallbackImage && (
+          <img
+            src={fallbackImage}
+            alt={`${productName} preview`}
+            data-testid="model-fallback-image"
+          />
+        )}
+        {model && (
+          <span data-testid="model-name">{model.name}</span>
+        )}
+      </div>
+    );
+  };
+});
 
 // Use actual product IDs from the updated product data
 const PRODUCT_1_ID = 'cyber-warrior';
@@ -9,13 +35,15 @@ const PRODUCT_2_ID = 'hover-bike';
 
 const renderProductPage = (productId = PRODUCT_1_ID) => {
   return render(
-    <MemoryRouter initialEntries={[`/products/${productId}`]}>
-      <CartProvider>
-        <Routes>
-          <Route path="/products/:productId" element={<ProductPage />} />
-        </Routes>
-      </CartProvider>
-    </MemoryRouter>
+    <HelmetProvider>
+      <MemoryRouter initialEntries={[`/products/${productId}`]}>
+        <CartProvider>
+          <Routes>
+            <Route path="/products/:productId" element={<ProductPage />} />
+          </Routes>
+        </CartProvider>
+      </MemoryRouter>
+    </HelmetProvider>
   );
 };
 
@@ -31,9 +59,15 @@ describe('ProductPage', () => {
       expect(screen.getByText('$89')).toBeInTheDocument();
     });
 
-    it('renders product image with alt text', () => {
+    it('renders 3D model viewer', () => {
       renderProductPage(PRODUCT_1_ID);
-      const image = screen.getByRole('img', { name: 'Cyber Warrior' });
+      const modelViewer = screen.getByTestId('model-viewer');
+      expect(modelViewer).toBeInTheDocument();
+    });
+
+    it('renders product image in model viewer', () => {
+      renderProductPage(PRODUCT_1_ID);
+      const image = screen.getByTestId('model-fallback-image');
       expect(image).toBeInTheDocument();
     });
 
@@ -55,7 +89,7 @@ describe('ProductPage', () => {
 
     it('renders specifications section', () => {
       renderProductPage(PRODUCT_1_ID);
-      expect(screen.getByRole('heading', { name: 'Specifications' })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'Technical Specifications' })).toBeInTheDocument();
     });
 
     it('renders features section', () => {
@@ -96,14 +130,16 @@ describe('ProductPage', () => {
       };
 
       render(
-        <MemoryRouter initialEntries={[`/products/${PRODUCT_1_ID}`]}>
-          <CartProvider>
-            <Routes>
-              <Route path="/products/:productId" element={<ProductPage />} />
-            </Routes>
-            <CartDisplay />
-          </CartProvider>
-        </MemoryRouter>
+        <HelmetProvider>
+          <MemoryRouter initialEntries={[`/products/${PRODUCT_1_ID}`]}>
+            <CartProvider>
+              <Routes>
+                <Route path="/products/:productId" element={<ProductPage />} />
+              </Routes>
+              <CartDisplay />
+            </CartProvider>
+          </MemoryRouter>
+        </HelmetProvider>
       );
 
       expect(screen.getByTestId('cart-count')).toHaveTextContent('0');
@@ -126,14 +162,16 @@ describe('ProductPage', () => {
       };
 
       render(
-        <MemoryRouter initialEntries={[`/products/${PRODUCT_1_ID}`]}>
-          <CartProvider>
-            <Routes>
-              <Route path="/products/:productId" element={<ProductPage />} />
-            </Routes>
-            <CartDisplay />
-          </CartProvider>
-        </MemoryRouter>
+        <HelmetProvider>
+          <MemoryRouter initialEntries={[`/products/${PRODUCT_1_ID}`]}>
+            <CartProvider>
+              <Routes>
+                <Route path="/products/:productId" element={<ProductPage />} />
+              </Routes>
+              <CartDisplay />
+            </CartProvider>
+          </MemoryRouter>
+        </HelmetProvider>
       );
 
       const addButton = screen.getByRole('button', { name: /add .+ to cart/i });

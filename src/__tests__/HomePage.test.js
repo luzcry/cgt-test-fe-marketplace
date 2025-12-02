@@ -5,6 +5,28 @@ import { CartProvider } from '../context/CartContext';
 import HomePage from '../pages/HomePage';
 import { products } from '../data/products';
 
+// Mock ModelPreview component since Three.js requires WebGL
+jest.mock('../components/ModelPreview', () => {
+  return function MockModelPreview({ model, fallbackImage, previewColor, alt }) {
+    return (
+      <div
+        data-testid="model-preview"
+        className="model-preview"
+        style={{ '--preview-color': previewColor }}
+      >
+        {fallbackImage && (
+          <img
+            src={fallbackImage}
+            alt={alt}
+            data-testid="model-preview-fallback"
+          />
+        )}
+        {model && <span data-testid="model-preview-name">{model.name}</span>}
+      </div>
+    );
+  };
+});
+
 const renderHomePage = () => {
   return render(
     <HelmetProvider>
