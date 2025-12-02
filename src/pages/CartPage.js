@@ -1,4 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { useCart } from '../context/CartContext';
 import './CartPage.scss';
 
@@ -12,16 +13,35 @@ import './CartPage.scss';
  * - Sticky order summary on desktop
  * - Empty cart state with CTA
  * - Accessible controls with ARIA labels
+ * - SEO optimized with Helmet meta tags
  */
 function CartPage() {
   const navigate = useNavigate();
-  const { cartItems, cartTotal, updateQuantity, removeFromCart, clearCart } =
+  const { cartItems, cartTotal, cartCount, updateQuantity, removeFromCart, clearCart } =
     useCart();
+
+  // SEO meta component
+  const CartSEO = () => (
+    <Helmet>
+      <title>Shopping Cart | 3D Marketplace</title>
+      <meta
+        name="description"
+        content={cartItems.length > 0
+          ? `Your cart contains ${cartCount} item${cartCount !== 1 ? 's' : ''} totaling $${cartTotal.toFixed(2)}. Review and checkout your premium 3D models.`
+          : 'Your shopping cart is empty. Browse our collection of premium 3D models and digital assets.'
+        }
+      />
+      <meta name="robots" content="noindex, nofollow" />
+      <link rel="canonical" href={`${window.location.origin}/cart`} />
+    </Helmet>
+  );
 
   // Empty cart state
   if (cartItems.length === 0) {
     return (
-      <div className="cart-page cart-page--empty">
+      <>
+        <CartSEO />
+        <div className="cart-page cart-page--empty">
         <svg
           className="cart-page__empty-icon"
           viewBox="0 0 24 24"
@@ -47,7 +67,8 @@ function CartPage() {
         >
           Browse Products
         </button>
-      </div>
+        </div>
+      </>
     );
   }
 
@@ -57,8 +78,10 @@ function CartPage() {
   const total = subtotal + tax;
 
   return (
-    <main className="cart-page">
-      <h1 className="cart-page__title">Shopping Cart</h1>
+    <>
+      <CartSEO />
+      <main className="cart-page">
+        <h1 className="cart-page__title">Shopping Cart</h1>
 
       <div className="cart-page__content">
         {/* Cart Items */}
@@ -184,6 +207,7 @@ function CartPage() {
               type="button"
               className="cart-page__checkout-btn"
               aria-label="Proceed to checkout"
+              onClick={() => navigate('/checkout')}
             >
               Proceed to Checkout
               <svg
@@ -220,7 +244,8 @@ function CartPage() {
           </div>
         </aside>
       </div>
-    </main>
+      </main>
+    </>
   );
 }
 
