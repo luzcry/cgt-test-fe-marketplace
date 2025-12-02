@@ -1,9 +1,9 @@
-import React, { memo, lazy, Suspense } from 'react';
+import React, { memo, lazy, Suspense, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import './ProductCard.scss';
 
-// Lazy load ModelPreview to avoid loading Three.js until needed
+// Lazy load ModelPreview - only imported when actually rendered
 const ModelPreview = lazy(() => import('../ModelPreview'));
 
 /**
@@ -23,6 +23,22 @@ const ModelPreview = lazy(() => import('../ModelPreview'));
  */
 const ProductCard = memo(function ProductCard({ product, index = 0 }) {
   const { addToCart } = useCart();
+  // Defer 3D loading until after initial paint for better LCP
+  const [enable3D, setEnable3D] = useState(false);
+
+  useEffect(() => {
+    // Use requestIdleCallback to load 3D after page is interactive
+    // Falls back to setTimeout for browsers without support
+    const enablePreview = () => setEnable3D(true);
+
+    if ('requestIdleCallback' in window) {
+      const id = window.requestIdleCallback(enablePreview, { timeout: 2000 });
+      return () => window.cancelIdleCallback(id);
+    } else {
+      const id = setTimeout(enablePreview, 1000);
+      return () => clearTimeout(id);
+    }
+  }, []);
 
   const handleAddToCart = (e) => {
     e.preventDefault();
@@ -47,8 +63,8 @@ const ProductCard = memo(function ProductCard({ product, index = 0 }) {
       >
         {/* Preview Section */}
         <div className="product-card__preview">
-          {/* 3D Model Preview or Static Image */}
-          {product.model ? (
+          {/* 3D Model Preview (deferred) or Static Placeholder */}
+          {product.model && enable3D ? (
             <Suspense
               fallback={
                 <div
@@ -82,14 +98,16 @@ const ProductCard = memo(function ProductCard({ product, index = 0 }) {
                   3D
                 </span>
               </div>
-              <img
-                src={product.image}
-                alt={`${product.name} - ${product.category} 3D model`}
-                className="product-card__image"
-                loading="lazy"
-                decoding="async"
-                itemProp="image"
-              />
+              {product.image && (
+                <img
+                  src={product.image}
+                  alt={`${product.name} - ${product.category} 3D model`}
+                  className="product-card__image"
+                  loading="lazy"
+                  decoding="async"
+                  itemProp="image"
+                />
+              )}
             </>
           )}
 
