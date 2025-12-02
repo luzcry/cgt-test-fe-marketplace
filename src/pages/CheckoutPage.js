@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { useCheckout, CHECKOUT_STEPS, STEP_ORDER, STEP_TITLES } from '../context/CheckoutContext';
 import { useCart } from '../context/CartContext';
 import { detectCardType } from '../services/checkoutService';
+import ModelPreview from '../components/ModelPreview/ModelPreview';
 import './CheckoutPage.scss';
 
 // =============================================================================
@@ -539,12 +540,13 @@ const ReviewStep = memo(function ReviewStep() {
           <ul className="checkout-review__items">
             {cartItems.map((item) => (
               <li key={item.id} className="checkout-review__item">
-                <div
-                  className="checkout-review__item-preview"
-                  style={{ '--preview-color': item.previewColor }}
-                  aria-hidden="true"
-                >
-                  <span>3D</span>
+                <div className="checkout-review__item-preview">
+                  <ModelPreview
+                    model={item.model}
+                    previewColor={item.previewColor}
+                    alt={item.name}
+                    disableCacheWrite
+                  />
                 </div>
                 <div className="checkout-review__item-details">
                   <p className="checkout-review__item-name">{item.name}</p>

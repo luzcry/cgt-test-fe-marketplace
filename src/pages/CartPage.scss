@@ -75,25 +75,59 @@
 // Item Preview
 .cart-item__preview {
   flex-shrink: 0;
+  position: relative;
   width: 5rem;
   height: 5rem;
   border-radius: var(--radius-xl);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--preview-color, var(--gradient-blue));
+  overflow: hidden;
+  text-decoration: none;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
 
   @include sm {
     width: 8rem;
     height: 8rem;
   }
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-lg);
+  }
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  // ModelPreview fills the container
+  .model-preview {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.cart-item__preview-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.cart-item__preview-pattern {
+  position: absolute;
+  inset: 0;
+  background: var(--pattern-grid);
+  opacity: 0.15;
+  pointer-events: none;
 }
 
 .cart-item__preview-text {
+  position: relative;
   font-family: var(--font-display);
   font-size: 1.5rem;
   font-weight: var(--font-black);
-  color: hsl(0 0% 100% / 0.15);
+  color: hsl(0 0% 100% / 0.2);
+  letter-spacing: 0.05em;
 
   @include sm {
     font-size: 2rem;

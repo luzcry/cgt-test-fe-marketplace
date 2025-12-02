@@ -1,7 +1,11 @@
+import { lazy, Suspense } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from '../context/CartContext';
 import './CartPage.scss';
+
+// Lazy load ModelPreview to avoid loading Three.js until needed
+const ModelPreview = lazy(() => import('../components/ModelPreview'));
 
 /**
  * CartPage Component
@@ -51,6 +55,7 @@ function CartPage() {
           strokeLinecap="round"
           strokeLinejoin="round"
           aria-hidden="true"
+          data-testid="empty-cart-icon"
         >
           <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
           <line x1="3" y1="6" x2="21" y2="6" />
@@ -89,13 +94,29 @@ function CartPage() {
           {cartItems.map((item) => (
             <article key={item.id} className="cart-item">
               {/* Preview */}
-              <div
+              <Link
+                to={`/products/${item.id}`}
                 className="cart-item__preview"
-                style={{ '--preview-color': item.previewColor }}
-                aria-hidden="true"
+                aria-label={`View ${item.name}`}
               >
-                <span className="cart-item__preview-text">3D</span>
-              </div>
+                <Suspense
+                  fallback={
+                    <div
+                      className="cart-item__preview-fallback"
+                      style={{ background: item.previewColor }}
+                    >
+                      <div className="cart-item__preview-pattern" aria-hidden="true" />
+                      <span className="cart-item__preview-text" aria-hidden="true">3D</span>
+                    </div>
+                  }
+                >
+                  <ModelPreview
+                    model={item.model}
+                    previewColor={item.previewColor}
+                    alt={`${item.name} 3D preview`}
+                  />
+                </Suspense>
+              </Link>
 
               {/* Item Info */}
               <div className="cart-item__info">

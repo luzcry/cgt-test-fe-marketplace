@@ -157,11 +157,13 @@ const ModelPreview = memo(function ModelPreview({
   model = null,
   fallbackImage,
   previewColor = 'linear-gradient(135deg, #4A90E2, #357ABD)',
-  alt = '3D Model Preview'
+  alt = '3D Model Preview',
+  skipCache = false,
+  disableCacheWrite = false
 }) {
   const [isVisible, setIsVisible] = useState(false);
   const [snapshot, setSnapshot] = useState(() =>
-    model ? snapshotCache.get(model.url) : null
+    model && !skipCache ? snapshotCache.get(model.url) : null
   );
   const [isRendering, setIsRendering] = useState(false);
   const [modelLoaded, setModelLoaded] = useState(false);
@@ -171,10 +173,10 @@ const ModelPreview = memo(function ModelPreview({
 
   // Check if we already have a cached snapshot
   useEffect(() => {
-    if (model && snapshotCache.has(model.url)) {
+    if (model && !skipCache && snapshotCache.has(model.url)) {
       setSnapshot(snapshotCache.get(model.url));
     }
-  }, [model]);
+  }, [model, skipCache]);
 
   // Lazy load with IntersectionObserver
   // Note: Observer continues after first intersection (doesn't disconnect early)
@@ -225,7 +227,7 @@ const ModelPreview = memo(function ModelPreview({
   }, []);
 
   const handleSnapshot = useCallback((dataUrl) => {
-    if (model) {
+    if (model && !skipCache && !disableCacheWrite) {
       snapshotCache.set(model.url, dataUrl);
     }
     setSnapshot(dataUrl);
@@ -238,7 +240,7 @@ const ModelPreview = memo(function ModelPreview({
       queueIdRef.current = null;
     }
     finishQueueItem();
-  }, [model]);
+  }, [model, skipCache, disableCacheWrite]);
 
   const handleError = useCallback(() => {
     setHasError(true);

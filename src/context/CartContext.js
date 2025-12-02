@@ -1,10 +1,29 @@
-import { createContext, useContext, useState, useMemo, useCallback } from 'react';
+import { createContext, useContext, useState, useMemo, useCallback, useEffect } from 'react';
+
+const CART_STORAGE_KEY = 'marketplace_cart';
 
 const CartContext = createContext(null);
 
+function getInitialCart() {
+  try {
+    const stored = localStorage.getItem(CART_STORAGE_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch {
+    return [];
+  }
+}
+
 export function CartProvider({ children }) {
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState(getInitialCart);
   const [notification, setNotification] = useState({ show: false, product: null });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
+    } catch {
+      // localStorage not available or quota exceeded
+    }
+  }, [cartItems]);
 
   const showNotification = useCallback((product) => {
     setNotification({ show: true, product });
