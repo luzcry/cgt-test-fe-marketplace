@@ -1,9 +1,18 @@
-import { createContext, useContext, useState, useMemo } from 'react';
+import { createContext, useContext, useState, useMemo, useCallback } from 'react';
 
 const CartContext = createContext(null);
 
 export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState([]);
+  const [notification, setNotification] = useState({ show: false, product: null });
+
+  const showNotification = useCallback((product) => {
+    setNotification({ show: true, product });
+  }, []);
+
+  const hideNotification = useCallback(() => {
+    setNotification({ show: false, product: null });
+  }, []);
 
   const addToCart = (product) => {
     setCartItems((prevItems) => {
@@ -17,6 +26,7 @@ export function CartProvider({ children }) {
       }
       return [...prevItems, { ...product, quantity: 1 }];
     });
+    showNotification(product);
   };
 
   const removeFromCart = (productId) => {
@@ -60,6 +70,8 @@ export function CartProvider({ children }) {
     clearCart,
     cartTotal,
     cartCount,
+    notification,
+    hideNotification,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

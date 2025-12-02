@@ -4,6 +4,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { CartProvider } from './context/CartContext';
 import { CheckoutProvider } from './context/CheckoutContext';
 import Header from './components/Header';
+import CartNotification from './components/CartNotification';
 import HomePage from './pages/HomePage';
 import ProductPage from './pages/ProductPage';
 import CartPage from './pages/CartPage';
@@ -26,6 +27,7 @@ function App() {
       <CartProvider>
         <CheckoutProvider>
           <ScrollToTop />
+          <CartNotification />
           <div className="app">
             {/* Skip link for keyboard accessibility */}
             <a href="#main-content" className="app__skip-link">
