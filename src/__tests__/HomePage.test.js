@@ -1,15 +1,19 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { CartProvider } from '../context/CartContext';
 import HomePage from '../pages/HomePage';
+import { products } from '../data/products';
 
 const renderHomePage = () => {
   return render(
-    <BrowserRouter>
-      <CartProvider>
-        <HomePage />
-      </CartProvider>
-    </BrowserRouter>
+    <HelmetProvider>
+      <BrowserRouter>
+        <CartProvider>
+          <HomePage />
+        </CartProvider>
+      </BrowserRouter>
+    </HelmetProvider>
   );
 };
 
@@ -32,6 +36,11 @@ describe('HomePage', () => {
       expect(screen.getByText('PBR Textures')).toBeInTheDocument();
       expect(screen.getByText('Multi-Format')).toBeInTheDocument();
     });
+
+    it('displays total product count', () => {
+      renderHomePage();
+      expect(screen.getByText(`${products.length}`)).toBeInTheDocument();
+    });
   });
 
   describe('Products section', () => {
@@ -42,36 +51,59 @@ describe('HomePage', () => {
 
     it('renders all products', () => {
       renderHomePage();
-      expect(screen.getByText('Product A')).toBeInTheDocument();
-      expect(screen.getByText('Product B')).toBeInTheDocument();
+      // Test with actual product names from updated data
+      expect(screen.getByText('Cyber Warrior')).toBeInTheDocument();
+      expect(screen.getByText('Hover Bike X-7')).toBeInTheDocument();
     });
 
     it('renders product prices', () => {
       renderHomePage();
-      expect(screen.getByText('$10')).toBeInTheDocument();
-      expect(screen.getByText('$30')).toBeInTheDocument();
+      expect(screen.getByText('$89')).toBeInTheDocument();
+      expect(screen.getByText('$129')).toBeInTheDocument();
     });
 
     it('renders product links', () => {
       renderHomePage();
-      const productLinks = screen.getAllByRole('link', { name: /view product/i });
+      const productLinks = screen.getAllByRole('link', { name: /view .+ details/i });
       expect(productLinks.length).toBeGreaterThanOrEqual(2);
     });
 
     it('renders product categories', () => {
       renderHomePage();
-      expect(screen.getByText('Digital Asset')).toBeInTheDocument();
-      expect(screen.getByText('Premium Asset')).toBeInTheDocument();
+      expect(screen.getAllByText('Characters').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('Vehicles').length).toBeGreaterThanOrEqual(1);
+    });
+  });
+
+  describe('Filter functionality', () => {
+    it('renders search input', () => {
+      renderHomePage();
+      expect(screen.getByPlaceholderText(/search models/i)).toBeInTheDocument();
     });
 
-    it('renders product descriptions', () => {
+    it('filters products by search term', () => {
       renderHomePage();
-      expect(
-        screen.getByText('You are probably interested in this product.')
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText('Check out the newest product!')
-      ).toBeInTheDocument();
+      const searchInput = screen.getByPlaceholderText(/search models/i);
+
+      // Initially all products should be visible
+      expect(screen.getByText('Cyber Warrior')).toBeInTheDocument();
+
+      // Search for specific product
+      fireEvent.change(searchInput, { target: { value: 'cyber' } });
+      expect(screen.getByText('Cyber Warrior')).toBeInTheDocument();
+    });
+
+    it('shows filter toggle button on mobile', () => {
+      const { container } = renderHomePage();
+      // The filter toggle button with class .products__filter-toggle
+      const filterToggle = container.querySelector('.products__filter-toggle');
+      expect(filterToggle).toBeInTheDocument();
+    });
+
+    it('displays product count after filtering', () => {
+      renderHomePage();
+      // Check that count shows "X of Y models"
+      expect(screen.getByText(/of \d+ models/i)).toBeInTheDocument();
     });
   });
 
@@ -79,12 +111,12 @@ describe('HomePage', () => {
     it('renders add to cart buttons', () => {
       renderHomePage();
       const addButtons = screen.getAllByRole('button', { name: /add .+ to cart/i });
-      expect(addButtons.length).toBe(2);
+      expect(addButtons.length).toBe(products.length);
     });
 
     it('add to cart button is clickable', () => {
       renderHomePage();
-      const addButton = screen.getByRole('button', { name: /add product a to cart/i });
+      const addButton = screen.getByRole('button', { name: /add cyber warrior to cart/i });
       expect(addButton).not.toBeDisabled();
       fireEvent.click(addButton);
     });
@@ -97,9 +129,22 @@ describe('HomePage', () => {
       expect(h1).toBeInTheDocument();
     });
 
-    it('has labeled sections', () => {
+    it('has search input with accessible label', () => {
       renderHomePage();
-      expect(screen.getByRole('region', { name: /models/i })).toBeInTheDocument();
+      expect(screen.getByLabelText(/search products/i)).toBeInTheDocument();
+    });
+
+    it('has product grid with list role', () => {
+      renderHomePage();
+      expect(screen.getByRole('list', { name: /product listings/i })).toBeInTheDocument();
+    });
+  });
+
+  describe('SEO', () => {
+    it('renders product cards with schema markup', () => {
+      const { container } = renderHomePage();
+      const productArticles = container.querySelectorAll('[itemtype="https://schema.org/Product"]');
+      expect(productArticles.length).toBe(products.length);
     });
   });
 });

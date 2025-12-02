@@ -2,6 +2,9 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from './App';
 
+// Use actual product IDs from the updated product data
+const PRODUCT_1_ID = 'cyber-warrior';
+
 const renderApp = (initialRoute = '/') => {
   return render(
     <MemoryRouter initialEntries={[initialRoute]}>
@@ -35,8 +38,8 @@ describe('App', () => {
     });
 
     it('renders product page at /products/:id', () => {
-      renderApp('/products/a');
-      expect(screen.getByRole('heading', { name: 'Product A' })).toBeInTheDocument();
+      renderApp(`/products/${PRODUCT_1_ID}`);
+      expect(screen.getByRole('heading', { name: 'Cyber Warrior' })).toBeInTheDocument();
     });
 
     it('renders cart page at /cart', () => {
@@ -48,8 +51,8 @@ describe('App', () => {
   describe('Integration', () => {
     it('shows products on home page', () => {
       renderApp('/');
-      expect(screen.getByText('Product A')).toBeInTheDocument();
-      expect(screen.getByText('Product B')).toBeInTheDocument();
+      expect(screen.getByText('Cyber Warrior')).toBeInTheDocument();
+      expect(screen.getByText('Hover Bike X-7')).toBeInTheDocument();
     });
 
     it('cart button is present', () => {

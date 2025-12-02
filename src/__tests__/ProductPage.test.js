@@ -3,7 +3,11 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { CartProvider, useCart } from '../context/CartContext';
 import ProductPage from '../pages/ProductPage';
 
-const renderProductPage = (productId = 'a') => {
+// Use actual product IDs from the updated product data
+const PRODUCT_1_ID = 'cyber-warrior';
+const PRODUCT_2_ID = 'hover-bike';
+
+const renderProductPage = (productId = PRODUCT_1_ID) => {
   return render(
     <MemoryRouter initialEntries={[`/products/${productId}`]}>
       <CartProvider>
@@ -16,60 +20,59 @@ const renderProductPage = (productId = 'a') => {
 };
 
 describe('ProductPage', () => {
-  describe('Product A', () => {
+  describe('Cyber Warrior Product', () => {
     it('renders product name', () => {
-      renderProductPage('a');
-      expect(screen.getByRole('heading', { name: 'Product A' })).toBeInTheDocument();
+      renderProductPage(PRODUCT_1_ID);
+      expect(screen.getByRole('heading', { name: 'Cyber Warrior' })).toBeInTheDocument();
     });
 
     it('renders product price', () => {
-      renderProductPage('a');
-      expect(screen.getByText('$10')).toBeInTheDocument();
+      renderProductPage(PRODUCT_1_ID);
+      expect(screen.getByText('$89')).toBeInTheDocument();
     });
 
     it('renders product image with alt text', () => {
-      renderProductPage('a');
-      const image = screen.getByRole('img', { name: 'Product A' });
+      renderProductPage(PRODUCT_1_ID);
+      const image = screen.getByRole('img', { name: 'Cyber Warrior' });
       expect(image).toBeInTheDocument();
     });
 
     it('renders add to cart button', () => {
-      renderProductPage('a');
+      renderProductPage(PRODUCT_1_ID);
       expect(screen.getByRole('button', { name: /add .+ to cart/i })).toBeInTheDocument();
     });
 
     it('renders back link', () => {
-      renderProductPage('a');
+      renderProductPage(PRODUCT_1_ID);
       expect(screen.getByRole('link', { name: /back to products/i })).toBeInTheDocument();
     });
 
     it('renders category', () => {
-      renderProductPage('a');
-      // Category appears in multiple places, check the main category badge
+      renderProductPage(PRODUCT_1_ID);
       const categoryBadge = document.querySelector('.product-page__category');
-      expect(categoryBadge).toHaveTextContent('Digital Asset');
+      expect(categoryBadge).toHaveTextContent('Characters');
     });
 
     it('renders specifications section', () => {
-      renderProductPage('a');
+      renderProductPage(PRODUCT_1_ID);
       expect(screen.getByRole('heading', { name: 'Specifications' })).toBeInTheDocument();
     });
 
     it('renders features section', () => {
-      renderProductPage('a');
+      renderProductPage(PRODUCT_1_ID);
       expect(screen.getByRole('heading', { name: /what's included/i })).toBeInTheDocument();
     });
   });
 
-  describe('Product B', () => {
+  describe('Hover Bike Product', () => {
     it('renders product name', () => {
-      renderProductPage('b');
-      expect(screen.getByRole('heading', { name: 'Product B' })).toBeInTheDocument();
+      renderProductPage(PRODUCT_2_ID);
+      expect(screen.getByRole('heading', { name: 'Hover Bike X-7' })).toBeInTheDocument();
     });
 
     it('renders product price', () => {
-      renderProductPage('b');
-      expect(screen.getByText('$30')).toBeInTheDocument();
+      renderProductPage(PRODUCT_2_ID);
+      expect(screen.getByText('$129')).toBeInTheDocument();
     });
   });
 
@@ -93,7 +96,7 @@ describe('ProductPage', () => {
       };
 
       render(
-        <MemoryRouter initialEntries={['/products/a']}>
+        <MemoryRouter initialEntries={[`/products/${PRODUCT_1_ID}`]}>
           <CartProvider>
             <Routes>
               <Route path="/products/:productId" element={<ProductPage />} />
@@ -123,7 +126,7 @@ describe('ProductPage', () => {
       };
 
       render(
-        <MemoryRouter initialEntries={['/products/a']}>
+        <MemoryRouter initialEntries={[`/products/${PRODUCT_1_ID}`]}>
           <CartProvider>
             <Routes>
               <Route path="/products/:productId" element={<ProductPage />} />
