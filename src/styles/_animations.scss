@@ -1,5 +1,5 @@
 // ==========================================================================
-// Animations - Keyframes & Animation Classes
+// Animations - Keyframes (Only keyframes actually used in component SCSS)
 // ==========================================================================
 
 // --------------------------------------------------------------------------
@@ -23,50 +23,6 @@
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@keyframes fade-in-down {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes scale-in {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes slide-in-right {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes slide-in-left {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
   }
 }
 
@@ -97,107 +53,12 @@
   }
 }
 
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 @keyframes spin-slow {
   from {
     transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
-  }
-}
-
-// --------------------------------------------------------------------------
-// Animation Utility Classes
-// --------------------------------------------------------------------------
-
-.animate-fade-in {
-  animation: fade-in 0.5s ease-out forwards;
-}
-
-.animate-fade-in-up {
-  animation: fade-in-up 0.6s ease-out forwards;
-}
-
-.animate-fade-in-down {
-  animation: fade-in-down 0.6s ease-out forwards;
-}
-
-.animate-scale-in {
-  animation: scale-in 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.animate-slide-in-right {
-  animation: slide-in-right 0.5s ease-out forwards;
-}
-
-.animate-slide-in-left {
-  animation: slide-in-left 0.5s ease-out forwards;
-}
-
-.animate-glow-pulse {
-  animation: glow-pulse 3s ease-in-out infinite;
-}
-
-.animate-shimmer {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    hsl(210 15% 75% / 0.1),
-    transparent
-  );
-  background-size: 200% 100%;
-  animation: shimmer 2s linear infinite;
-}
-
-.animate-float {
-  animation: float 3s ease-in-out infinite;
-}
-
-.animate-spin-slow {
-  animation: spin-slow 20s linear infinite;
-}
-
-// --------------------------------------------------------------------------
-// Animation Delay Utilities
-// --------------------------------------------------------------------------
-
-.delay-100 {
-  animation-delay: 100ms;
-}
-
-.delay-200 {
-  animation-delay: 200ms;
-}
-
-.delay-300 {
-  animation-delay: 300ms;
-}
-
-.delay-400 {
-  animation-delay: 400ms;
-}
-
-.delay-500 {
-  animation-delay: 500ms;
-}
-
-// --------------------------------------------------------------------------
-// Staggered Animation Helper
-// --------------------------------------------------------------------------
-// Use with data-index attribute for staggered animations
-
-@for $i from 1 through 12 {
-  [data-index="#{$i}"] {
-    animation-delay: #{$i * 0.1}s;
   }
 }
 
