@@ -298,9 +298,16 @@ const ModelViewer = memo(function ModelViewer({
           gl={{
             antialias: true,
             alpha: true,
-            preserveDrawingBuffer: true
+            preserveDrawingBuffer: true,
+            powerPreference: 'high-performance'
           }}
           onError={handleError}
+          // Use passive event listeners for better scroll performance
+          events={(store) => ({
+            ...store,
+            // Enable passive touch/wheel events for better scroll performance
+            passive: true
+          })}
         >
           {/* Lighting Setup */}
           <ambientLight intensity={0.5} />

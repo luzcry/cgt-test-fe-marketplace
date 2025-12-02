@@ -365,6 +365,11 @@ const ModelPreview = memo(function ModelPreview({
             powerPreference: 'low-power'
           }}
           onError={handleError}
+          // Use passive event listeners for better scroll performance
+          events={(store) => ({
+            ...store,
+            passive: true
+          })}
         >
           <ambientLight intensity={0.6} />
           <directionalLight position={[5, 5, 5]} intensity={0.8} />

@@ -41,9 +41,11 @@
     <!-- Preconnect for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Preconnect for 3D model CDNs -->
-    <link rel="dns-prefetch" href="https://threejs.org" />
-    <link rel="dns-prefetch" href="https://raw.githubusercontent.com" />
+    <!-- Preconnect for 3D model CDNs - upgraded from dns-prefetch for faster connections -->
+    <link rel="preconnect" href="https://threejs.org" crossorigin />
+    <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin />
+    <!-- Preconnect for Draco decoder (used by Three.js for compressed models) -->
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin />
 
     <!-- Fonts: non-blocking load with media swap technique -->
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@600;700;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
@@ -51,6 +53,54 @@
 
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+    <!-- Critical CSS for instant first paint - prevents layout shift and shows content immediately -->
+    <style>
+      /* Base styles for immediate render */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        background: #0a0c14;
+        color: #ffffff;
+        min-height: 100vh;
+      }
+      #root { min-height: 100vh; }
+
+      /* Page loader styles */
+      .page-loader {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 60vh;
+      }
+      .page-loader__spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(74, 144, 226, 0.2);
+        border-top-color: #4A90E2;
+        border-radius: 50%;
+        animation: page-spin 0.8s linear infinite;
+      }
+      @keyframes page-spin { to { transform: rotate(360deg); } }
+
+      /* Header skeleton for preventing layout shift */
+      .app { display: flex; flex-direction: column; min-height: 100vh; }
+      .app__main { flex: 1; }
+
+      /* Skip link (accessibility) */
+      .app__skip-link {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: #4A90E2;
+        color: white;
+        padding: 8px;
+        z-index: 100;
+        transition: top 0.3s;
+      }
+      .app__skip-link:focus { top: 0; }
+    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
