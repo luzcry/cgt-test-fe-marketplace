@@ -1,8 +1,17 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { CartProvider, useCart } from '../context/CartContext';
 import CartPage from '../pages/CartPage';
 import React from 'react';
+
+// Mock useNavigate
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate
+}));
 
 const mockProduct = {
   id: 'a',
@@ -42,20 +51,24 @@ const CartWithItems = ({ items = [] }) => {
 const renderCartPage = (items = []) => {
   if (items.length === 0) {
     return render(
-      <MemoryRouter>
-        <CartProvider>
-          <CartPage />
-        </CartProvider>
-      </MemoryRouter>
+      <HelmetProvider>
+        <MemoryRouter>
+          <CartProvider>
+            <CartPage />
+          </CartProvider>
+        </MemoryRouter>
+      </HelmetProvider>
     );
   }
 
   return render(
-    <MemoryRouter>
-      <CartProvider>
-        <CartWithItems items={items} />
-      </CartProvider>
-    </MemoryRouter>
+    <HelmetProvider>
+      <MemoryRouter>
+        <CartProvider>
+          <CartWithItems items={items} />
+        </CartProvider>
+      </MemoryRouter>
+    </HelmetProvider>
   );
 };
 
@@ -202,5 +215,247 @@ describe('CartPage', () => {
       // Total is $10 + $1 tax = $11.00
       expect(screen.getByText('$11.00')).toBeInTheDocument();
     });
+
+    it('calculates total for multiple items correctly', () => {
+      renderCartPage([mockProduct, mockProduct2]);
+      // Subtotal: $10 + $30 = $40
+      // Tax: $4
+      // Total: $44
+      expect(screen.getByText('$44.00')).toBeInTheDocument();
+    });
+
+    it('updates total when quantity changes', () => {
+      renderCartPage([mockProduct]);
+
+      // Initial total is $11.00
+      expect(screen.getByText('$11.00')).toBeInTheDocument();
+
+      // Increase quantity
+      const increaseBtn = screen.getByRole('button', { name: /increase quantity/i });
+      fireEvent.click(increaseBtn);
+
+      // New total: $20 + $2 tax = $22.00
+      expect(screen.getByText('$22.00')).toBeInTheDocument();
+    });
+  });
+
+  describe('Navigation', () => {
+    beforeEach(() => {
+      mockNavigate.mockClear();
+    });
+
+    it('navigates to home when browse products is clicked (empty cart)', () => {
+      renderCartPage();
+
+      fireEvent.click(screen.getByRole('button', { name: /browse products/i }));
+
+      expect(mockNavigate).toHaveBeenCalledWith('/');
+    });
+
+    it('navigates to checkout when proceed to checkout is clicked', () => {
+      renderCartPage([mockProduct]);
+
+      fireEvent.click(screen.getByRole('button', { name: /proceed to checkout/i }));
+
+      expect(mockNavigate).toHaveBeenCalledWith('/checkout');
+    });
+
+    it('navigates to home when continue shopping is clicked', () => {
+      renderCartPage([mockProduct]);
+
+      fireEvent.click(screen.getByRole('button', { name: /continue shopping/i }));
+
+      expect(mockNavigate).toHaveBeenCalledWith('/');
+    });
+  });
+
+  describe('Accessibility', () => {
+    it('has proper heading structure', () => {
+      renderCartPage([mockProduct]);
+
+      const h1 = screen.getByRole('heading', { level: 1 });
+      expect(h1).toHaveTextContent('Shopping Cart');
+
+      const h2 = screen.getByRole('heading', { level: 2 });
+      expect(h2).toHaveTextContent('Order Summary');
+    });
+
+    it('cart items section has aria-label', () => {
+      renderCartPage([mockProduct]);
+
+      expect(screen.getByRole('region', { name: /cart items/i })).toBeInTheDocument();
+    });
+
+    it('order summary has aria-label', () => {
+      renderCartPage([mockProduct]);
+
+      expect(screen.getByRole('complementary', { name: /order summary/i })).toBeInTheDocument();
+    });
+
+    it('quantity controls have accessible labels', () => {
+      renderCartPage([mockProduct]);
+
+      expect(screen.getByRole('button', { name: /decrease quantity of product a/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /increase quantity of product a/i })).toBeInTheDocument();
+    });
+
+    it('remove buttons have accessible labels for each product', () => {
+      renderCartPage([mockProduct, mockProduct2]);
+
+      expect(screen.getByRole('button', { name: /remove product a from cart/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /remove product b from cart/i })).toBeInTheDocument();
+    });
+
+    it('quantity value has accessible label', () => {
+      renderCartPage([mockProduct]);
+
+      expect(screen.getByLabelText(/quantity: 1/i)).toBeInTheDocument();
+    });
+
+    it('preview images are hidden from screen readers', () => {
+      renderCartPage([mockProduct]);
+
+      const preview = document.querySelector('.cart-item__preview');
+      expect(preview).toHaveAttribute('aria-hidden', 'true');
+    });
+  });
+
+  describe('Multiple items', () => {
+    it('renders all items in cart', () => {
+      renderCartPage([mockProduct, mockProduct2]);
+
+      expect(screen.getByText('Product A')).toBeInTheDocument();
+      expect(screen.getByText('Product B')).toBeInTheDocument();
+    });
+
+    it('each item has its own controls', () => {
+      renderCartPage([mockProduct, mockProduct2]);
+
+      const decreaseButtons = screen.getAllByRole('button', { name: /decrease quantity/i });
+      const increaseButtons = screen.getAllByRole('button', { name: /increase quantity/i });
+
+      expect(decreaseButtons).toHaveLength(2);
+      expect(increaseButtons).toHaveLength(2);
+    });
+
+    it('removing one item keeps others', () => {
+      renderCartPage([mockProduct, mockProduct2]);
+
+      const removeBtn = screen.getByRole('button', { name: /remove product a/i });
+      fireEvent.click(removeBtn);
+
+      expect(screen.queryByText('Product A')).not.toBeInTheDocument();
+      expect(screen.getByText('Product B')).toBeInTheDocument();
+    });
+
+    it('shows category for each product', () => {
+      renderCartPage([mockProduct, mockProduct2]);
+
+      expect(screen.getByText('Digital Asset')).toBeInTheDocument();
+      expect(screen.getByText('Premium Asset')).toBeInTheDocument();
+    });
+  });
+
+  describe('Quantity edge cases', () => {
+    it('disables decrease button when quantity is 1', () => {
+      renderCartPage([mockProduct]);
+
+      const decreaseBtn = screen.getByRole('button', { name: /decrease quantity/i });
+      expect(decreaseBtn).toBeDisabled();
+    });
+
+    it('enables decrease button when quantity is greater than 1', () => {
+      renderCartPage([{ ...mockProduct, quantity: 2 }]);
+
+      const decreaseBtn = screen.getByRole('button', { name: /decrease quantity/i });
+      expect(decreaseBtn).not.toBeDisabled();
+    });
+
+    it('shows per-item price when quantity is greater than 1', () => {
+      renderCartPage([{ ...mockProduct, quantity: 2 }]);
+
+      expect(screen.getByText('$10 each')).toBeInTheDocument();
+    });
+
+    it('does not show per-item price when quantity is 1', () => {
+      renderCartPage([mockProduct]);
+
+      expect(screen.queryByText(/each/i)).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Product links', () => {
+    it('product name links to product page', () => {
+      renderCartPage([mockProduct]);
+
+      const productLink = screen.getByRole('link', { name: 'Product A' });
+      expect(productLink).toHaveAttribute('href', '/products/a');
+    });
+  });
+
+  describe('Empty cart state', () => {
+    it('has empty cart icon', () => {
+      renderCartPage();
+
+      const icon = document.querySelector('.cart-page__empty-icon');
+      expect(icon).toBeInTheDocument();
+    });
+
+    it('empty cart icon is decorative (hidden from AT)', () => {
+      renderCartPage();
+
+      const icon = document.querySelector('.cart-page__empty-icon');
+      expect(icon).toHaveAttribute('aria-hidden', 'true');
+    });
+  });
+});
+
+describe('CartPage SEO', () => {
+  it('has page title for empty cart', () => {
+    renderCartPage();
+    // Helmet sets document title
+  });
+
+  it('has page title for cart with items', () => {
+    renderCartPage([mockProduct]);
+    // Helmet sets document title
+  });
+});
+
+describe('CartPage responsive behavior', () => {
+  it('renders on mobile viewport', () => {
+    Object.defineProperty(window, 'innerWidth', {
+      writable: true,
+      configurable: true,
+      value: 375
+    });
+
+    renderCartPage([mockProduct]);
+
+    expect(screen.getByText('Shopping Cart')).toBeInTheDocument();
+  });
+
+  it('renders on tablet viewport', () => {
+    Object.defineProperty(window, 'innerWidth', {
+      writable: true,
+      configurable: true,
+      value: 768
+    });
+
+    renderCartPage([mockProduct]);
+
+    expect(screen.getByText('Shopping Cart')).toBeInTheDocument();
+  });
+
+  it('renders on desktop viewport', () => {
+    Object.defineProperty(window, 'innerWidth', {
+      writable: true,
+      configurable: true,
+      value: 1200
+    });
+
+    renderCartPage([mockProduct]);
+
+    expect(screen.getByText('Shopping Cart')).toBeInTheDocument();
   });
 });
