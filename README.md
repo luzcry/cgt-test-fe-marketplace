@@ -52,6 +52,15 @@ A modern, SEO-optimized e-commerce marketplace for 3D models and digital assets 
 - **Memoization**: Optimized re-renders with React.memo and useMemo
 - **CSS Animations**: Hardware-accelerated transforms
 
+### 🧪 A/B Testing
+- **Lightweight Infrastructure**: Client-side experimentation framework
+- **Persistent User Assignment**: Consistent experience across sessions
+- **Deterministic Bucketing**: Same user always sees same variant
+- **Conversion Tracking**: Track user interactions with variants
+- **Active Experiments**:
+  - Cart Notification Style (control, minimal, prominent)
+  - Product Card CTA (control, quick_add, price_in_button)
+
 ## 📦 Tech Stack
 
 - **React 18.1.0** - UI library
@@ -82,7 +91,8 @@ src/
 │   └── CheckoutPage.js       # Multi-step checkout flow
 ├── context/
 │   ├── CartContext.js        # Cart state management
-│   └── CheckoutContext.js    # Checkout flow state management
+│   ├── CheckoutContext.js    # Checkout flow state management
+│   └── ABTestContext.js      # A/B testing infrastructure
 ├── services/
 │   └── checkoutService.js    # Checkout API and validation
 ├── data/
@@ -198,7 +208,7 @@ npm run test:ci       # Run tests in CI mode (non-interactive)
 
 ## 🧪 Testing
 
-All tests passing: **208 tests across 10 test suites**
+All tests passing: **231 tests across 11 test suites**
 
 Test coverage includes:
 - Component rendering
@@ -207,7 +217,8 @@ Test coverage includes:
 - Checkout flow (shipping, payment, review, confirmation)
 - Form validation and error handling
 - Filtering and search
-- Context providers (CartContext, CheckoutContext)
+- Context providers (CartContext, CheckoutContext, ABTestContext)
+- A/B testing (variant assignment, event tracking, hooks)
 - Service functions (checkoutService)
 - Accessibility features
 - SEO markup presence
@@ -249,6 +260,7 @@ Comprehensive documentation available in `src/docs/`:
 ### Guides
 - **[SEO.md](src/docs/SEO.md)** - SEO implementation guide
 - **[App.md](src/docs/App.md)** - Application structure
+- **[AB_TESTING.md](docs/AB_TESTING.md)** - A/B testing infrastructure and experiments
 
 ## 🎨 Design System
 
@@ -338,6 +350,13 @@ Using **React Context API** for global state:
 - Promo code application
 - Order processing
 - Loading states
+
+### ABTestContext
+- User identification and persistence
+- Variant assignment (deterministic hashing)
+- Experiment configuration
+- Exposure and conversion tracking
+- Debug utilities (force variant, reset)
 
 No external state management library required for this MVP scope.
 
