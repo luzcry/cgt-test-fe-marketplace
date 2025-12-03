@@ -188,7 +188,9 @@ export const SearchIcon = memo(function SearchIcon({ className = '' }) {
   );
 });
 
-export const SearchEmptyIcon = memo(function SearchEmptyIcon({ className = '' }) {
+export const SearchEmptyIcon = memo(function SearchEmptyIcon({
+  className = '',
+}) {
   return (
     <svg
       className={className}
