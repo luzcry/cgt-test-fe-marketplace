@@ -55,6 +55,7 @@ const ProductCard = memo(function ProductCard({ product, index = 0 }) {
       style={{ '--animation-delay': animationDelay }}
       itemScope
       itemType="https://schema.org/Product"
+      role="listitem"
     >
       <Link
         to={`/products/${product.id}`}

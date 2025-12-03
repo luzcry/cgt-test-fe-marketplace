@@ -156,6 +156,12 @@ function ProductPage() {
         />
         <meta name="twitter:description" content={metaDescription} />
 
+        {/* Canonical URL */}
+        <link
+          rel="canonical"
+          href={`${window.location.origin}/products/${product.id}`}
+        />
+
         {/* JSON-LD Structured Data */}
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}

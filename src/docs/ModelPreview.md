@@ -25,23 +25,24 @@ import ModelPreview from './components/ModelPreview';
   model={{ url: '/models/robot.glb', scale: 1 }}
   previewColor="linear-gradient(135deg, #4A90E2, #357ABD)"
   alt="Robot 3D Model"
-/>
+/>;
 ```
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `model` | `{ url: string, scale?: number }` | `null` | 3D model configuration |
-| `fallbackImage` | `string` | - | Image to show if 3D unavailable |
-| `previewColor` | `string` | `'linear-gradient(...)'` | Background gradient |
-| `alt` | `string` | `'3D Model Preview'` | Alt text for accessibility |
-| `skipCache` | `boolean` | `false` | Skip reading from cache |
-| `disableCacheWrite` | `boolean` | `false` | Don't save to cache |
+| Prop                | Type                              | Default                  | Description                     |
+| ------------------- | --------------------------------- | ------------------------ | ------------------------------- |
+| `model`             | `{ url: string, scale?: number }` | `null`                   | 3D model configuration          |
+| `fallbackImage`     | `string`                          | -                        | Image to show if 3D unavailable |
+| `previewColor`      | `string`                          | `'linear-gradient(...)'` | Background gradient             |
+| `alt`               | `string`                          | `'3D Model Preview'`     | Alt text for accessibility      |
+| `skipCache`         | `boolean`                         | `false`                  | Skip reading from cache         |
+| `disableCacheWrite` | `boolean`                         | `false`                  | Don't save to cache             |
 
 ## How It Works
 
 ### 1. Lazy Loading
+
 Uses IntersectionObserver to only load models when visible:
 
 ```javascript
@@ -56,6 +57,7 @@ const observer = new IntersectionObserver(
 ```
 
 ### 2. Render Queue
+
 Models render one at a time to prevent WebGL context exhaustion:
 
 ```javascript
@@ -69,6 +71,7 @@ function addToQueue(callback) {
 ```
 
 ### 3. Snapshot Capture
+
 After model loads, captures canvas to PNG:
 
 ```javascript
@@ -81,6 +84,7 @@ const handleSnapshot = (dataUrl) => {
 ```
 
 ### 4. Cache Lookup
+
 Checks cache before rendering:
 
 ```javascript
@@ -119,6 +123,7 @@ Release WebGL context
 ## Sub-Components
 
 ### SnapshotCapture
+
 Internal component that captures canvas after model renders:
 
 ```jsx
@@ -129,6 +134,7 @@ function SnapshotCapture({ onCapture }) {
 ```
 
 ### SimpleModel
+
 Loads and displays the GLTF model:
 
 ```jsx
@@ -144,17 +150,28 @@ Loads and displays the GLTF model:
 Located in `ModelPreview.scss`:
 
 ```scss
-.model-preview { }
-.model-preview--fallback { }
-.model-preview--snapshot { }
-.model-preview--waiting { }
-.model-preview--loaded { }
-.model-preview__canvas { }
-.model-preview__badge { }
-.model-preview__loading { }
-.model-preview__spinner { }
-.model-preview__fallback-bg { }
-.model-preview__snapshot-image { }
+.model-preview {
+}
+.model-preview--fallback {
+}
+.model-preview--snapshot {
+}
+.model-preview--waiting {
+}
+.model-preview--loaded {
+}
+.model-preview__canvas {
+}
+.model-preview__badge {
+}
+.model-preview__loading {
+}
+.model-preview__spinner {
+}
+.model-preview__fallback-bg {
+}
+.model-preview__snapshot-image {
+}
 ```
 
 ## Preloading

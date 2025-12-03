@@ -56,6 +56,7 @@ const { show, product } = notification;
 ## Behavior
 
 ### Auto-Dismiss
+
 The notification automatically hides after 5 seconds:
 
 ```jsx
@@ -70,6 +71,7 @@ useEffect(() => {
 ```
 
 ### Actions
+
 - **View Cart**: Navigates to `/cart` and closes notification
 - **Continue Shopping**: Closes notification, stays on current page
 - **Close Button**: Closes notification
@@ -101,17 +103,28 @@ CartNotification
 Located in `CartNotification.scss`:
 
 ```scss
-.cart-notification { }
-.cart-notification__content { }
-.cart-notification__icon { }
-.cart-notification__info { }
-.cart-notification__title { }
-.cart-notification__product { }
-.cart-notification__close { }
-.cart-notification__actions { }
-.cart-notification__btn { }
-.cart-notification__btn--primary { }
-.cart-notification__btn--secondary { }
+.cart-notification {
+}
+.cart-notification__content {
+}
+.cart-notification__icon {
+}
+.cart-notification__info {
+}
+.cart-notification__title {
+}
+.cart-notification__product {
+}
+.cart-notification__close {
+}
+.cart-notification__actions {
+}
+.cart-notification__btn {
+}
+.cart-notification__btn--primary {
+}
+.cart-notification__btn--secondary {
+}
 ```
 
 ### Animation

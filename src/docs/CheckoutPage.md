@@ -5,6 +5,7 @@ The CheckoutPage component implements a complete multi-step checkout flow for th
 ## Overview
 
 A four-step checkout process:
+
 1. **Shipping** - Contact and billing information
 2. **Payment** - Card details with validation
 3. **Review** - Order summary with promo codes
@@ -13,18 +14,21 @@ A four-step checkout process:
 ## Features
 
 ### Multi-Step Navigation
+
 - Visual step indicator with progress
 - Completed step checkmarks
 - Click to navigate between completed steps
 - Back/forward navigation buttons
 
 ### Form Validation
+
 - Real-time field validation
 - Error messages with ARIA support
 - Loading states during submission
 - Field-level error clearing on input
 
 ### Payment Processing
+
 - Card type detection (Visa, Mastercard, Amex, Discover)
 - Auto-formatting for card number
 - Expiry date formatting (MM/YY)
@@ -32,6 +36,7 @@ A four-step checkout process:
 - Save card option
 
 ### Order Review
+
 - Order items with 3D previews
 - Editable shipping/payment info
 - Delivery option selection (Instant/Priority)
@@ -39,6 +44,7 @@ A four-step checkout process:
 - Real-time total calculation
 
 ### Confirmation
+
 - Animated success icon
 - Celebration particles effect
 - Copy order ID to clipboard
@@ -74,6 +80,7 @@ CheckoutPage
 ## Sub-Components
 
 ### StepIndicator
+
 Displays checkout progress with clickable steps.
 
 ```jsx
@@ -86,6 +93,7 @@ Displays checkout progress with clickable steps.
 ```
 
 ### FormInput
+
 Reusable form field with validation.
 
 ```jsx
@@ -122,6 +130,7 @@ const {
 ## Checkout Steps
 
 ### CHECKOUT_STEPS
+
 ```javascript
 {
   SHIPPING: 'shipping',
@@ -132,6 +141,7 @@ const {
 ```
 
 ### STEP_TITLES
+
 ```javascript
 {
   shipping: 'Shipping',
@@ -162,19 +172,28 @@ const {
 Located in `CheckoutPage.scss`:
 
 ```scss
-.checkout-page { }
-.checkout-steps { }
-.checkout-step { }
-.checkout-form { }
-.form-field { }
-.checkout-review { }
-.checkout-confirmation { }
-.checkout-celebration { }
+.checkout-page {
+}
+.checkout-steps {
+}
+.checkout-step {
+}
+.checkout-form {
+}
+.form-field {
+}
+.checkout-review {
+}
+.checkout-confirmation {
+}
+.checkout-celebration {
+}
 ```
 
 ## Props
 
 The component requires no props but must be wrapped in:
+
 - `CheckoutProvider` - Checkout state management
 - `CartProvider` - Cart items access
 - `HelmetProvider` - SEO meta tags

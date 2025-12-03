@@ -28,26 +28,28 @@ import ModelViewer from './components/ModelViewer';
   productName="Cyber Robot"
   previewColor="linear-gradient(135deg, #4A90E2, #357ABD)"
   fallbackImage="/images/robot.jpg"
-/>
+/>;
 ```
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `model` | `{ name: string, url: string, scale?: number }` | `null` | 3D model configuration |
-| `productName` | `string` | `'3D Model'` | Product name for accessibility |
-| `fallbackImage` | `string` | - | Image to show if 3D unavailable |
-| `previewColor` | `string` | `'linear-gradient(...)'` | Background gradient |
+| Prop            | Type                                            | Default                  | Description                     |
+| --------------- | ----------------------------------------------- | ------------------------ | ------------------------------- |
+| `model`         | `{ name: string, url: string, scale?: number }` | `null`                   | 3D model configuration          |
+| `productName`   | `string`                                        | `'3D Model'`             | Product name for accessibility  |
+| `fallbackImage` | `string`                                        | -                        | Image to show if 3D unavailable |
+| `previewColor`  | `string`                                        | `'linear-gradient(...)'` | Background gradient             |
 
 ## Controls
 
 ### Viewer Controls
+
 - **Auto-Rotate**: Toggle automatic rotation
 - **Wireframe**: Toggle wireframe view mode
 - **Fullscreen**: Enter/exit fullscreen mode
 
 ### Mouse/Touch Controls
+
 - **Drag**: Rotate model
 - **Scroll/Pinch**: Zoom in/out
 - **Right-drag/Two-finger**: Pan view
@@ -70,6 +72,7 @@ ModelViewer
 ## Sub-Components
 
 ### AnimatedModel
+
 Loads GLTF model with animation support:
 
 ```jsx
@@ -86,6 +89,7 @@ const AnimatedModel = memo(function AnimatedModel({
 ```
 
 ### Loader
+
 Shows loading progress:
 
 ```jsx
@@ -100,16 +104,15 @@ function Loader() {
 ```
 
 ### ErrorFallback
+
 Displays error state with retry option:
 
 ```jsx
-<ErrorFallback
-  error={error}
-  onRetry={handleRetry}
-/>
+<ErrorFallback error={error} onRetry={handleRetry} />
 ```
 
 ### ControlButton
+
 Toolbar button component:
 
 ```jsx
@@ -178,17 +181,28 @@ const [isLoaded, setIsLoaded] = useState(false);
 Located in `ModelViewer.scss`:
 
 ```scss
-.model-viewer { }
-.model-viewer--fullscreen { }
-.model-viewer--fallback { }
-.model-viewer__canvas { }
-.model-viewer__controls { }
-.model-viewer__control { }
-.model-viewer__control--active { }
-.model-viewer__loader { }
-.model-viewer__error { }
-.model-viewer__model-name { }
-.model-viewer__hint { }
+.model-viewer {
+}
+.model-viewer--fullscreen {
+}
+.model-viewer--fallback {
+}
+.model-viewer__canvas {
+}
+.model-viewer__controls {
+}
+.model-viewer__control {
+}
+.model-viewer__control--active {
+}
+.model-viewer__loader {
+}
+.model-viewer__error {
+}
+.model-viewer__model-name {
+}
+.model-viewer__hint {
+}
 ```
 
 ## Preloading
@@ -207,8 +221,7 @@ const isWebGLSupported = useCallback(() => {
     const canvas = document.createElement('canvas');
     return !!(
       window.WebGLRenderingContext &&
-      (canvas.getContext('webgl') ||
-       canvas.getContext('experimental-webgl'))
+      (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
     );
   } catch (e) {
     return false;
