@@ -71,11 +71,14 @@ A modern, SEO-optimized e-commerce marketplace for 3D models and digital assets 
 - **@react-three/drei** - Useful helpers for react-three-fiber
 - **SASS 1.94.2** - CSS preprocessing with ITCSS architecture
 - **React Testing Library** - Component testing
-- **Create React App** - Build tooling
+- **CRACO 7.1.0** - Create React App Configuration Override
+- **webpack-bundle-analyzer** - Bundle size visualization
+- **compression-webpack-plugin** - Gzip compression for builds
 
 ## 🗂️ Project Structure
 
 ```
+├── craco.config.js           # Webpack customization (CRACO)
 src/
 ├── components/
 │   ├── ProductCard/          # SEO-optimized product card
@@ -209,6 +212,48 @@ Recent refactoring to improve code quality, performance, and maintainability:
 | Shared icons | Reduced bundle size, consistent styling |
 | ErrorBoundary | Graceful error recovery instead of blank screens |
 
+### Webpack Bundle Optimization
+
+Custom webpack configuration via CRACO for optimized production builds:
+
+#### Chunk Splitting Strategy
+
+| Chunk | Size (gzip) | Contents |
+|-------|-------------|----------|
+| `three-vendor` | ~208 KB | Three.js + @react-three/* (loaded only when 3D is needed) |
+| `react-vendor` | ~48 KB | React + React DOM + React Router |
+| `vendors` | ~83 KB | Other npm dependencies |
+| `main` | ~6 KB | Core application code |
+| `checkout` | ~12 KB | Checkout page + context (lazy loaded) |
+| `three-viewer` | ~3 KB | 3D viewer component (lazy loaded) |
+
+#### Optimizations Applied
+
+- **Gzip Compression**: All JS/CSS files pre-compressed with `.gz` versions
+- **Intelligent Code Splitting**: Three.js isolated from main bundle (loads only when needed)
+- **Tree Shaking**: `usedExports` and `sideEffects` enabled for dead code elimination
+- **Console Removal**: `console.log` statements stripped in production
+- **Vendor Isolation**: React and other vendors in separate cacheable chunks
+
+#### Initial Load Improvement
+
+Pages **without 3D content** download only ~137 KB (gzipped):
+- `main.js` (~6 KB)
+- `react-vendor.js` (~48 KB)
+- `vendors.js` (~83 KB)
+
+The Three.js chunk (~208 KB) only loads when viewing 3D models.
+
+#### Bundle Analysis
+
+```bash
+# Interactive treemap visualization
+npm run analyze
+
+# Source map explorer report
+npm run analyze:source-map
+```
+
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -247,7 +292,14 @@ Launches the test runner in interactive watch mode
 Runs all tests once without watch mode
 
 ### `npm run build`
-Builds the app for production to the `build` folder
+Builds the app for production to the `build` folder with optimized chunks
+
+### Bundle Analysis
+
+```bash
+npm run analyze           # Build with interactive bundle analyzer
+npm run analyze:source-map # Generate source-map explorer report
+```
 
 ### Code Quality
 
@@ -261,7 +313,7 @@ npm run test:ci       # Run tests in CI mode (non-interactive)
 
 ## 🧪 Testing
 
-All tests passing: **235 tests across 11 test suites**
+All tests passing: **261 tests across 12 test suites**
 
 Test coverage includes:
 - Component rendering
@@ -275,6 +327,7 @@ Test coverage includes:
 - Service functions (checkoutService)
 - Accessibility features
 - SEO markup presence
+- Bundle optimization (chunk splitting, compression, size limits)
 
 Run tests:
 ```bash
@@ -388,6 +441,9 @@ Optimizations implemented:
 - ✅ Shared icon components (reduced duplication)
 - ✅ Global error boundaries (graceful error handling)
 - ✅ Functional state updates (no stale closures)
+- ✅ Webpack bundle optimization (CRACO)
+- ✅ Gzip pre-compression
+- ✅ Vendor chunk isolation (Three.js, React)
 
 ## 🔄 State Management
 

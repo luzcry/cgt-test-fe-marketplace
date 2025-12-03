@@ -28,12 +28,8 @@ describeIfBuildExists('Bundle Optimization', () => {
   beforeAll(() => {
     // This block only runs if build exists (describeIfBuildExists)
     jsFiles = fs.readdirSync(STATIC_JS_DIR).filter((f) => f.endsWith('.js'));
-    cssFiles = fs
-      .readdirSync(STATIC_CSS_DIR)
-      .filter((f) => f.endsWith('.css'));
-    gzFiles = fs
-      .readdirSync(STATIC_JS_DIR)
-      .filter((f) => f.endsWith('.js.gz'));
+    cssFiles = fs.readdirSync(STATIC_CSS_DIR).filter((f) => f.endsWith('.css'));
+    gzFiles = fs.readdirSync(STATIC_JS_DIR).filter((f) => f.endsWith('.js.gz'));
   });
 
   describe('Chunk Splitting', () => {
