@@ -83,7 +83,9 @@ src/
 │   ├── Header/               # Navigation header
 │   ├── CartNotification/     # Toast notification for cart actions
 │   ├── ModelPreview/         # Lightweight 3D preview for cards
-│   └── ModelViewer/          # Full interactive 3D viewer
+│   ├── ModelViewer/          # Full interactive 3D viewer
+│   ├── ErrorBoundary/        # Global error handling component
+│   └── Icons/                # Shared SVG icon components
 ├── pages/
 │   ├── HomePage.js           # Landing page with filters
 │   ├── ProductPage.js        # Product detail with 3D viewer
@@ -156,6 +158,57 @@ src/
 - Font preconnection
 - Image lazy loading
 
+## 🏗️ Architecture Improvements
+
+Recent refactoring to improve code quality, performance, and maintainability:
+
+### Error Handling
+- **ErrorBoundary Component**: Global error boundary wrapping the app and routes separately. Catches JavaScript errors anywhere in the component tree, logs errors, and displays a user-friendly fallback UI with retry functionality.
+
+### Context Optimizations
+
+#### CartContext
+- All handlers (`addToCart`, `removeFromCart`, `updateQuantity`, `clearCart`) wrapped with `useCallback` to prevent unnecessary re-renders
+- Context value memoized with `useMemo` for stable reference
+- Functional state updates to avoid stale closure issues
+
+#### CheckoutContext (Split Context Pattern)
+- Split into two separate contexts for optimal re-render behavior:
+  - `CheckoutStateContext`: Read-only state (triggers re-renders on changes)
+  - `CheckoutActionsContext`: Actions with stable references (won't cause re-renders)
+- Three hooks available:
+  - `useCheckoutState()`: Access state only
+  - `useCheckoutActions()`: Access actions only (no re-renders on state changes)
+  - `useCheckout()`: Access both (backward compatible)
+
+### Memory Management
+- **LRU Cache for ModelPreview**: Snapshot cache now uses a custom LRU (Least Recently Used) cache with a max size of 50 items, preventing unbounded memory growth in long sessions
+
+### Component Optimizations
+
+#### Shared Icons
+- Created reusable, memoized SVG icon components (`CartIcon`, `PlusIcon`, `StarIcon`, `LayersIcon`, etc.)
+- Single source of truth for icon definitions
+- Smaller bundle size (no SVG duplication)
+
+#### FilterSidebar RangeSlider
+- Fixed stale closure issue using functional state updates
+- Handlers no longer depend on `localValue` in closure, preventing bugs during rapid slider interactions
+
+#### ModelPreview WebGL Check
+- Changed `isWebGLSupported` from `useCallback` to `useMemo`
+- WebGL support check now runs once and caches the result instead of re-evaluating on every render
+
+### Performance Impact Summary
+
+| Improvement | Benefit |
+|-------------|---------|
+| Split CheckoutContext | Components using only actions don't re-render on state changes |
+| CartContext memoization | Prevents child re-renders when passing handlers as props |
+| LRU snapshot cache | Memory stays bounded (~50 snapshots max) |
+| Shared icons | Reduced bundle size, consistent styling |
+| ErrorBoundary | Graceful error recovery instead of blank screens |
+
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -208,7 +261,7 @@ npm run test:ci       # Run tests in CI mode (non-interactive)
 
 ## 🧪 Testing
 
-All tests passing: **231 tests across 11 test suites**
+All tests passing: **235 tests across 11 test suites**
 
 Test coverage includes:
 - Component rendering
@@ -330,6 +383,11 @@ Optimizations implemented:
 - ✅ Code splitting by route
 - ✅ Minimal bundle size
 - ✅ Reduced motion support
+- ✅ Split context pattern (CheckoutContext)
+- ✅ LRU cache for 3D snapshots (bounded memory)
+- ✅ Shared icon components (reduced duplication)
+- ✅ Global error boundaries (graceful error handling)
+- ✅ Functional state updates (no stale closures)
 
 ## 🔄 State Management
 
@@ -342,14 +400,20 @@ Using **React Context API** for global state:
 - Clear cart
 - Calculate totals
 - Toast notifications
+- All handlers memoized with `useCallback`
+- Context value memoized with `useMemo`
 
-### CheckoutContext
+### CheckoutContext (Split Architecture)
 - Multi-step navigation (Shipping → Payment → Review → Confirmation)
 - Form state management
 - Field validation and error handling
 - Promo code application
 - Order processing
 - Loading states
+- **Split into two contexts for performance:**
+  - `useCheckoutState()` - State only (re-renders on changes)
+  - `useCheckoutActions()` - Actions only (stable references)
+  - `useCheckout()` - Both combined (backward compatible)
 
 ### ABTestContext
 - User identification and persistence
