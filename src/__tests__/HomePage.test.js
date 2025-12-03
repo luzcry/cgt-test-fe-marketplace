@@ -129,9 +129,9 @@ describe('HomePage', () => {
 
     it('shows filter toggle button on mobile', () => {
       renderHomePage();
-      // The filter toggle button with accessible name
-      const filterToggle = screen.getByRole('button', { name: /filter/i });
-      expect(filterToggle).toBeInTheDocument();
+      // Multiple filter buttons exist (open/close), check at least one is present
+      const filterButtons = screen.getAllByRole('button', { name: /filter/i });
+      expect(filterButtons.length).toBeGreaterThanOrEqual(1);
     });
 
     it('displays product count after filtering', () => {
@@ -186,8 +186,8 @@ describe('HomePage', () => {
       // Verify all products are rendered by checking product names
       expect(screen.getByText('Tactical Combat Soldier')).toBeInTheDocument();
       expect(screen.getByText('Classic Toy Car Model')).toBeInTheDocument();
-      // Verify product count matches expected
-      const productCards = screen.getAllByRole('listitem');
+      // Verify product count matches expected (ProductCard uses <article> elements)
+      const productCards = screen.getAllByRole('article');
       expect(productCards.length).toBe(products.length);
     });
   });

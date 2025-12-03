@@ -97,7 +97,9 @@ describe('ProductPage', () => {
 
     it('renders category', () => {
       renderProductPage(PRODUCT_1_ID);
-      expect(screen.getByText('Characters')).toBeInTheDocument();
+      // Category appears in both header and specs section
+      const categoryElements = screen.getAllByText('Characters');
+      expect(categoryElements.length).toBeGreaterThanOrEqual(1);
     });
 
     it('renders specifications section', () => {
