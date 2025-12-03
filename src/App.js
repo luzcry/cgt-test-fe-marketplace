@@ -2,6 +2,7 @@ import { useEffect, lazy, Suspense } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { CartProvider } from './context/CartContext';
+import { ABTestProvider } from './context/ABTestContext';
 import Header from './components/Header';
 import CartNotification from './components/CartNotification';
 import './App.scss';
@@ -49,30 +50,32 @@ function ScrollToTop() {
 function App() {
   return (
     <HelmetProvider>
-      <CartProvider>
-        <ScrollToTop />
-        <CartNotification />
-        <div className="app">
-          {/* Skip link for keyboard accessibility */}
-          <a href="#main-content" className="app__skip-link">
-            Skip to main content
-          </a>
-          <Header />
-          <main id="main-content" className="app__main">
-            <Suspense fallback={<PageLoader />}>
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/products/:productId" element={<ProductPage />} />
-                <Route path="/cart" element={<CartPage />} />
-                <Route
-                  path="/checkout"
-                  element={<CheckoutPageWithProvider />}
-                />
-              </Routes>
-            </Suspense>
-          </main>
-        </div>
-      </CartProvider>
+      <ABTestProvider>
+        <CartProvider>
+          <ScrollToTop />
+          <CartNotification />
+          <div className="app">
+            {/* Skip link for keyboard accessibility */}
+            <a href="#main-content" className="app__skip-link">
+              Skip to main content
+            </a>
+            <Header />
+            <main id="main-content" className="app__main">
+              <Suspense fallback={<PageLoader />}>
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/products/:productId" element={<ProductPage />} />
+                  <Route path="/cart" element={<CartPage />} />
+                  <Route
+                    path="/checkout"
+                    element={<CheckoutPageWithProvider />}
+                  />
+                </Routes>
+              </Suspense>
+            </main>
+          </div>
+        </CartProvider>
+      </ABTestProvider>
     </HelmetProvider>
   );
 }

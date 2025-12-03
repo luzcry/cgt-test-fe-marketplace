@@ -2,6 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { CartProvider } from '../context/CartContext';
+import { ABTestProvider } from '../context/ABTestContext';
 import HomePage from '../pages/HomePage';
 import { products } from '../data/products';
 
@@ -33,18 +34,30 @@ jest.mock('../components/ModelPreview', () => {
 });
 
 const renderHomePage = () => {
+  // Force control variant for consistent test behavior
+  localStorage.setItem(
+    'ab_test_assignments',
+    JSON.stringify({ product_card_cta: 'control' })
+  );
+
   return render(
     <HelmetProvider>
       <BrowserRouter>
-        <CartProvider>
-          <HomePage />
-        </CartProvider>
+        <ABTestProvider>
+          <CartProvider>
+            <HomePage />
+          </CartProvider>
+        </ABTestProvider>
       </BrowserRouter>
     </HelmetProvider>
   );
 };
 
 describe('HomePage', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
   describe('Hero section', () => {
     it('renders hero title', () => {
       renderHomePage();
@@ -186,8 +199,8 @@ describe('HomePage', () => {
       // Verify all products are rendered by checking product names
       expect(screen.getByText('Tactical Combat Soldier')).toBeInTheDocument();
       expect(screen.getByText('Classic Toy Car Model')).toBeInTheDocument();
-      // Verify product count matches expected (ProductCard uses <article> elements)
-      const productCards = screen.getAllByRole('article');
+      // Verify product count matches expected (ProductCard uses role="listitem" for grid semantics)
+      const productCards = screen.getAllByRole('listitem');
       expect(productCards.length).toBe(products.length);
     });
   });

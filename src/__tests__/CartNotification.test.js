@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { CartProvider, useCart } from '../context/CartContext';
+import { ABTestProvider } from '../context/ABTestContext';
 import CartNotification from '../components/CartNotification';
 import React from 'react';
 
@@ -38,11 +39,19 @@ const NotificationWithTrigger = ({ autoAdd = false }) => {
 };
 
 const renderNotification = (autoAdd = false) => {
+  // Force control variant for consistent test behavior
+  localStorage.setItem(
+    'ab_test_assignments',
+    JSON.stringify({ cart_notification_style: 'control' })
+  );
+
   return render(
     <MemoryRouter>
-      <CartProvider>
-        <NotificationWithTrigger autoAdd={autoAdd} />
-      </CartProvider>
+      <ABTestProvider>
+        <CartProvider>
+          <NotificationWithTrigger autoAdd={autoAdd} />
+        </CartProvider>
+      </ABTestProvider>
     </MemoryRouter>
   );
 };
@@ -50,6 +59,7 @@ const renderNotification = (autoAdd = false) => {
 describe('CartNotification', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
+    localStorage.clear();
   });
 
   describe('Visibility', () => {
@@ -179,6 +189,7 @@ describe('CartNotification', () => {
 describe('CartNotification integration', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
+    localStorage.clear();
   });
 
   it('works with cart context to show product info', () => {

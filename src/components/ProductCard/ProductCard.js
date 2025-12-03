@@ -1,13 +1,20 @@
-import React, { memo, lazy, Suspense, useState, useEffect } from 'react';
+import { memo, lazy, Suspense, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
+import { useExperiment, EXPERIMENTS } from '../../context/ABTestContext';
 import './ProductCard.scss';
 
 // Lazy load ModelPreview - only imported when actually rendered
 const ModelPreview = lazy(() => import('../ModelPreview'));
 
 /**
- * ProductCard Component
+ * ProductCard Component with A/B Testing
+ *
+ * Experiment: PRODUCT_CARD_CTA
+ * Variants:
+ * - control: "Add to Cart" with cart icon (original)
+ * - quick_add: "Quick Add" with plus icon, more compact style
+ * - price_in_button: "Add • $XX" showing price directly in button
  *
  * SEO Best Practices:
  * - Semantic HTML with proper heading hierarchy (h3 for product names)
@@ -26,6 +33,11 @@ const ProductCard = memo(function ProductCard({ product, index = 0 }) {
   // Defer 3D loading until after initial paint for better LCP
   const [enable3D, setEnable3D] = useState(false);
 
+  // A/B Test: Get variant and track exposure
+  const { variant, trackConversion } = useExperiment(
+    EXPERIMENTS.PRODUCT_CARD_CTA.id
+  );
+
   useEffect(() => {
     // Use requestIdleCallback to load 3D after page is interactive
     // Falls back to setTimeout for browsers without support
@@ -43,19 +55,103 @@ const ProductCard = memo(function ProductCard({ product, index = 0 }) {
   const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    // Track conversion with variant info
+    trackConversion('add_to_cart', { productId: product.id, price: product.price });
     addToCart(product);
   };
 
   // Animation delay based on card index for staggered entrance
   const animationDelay = `${index * 0.05}s`;
 
+  // Render variant-specific CTA button
+  const renderCTAButton = () => {
+    switch (variant) {
+      case 'quick_add':
+        return (
+          <button
+            type="button"
+            className="product-card__btn product-card__btn--quick"
+            onClick={handleAddToCart}
+            aria-label={`Quick add ${product.name} to cart`}
+            data-testid="product-card-cta"
+          >
+            <svg
+              className="product-card__btn-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              aria-hidden="true"
+            >
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Quick Add
+          </button>
+        );
+
+      case 'price_in_button':
+        return (
+          <button
+            type="button"
+            className="product-card__btn product-card__btn--price"
+            onClick={handleAddToCart}
+            aria-label={`Add ${product.name} to cart for $${product.price}`}
+            data-testid="product-card-cta"
+          >
+            <svg
+              className="product-card__btn-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              aria-hidden="true"
+            >
+              <circle cx="9" cy="21" r="1" />
+              <circle cx="20" cy="21" r="1" />
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+            </svg>
+            <span className="product-card__btn-text">Add</span>
+            <span className="product-card__btn-separator">•</span>
+            <span className="product-card__btn-price">${product.price}</span>
+          </button>
+        );
+
+      default: // control
+        return (
+          <button
+            type="button"
+            className="product-card__btn"
+            onClick={handleAddToCart}
+            aria-label={`Add ${product.name} to cart for $${product.price}`}
+            data-testid="product-card-cta"
+          >
+            <svg
+              className="product-card__btn-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              aria-hidden="true"
+            >
+              <circle cx="9" cy="21" r="1" />
+              <circle cx="20" cy="21" r="1" />
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+            </svg>
+            Add to Cart
+          </button>
+        );
+    }
+  };
+
   return (
     <article
-      className="product-card"
+      className={`product-card product-card--cta-${variant}`}
       style={{ '--animation-delay': animationDelay }}
       itemScope
       itemType="https://schema.org/Product"
       role="listitem"
+      data-variant={variant}
     >
       <Link
         to={`/products/${product.id}`}
@@ -183,47 +279,30 @@ const ProductCard = memo(function ProductCard({ product, index = 0 }) {
             </span>
           </div>
 
-          {/* Price */}
-          <div
-            className="product-card__price"
-            itemProp="offers"
-            itemScope
-            itemType="https://schema.org/Offer"
-          >
-            <meta itemProp="priceCurrency" content={product.currency} />
-            <span itemProp="price" content={product.price}>
-              ${product.price}
-            </span>
-            <meta
-              itemProp="availability"
-              content="https://schema.org/InStock"
-            />
-          </div>
+          {/* Price - Hidden in price_in_button variant */}
+          {variant !== 'price_in_button' && (
+            <div
+              className="product-card__price"
+              itemProp="offers"
+              itemScope
+              itemType="https://schema.org/Offer"
+            >
+              <meta itemProp="priceCurrency" content={product.currency} />
+              <span itemProp="price" content={product.price}>
+                ${product.price}
+              </span>
+              <meta
+                itemProp="availability"
+                content="https://schema.org/InStock"
+              />
+            </div>
+          )}
         </div>
       </Link>
 
       {/* CTA Button - Outside Link for proper semantics */}
       <div className="product-card__cta">
-        <button
-          type="button"
-          className="product-card__btn"
-          onClick={handleAddToCart}
-          aria-label={`Add ${product.name} to cart for $${product.price}`}
-        >
-          <svg
-            className="product-card__btn-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            aria-hidden="true"
-          >
-            <circle cx="9" cy="21" r="1" />
-            <circle cx="20" cy="21" r="1" />
-            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-          </svg>
-          Add to Cart
-        </button>
+        {renderCTAButton()}
       </div>
 
       {/* Hover Overlay Effect */}
