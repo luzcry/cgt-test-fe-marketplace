@@ -50,8 +50,7 @@ describe('App', () => {
       renderApp();
       expect(screen.getByText('NEXUS')).toBeInTheDocument();
       // "3D" appears in multiple places, check within header brand
-      const brandSecondary = document.querySelector('.header__brand-secondary');
-      expect(brandSecondary).toHaveTextContent('3D');
+      expect(screen.getByText('3D')).toBeInTheDocument();
     });
 
     it('renders navigation links', () => {

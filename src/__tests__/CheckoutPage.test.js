@@ -6,6 +6,8 @@ import { CartProvider } from '../context/CartContext';
 import { CheckoutProvider } from '../context/CheckoutContext';
 import CheckoutPage from '../pages/CheckoutPage';
 
+import { validateAddress } from '../services/checkoutService';
+
 // Mock the checkout service
 jest.mock('../services/checkoutService', () => ({
   validateAddress: jest.fn(),
@@ -16,14 +18,6 @@ jest.mock('../services/checkoutService', () => ({
   detectCardType: jest.fn(() => 'visa'),
   trackCheckoutStep: jest.fn(),
 }));
-
-import {
-  validateAddress,
-  validatePaymentDetails,
-  processPayment,
-  createOrder,
-  validatePromoCode,
-} from '../services/checkoutService';
 
 // Mock useNavigate
 const mockNavigate = jest.fn();
@@ -142,10 +136,10 @@ describe('CheckoutPage', () => {
 
       await waitFor(() => {
         expect(screen.getByText('First name is required')).toBeInTheDocument();
-        expect(
-          screen.getByText('Please enter a valid email address')
-        ).toBeInTheDocument();
       });
+      expect(
+        screen.getByText('Please enter a valid email address')
+      ).toBeInTheDocument();
     });
 
     it('progresses to payment step on valid submission', async () => {
@@ -395,49 +389,6 @@ describe('Confirmation Step', () => {
     window.scrollTo = scrollToMock;
   });
 
-  // Helper to render confirmation step with order result
-  const renderConfirmationWithOrder = () => {
-    // We need to mock the checkout context to show confirmation
-    jest.doMock('../context/CheckoutContext', () => ({
-      ...jest.requireActual('../context/CheckoutContext'),
-      useCheckout: () => ({
-        currentStep: 'confirmation',
-        completedSteps: ['shipping', 'payment', 'review'],
-        orderResult: {
-          orderId: 'ORD-2024-ABC123',
-          items: [
-            { id: '1', name: 'Test Product', quantity: 1, subtotal: 49.99 },
-          ],
-          totals: {
-            subtotal: 49.99,
-            tax: 5.0,
-            shipping: 0,
-            total: 54.99,
-          },
-          shippingAddress: {
-            email: 'test@example.com',
-          },
-          estimatedDelivery: new Date().toISOString(),
-          timeline: [
-            {
-              status: 'Order Placed',
-              description: 'Your order has been received',
-              completed: true,
-            },
-            {
-              status: 'Processing',
-              description: 'We are preparing your order',
-              completed: false,
-            },
-          ],
-        },
-        resetCheckout: jest.fn(),
-        goToStep: jest.fn(),
-      }),
-    }));
-
-    renderWithProviders(<CheckoutPage />);
-  };
 
   describe('Order Confirmation Display', () => {
     it('displays order confirmed title', () => {

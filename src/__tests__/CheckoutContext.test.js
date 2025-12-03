@@ -6,6 +6,14 @@ import {
 } from '../context/CheckoutContext';
 import { CartProvider } from '../context/CartContext';
 
+import {
+  validateAddress,
+  validatePaymentDetails,
+  processPayment,
+  createOrder,
+  validatePromoCode,
+} from '../services/checkoutService';
+
 // Mock the checkout service
 jest.mock('../services/checkoutService', () => ({
   validateAddress: jest.fn(),
@@ -16,14 +24,6 @@ jest.mock('../services/checkoutService', () => ({
   detectCardType: jest.fn(() => 'visa'),
   trackCheckoutStep: jest.fn(),
 }));
-
-import {
-  validateAddress,
-  validatePaymentDetails,
-  processPayment,
-  createOrder,
-  validatePromoCode,
-} from '../services/checkoutService';
 
 // Wrapper component for hooks
 const AllProviders = ({ children }) => (
@@ -120,10 +120,8 @@ describe('CheckoutContext', () => {
 
       await waitFor(() => {
         expect(result.current.currentStep).toBe(CHECKOUT_STEPS.PAYMENT);
-        expect(result.current.completedSteps).toContain(
-          CHECKOUT_STEPS.SHIPPING
-        );
       });
+      expect(result.current.completedSteps).toContain(CHECKOUT_STEPS.SHIPPING);
     });
 
     it('shows validation errors for invalid shipping info', async () => {
@@ -147,11 +145,11 @@ describe('CheckoutContext', () => {
         expect(result.current.fieldErrors.firstName).toBe(
           'First name is required'
         );
-        expect(result.current.fieldErrors.email).toBe(
-          'Please enter a valid email address'
-        );
-        expect(result.current.currentStep).toBe(CHECKOUT_STEPS.SHIPPING);
       });
+      expect(result.current.fieldErrors.email).toBe(
+        'Please enter a valid email address'
+      );
+      expect(result.current.currentStep).toBe(CHECKOUT_STEPS.SHIPPING);
     });
   });
 
@@ -209,8 +207,8 @@ describe('CheckoutContext', () => {
 
       await waitFor(() => {
         expect(result.current.currentStep).toBe(CHECKOUT_STEPS.REVIEW);
-        expect(result.current.completedSteps).toContain(CHECKOUT_STEPS.PAYMENT);
       });
+      expect(result.current.completedSteps).toContain(CHECKOUT_STEPS.PAYMENT);
     });
 
     it('shows validation errors for invalid payment info', async () => {
@@ -239,8 +237,8 @@ describe('CheckoutContext', () => {
         expect(result.current.fieldErrors.cardNumber).toBe(
           'Invalid card number'
         );
-        expect(result.current.fieldErrors.cvv).toBe('CVV must be 3 digits');
       });
+      expect(result.current.fieldErrors.cvv).toBe('CVV must be 3 digits');
     });
   });
 
@@ -263,8 +261,8 @@ describe('CheckoutContext', () => {
 
       await waitFor(() => {
         expect(result.current.promoCode).toBe('SAVE20');
-        expect(result.current.discount).toBe(20);
       });
+      expect(result.current.discount).toBe(20);
     });
 
     it('shows error for invalid promo code', async () => {
@@ -283,8 +281,8 @@ describe('CheckoutContext', () => {
 
       await waitFor(() => {
         expect(result.current.errors.promo).toBe('Invalid promo code');
-        expect(result.current.promoCode).toBeNull();
       });
+      expect(result.current.promoCode).toBeNull();
     });
 
     it('removes promo code', async () => {
@@ -415,9 +413,9 @@ describe('CheckoutContext', () => {
 
       await waitFor(() => {
         expect(result.current.orderResult).toBeDefined();
-        expect(result.current.orderResult.orderId).toBe('3DM-ABC123');
-        expect(result.current.currentStep).toBe(CHECKOUT_STEPS.CONFIRMATION);
       });
+      expect(result.current.orderResult.orderId).toBe('3DM-ABC123');
+      expect(result.current.currentStep).toBe(CHECKOUT_STEPS.CONFIRMATION);
     });
 
     it('handles payment failure', async () => {
@@ -439,8 +437,8 @@ describe('CheckoutContext', () => {
         expect(result.current.errors.payment).toBe(
           'Transaction declined: Insufficient funds'
         );
-        expect(result.current.orderResult).toBeNull();
       });
+      expect(result.current.orderResult).toBeNull();
     });
   });
 

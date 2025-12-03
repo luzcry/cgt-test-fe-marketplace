@@ -97,8 +97,7 @@ describe('ProductPage', () => {
 
     it('renders category', () => {
       renderProductPage(PRODUCT_1_ID);
-      const categoryBadge = document.querySelector('.product-page__category');
-      expect(categoryBadge).toHaveTextContent('Characters');
+      expect(screen.getByText('Characters')).toBeInTheDocument();
     });
 
     it('renders specifications section', () => {
