@@ -43,30 +43,35 @@ export function CartProvider({ children }) {
     setNotification({ show: false, product: null });
   }, []);
 
-  const addToCart = (product) => {
-    setCartItems((prevItems) => {
-      const existingItem = prevItems.find((item) => item.id === product.id);
-      if (existingItem) {
-        return prevItems.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      }
-      return [...prevItems, { ...product, quantity: 1 }];
-    });
-    showNotification(product);
-  };
+  const addToCart = useCallback(
+    (product) => {
+      setCartItems((prevItems) => {
+        const existingItem = prevItems.find((item) => item.id === product.id);
+        if (existingItem) {
+          return prevItems.map((item) =>
+            item.id === product.id
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          );
+        }
+        return [...prevItems, { ...product, quantity: 1 }];
+      });
+      showNotification(product);
+    },
+    [showNotification]
+  );
 
-  const removeFromCart = (productId) => {
+  const removeFromCart = useCallback((productId) => {
     setCartItems((prevItems) =>
       prevItems.filter((item) => item.id !== productId)
     );
-  };
+  }, []);
 
-  const updateQuantity = (productId, quantity) => {
+  const updateQuantity = useCallback((productId, quantity) => {
     if (quantity <= 0) {
-      removeFromCart(productId);
+      setCartItems((prevItems) =>
+        prevItems.filter((item) => item.id !== productId)
+      );
       return;
     }
     setCartItems((prevItems) =>
@@ -74,11 +79,11 @@ export function CartProvider({ children }) {
         item.id === productId ? { ...item, quantity } : item
       )
     );
-  };
+  }, []);
 
-  const clearCart = () => {
+  const clearCart = useCallback(() => {
     setCartItems([]);
-  };
+  }, []);
 
   const cartTotal = useMemo(() => {
     return cartItems.reduce(
@@ -91,17 +96,30 @@ export function CartProvider({ children }) {
     return cartItems.reduce((count, item) => count + item.quantity, 0);
   }, [cartItems]);
 
-  const value = {
-    cartItems,
-    addToCart,
-    removeFromCart,
-    updateQuantity,
-    clearCart,
-    cartTotal,
-    cartCount,
-    notification,
-    hideNotification,
-  };
+  const value = useMemo(
+    () => ({
+      cartItems,
+      addToCart,
+      removeFromCart,
+      updateQuantity,
+      clearCart,
+      cartTotal,
+      cartCount,
+      notification,
+      hideNotification,
+    }),
+    [
+      cartItems,
+      addToCart,
+      removeFromCart,
+      updateQuantity,
+      clearCart,
+      cartTotal,
+      cartCount,
+      notification,
+      hideNotification,
+    ]
+  );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

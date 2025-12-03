@@ -105,25 +105,34 @@ const RangeSlider = memo(function RangeSlider({
 }) {
   const [localValue, setLocalValue] = useState(value);
 
+  // Use functional updates to avoid stale closure issues
   const handleMinChange = useCallback(
     (e) => {
-      const newMin = Math.min(Number(e.target.value), localValue[1] - step);
-      setLocalValue([newMin, localValue[1]]);
-      onChange([newMin, localValue[1]]);
+      const inputValue = Number(e.target.value);
+      setLocalValue((prev) => {
+        const newMin = Math.min(inputValue, prev[1] - step);
+        const newValue = [newMin, prev[1]];
+        onChange(newValue);
+        return newValue;
+      });
     },
-    [localValue, onChange, step]
+    [onChange, step]
   );
 
   const handleMaxChange = useCallback(
     (e) => {
-      const newMax = Math.max(Number(e.target.value), localValue[0] + step);
-      setLocalValue([localValue[0], newMax]);
-      onChange([localValue[0], newMax]);
+      const inputValue = Number(e.target.value);
+      setLocalValue((prev) => {
+        const newMax = Math.max(inputValue, prev[0] + step);
+        const newValue = [prev[0], newMax];
+        onChange(newValue);
+        return newValue;
+      });
     },
-    [localValue, onChange, step]
+    [onChange, step]
   );
 
-  // Update local value when prop changes
+  // Sync local value when prop changes (e.g., reset filters)
   React.useEffect(() => {
     setLocalValue(value);
   }, [value]);

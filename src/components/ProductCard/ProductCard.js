@@ -2,6 +2,7 @@ import { memo, lazy, Suspense, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useExperiment, EXPERIMENTS } from '../../context/ABTestContext';
+import { CartIcon, PlusIcon, StarIcon, LayersIcon } from '../Icons';
 import './ProductCard.scss';
 
 // Lazy load ModelPreview - only imported when actually rendered
@@ -78,17 +79,7 @@ const ProductCard = memo(function ProductCard({ product, index = 0 }) {
             aria-label={`Quick add ${product.name} to cart`}
             data-testid="product-card-cta"
           >
-            <svg
-              className="product-card__btn-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden="true"
-            >
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
+            <PlusIcon className="product-card__btn-icon" />
             Quick Add
           </button>
         );
@@ -102,18 +93,7 @@ const ProductCard = memo(function ProductCard({ product, index = 0 }) {
             aria-label={`Add ${product.name} to cart for $${product.price}`}
             data-testid="product-card-cta"
           >
-            <svg
-              className="product-card__btn-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden="true"
-            >
-              <circle cx="9" cy="21" r="1" />
-              <circle cx="20" cy="21" r="1" />
-              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-            </svg>
+            <CartIcon className="product-card__btn-icon" />
             <span className="product-card__btn-text">Add</span>
             <span className="product-card__btn-separator">•</span>
             <span className="product-card__btn-price">${product.price}</span>
@@ -129,18 +109,7 @@ const ProductCard = memo(function ProductCard({ product, index = 0 }) {
             aria-label={`Add ${product.name} to cart for $${product.price}`}
             data-testid="product-card-cta"
           >
-            <svg
-              className="product-card__btn-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden="true"
-            >
-              <circle cx="9" cy="21" r="1" />
-              <circle cx="20" cy="21" r="1" />
-              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-            </svg>
+            <CartIcon className="product-card__btn-icon" />
             Add to Cart
           </button>
         );
@@ -225,14 +194,7 @@ const ProductCard = memo(function ProductCard({ product, index = 0 }) {
             className="product-card__rating"
             aria-label={`Rating: ${product.rating} out of 5 stars`}
           >
-            <svg
-              className="product-card__rating-star"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-            </svg>
+            <StarIcon className="product-card__rating-star" />
             <span
               itemProp="aggregateRating"
               itemScope
@@ -263,18 +225,7 @@ const ProductCard = memo(function ProductCard({ product, index = 0 }) {
               className="product-card__spec"
               aria-label={`${product.polyCount.toLocaleString()} polygons`}
             >
-              <svg
-                className="product-card__spec-icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                aria-hidden="true"
-              >
-                <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                <path d="M2 17l10 5 10-5" />
-                <path d="M2 12l10 5 10-5" />
-              </svg>
+              <LayersIcon className="product-card__spec-icon" />
               {product.polyCount.toLocaleString()}
             </span>
             <span className="product-card__spec product-card__spec--format">

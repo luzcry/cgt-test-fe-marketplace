@@ -170,8 +170,10 @@ function checkoutReducer(state, action) {
   }
 }
 
-// Create context
-const CheckoutContext = createContext(null);
+// Create separate contexts for state and actions to prevent unnecessary re-renders
+// Components that only need actions won't re-render when state changes
+const CheckoutStateContext = createContext(null);
+const CheckoutActionsContext = createContext(null);
 
 // Provider component
 export function CheckoutProvider({ children }) {
@@ -439,46 +441,37 @@ export function CheckoutProvider({ children }) {
     dispatch({ type: ACTIONS.RESET });
   }, []);
 
-  // Context value
-  const value = useMemo(
+  // Split context values for optimal re-render behavior
+  // State context - changes trigger re-renders for consumers
+  const stateValue = useMemo(
     () => ({
-      // State
       ...state,
       cartItems,
       totals,
-
-      // Step navigation
       currentStepIndex: getCurrentStepIndex(),
       totalSteps: STEP_ORDER.length,
+    }),
+    [state, cartItems, totals, getCurrentStepIndex]
+  );
+
+  // Actions context - stable references, won't cause re-renders
+  const actionsValue = useMemo(
+    () => ({
       canGoToStep,
       goToStep,
       goToNextStep,
       goToPreviousStep,
-
-      // Shipping
       updateShippingInfo,
       submitShippingInfo,
-
-      // Payment
       updatePaymentInfo,
       submitPaymentInfo,
-
-      // Promo
       applyPromoCode,
       removePromoCode,
-
-      // Shipping option
       setShippingOption,
-
-      // Order
       placeOrder,
       resetCheckout,
     }),
     [
-      state,
-      cartItems,
-      totals,
-      getCurrentStepIndex,
       canGoToStep,
       goToStep,
       goToNextStep,
@@ -496,17 +489,49 @@ export function CheckoutProvider({ children }) {
   );
 
   return (
-    <CheckoutContext.Provider value={value}>
-      {children}
-    </CheckoutContext.Provider>
+    <CheckoutStateContext.Provider value={stateValue}>
+      <CheckoutActionsContext.Provider value={actionsValue}>
+        {children}
+      </CheckoutActionsContext.Provider>
+    </CheckoutStateContext.Provider>
   );
 }
 
-// Custom hook
-export function useCheckout() {
-  const context = useContext(CheckoutContext);
+// Custom hooks
+
+/**
+ * useCheckoutState - Access checkout state only
+ * Use this when you only need to read state (e.g., display current step)
+ */
+export function useCheckoutState() {
+  const context = useContext(CheckoutStateContext);
   if (!context) {
-    throw new Error('useCheckout must be used within a CheckoutProvider');
+    throw new Error('useCheckoutState must be used within a CheckoutProvider');
   }
   return context;
+}
+
+/**
+ * useCheckoutActions - Access checkout actions only
+ * Use this when you only need to dispatch actions (e.g., button handlers)
+ * This won't cause re-renders when state changes
+ */
+export function useCheckoutActions() {
+  const context = useContext(CheckoutActionsContext);
+  if (!context) {
+    throw new Error(
+      'useCheckoutActions must be used within a CheckoutProvider'
+    );
+  }
+  return context;
+}
+
+/**
+ * useCheckout - Access both state and actions (backward compatible)
+ * Use this when you need both state and actions in the same component
+ */
+export function useCheckout() {
+  const state = useCheckoutState();
+  const actions = useCheckoutActions();
+  return { ...state, ...actions };
 }

@@ -5,6 +5,7 @@ import {
   useRef,
   memo,
   useEffect,
+  useMemo,
 } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
 import {
@@ -24,13 +25,58 @@ import './ModelPreview.scss';
  *
  * Features:
  * - Renders 3D model and captures snapshot
- * - Caches snapshots to avoid re-rendering
+ * - Caches snapshots to avoid re-rendering (LRU cache with max size)
  * - Hover to show live 3D (optional)
  * - No WebGL context limits since contexts are released after capture
  */
 
-// Global cache for model snapshots (persists across component instances)
-const snapshotCache = new Map();
+/**
+ * Simple LRU Cache implementation for snapshot storage
+ * Prevents unbounded memory growth in long sessions
+ */
+class LRUCache {
+  constructor(maxSize = 50) {
+    this.maxSize = maxSize;
+    this.cache = new Map();
+  }
+
+  get(key) {
+    if (!this.cache.has(key)) return undefined;
+    // Move to end (most recently used)
+    const value = this.cache.get(key);
+    this.cache.delete(key);
+    this.cache.set(key, value);
+    return value;
+  }
+
+  set(key, value) {
+    // Delete existing to refresh position
+    if (this.cache.has(key)) {
+      this.cache.delete(key);
+    }
+    // Evict oldest if at capacity
+    else if (this.cache.size >= this.maxSize) {
+      const oldestKey = this.cache.keys().next().value;
+      this.cache.delete(oldestKey);
+    }
+    this.cache.set(key, value);
+  }
+
+  has(key) {
+    return this.cache.has(key);
+  }
+
+  clear() {
+    this.cache.clear();
+  }
+
+  get size() {
+    return this.cache.size;
+  }
+}
+
+// Global cache for model snapshots with LRU eviction (max 50 items)
+const snapshotCache = new LRUCache(50);
 
 // Queue system for rendering models one at a time
 // Uses a Map to track callbacks by ID for cleanup on unmount
@@ -271,8 +317,8 @@ const ModelPreview = memo(function ModelPreview({
     finishQueueItem();
   }, []);
 
-  // Check WebGL support
-  const isWebGLSupported = useCallback(() => {
+  // Check WebGL support once and cache result
+  const isWebGLSupported = useMemo(() => {
     try {
       const canvas = document.createElement('canvas');
       return !!(
@@ -285,7 +331,7 @@ const ModelPreview = memo(function ModelPreview({
   }, []);
 
   // If no model, WebGL not supported, or error, show fallback
-  if (!model || !isWebGLSupported() || hasError) {
+  if (!model || !isWebGLSupported || hasError) {
     return (
       <div
         ref={containerRef}

@@ -5,6 +5,7 @@ import { CartProvider } from './context/CartContext';
 import { ABTestProvider } from './context/ABTestContext';
 import Header from './components/Header';
 import CartNotification from './components/CartNotification';
+import ErrorBoundary from './components/ErrorBoundary';
 import './App.scss';
 
 // Lazy load pages for code splitting
@@ -52,31 +53,35 @@ function App() {
     <HelmetProvider>
       <ABTestProvider>
         <CartProvider>
-          <ScrollToTop />
-          <CartNotification />
-          <div className="app">
-            {/* Skip link for keyboard accessibility */}
-            <a href="#main-content" className="app__skip-link">
-              Skip to main content
-            </a>
-            <Header />
-            <main id="main-content" className="app__main">
-              <Suspense fallback={<PageLoader />}>
-                <Routes>
-                  <Route path="/" element={<HomePage />} />
-                  <Route
-                    path="/products/:productId"
-                    element={<ProductPage />}
-                  />
-                  <Route path="/cart" element={<CartPage />} />
-                  <Route
-                    path="/checkout"
-                    element={<CheckoutPageWithProvider />}
-                  />
-                </Routes>
-              </Suspense>
-            </main>
-          </div>
+          <ErrorBoundary>
+            <ScrollToTop />
+            <CartNotification />
+            <div className="app">
+              {/* Skip link for keyboard accessibility */}
+              <a href="#main-content" className="app__skip-link">
+                Skip to main content
+              </a>
+              <Header />
+              <main id="main-content" className="app__main">
+                <ErrorBoundary>
+                  <Suspense fallback={<PageLoader />}>
+                    <Routes>
+                      <Route path="/" element={<HomePage />} />
+                      <Route
+                        path="/products/:productId"
+                        element={<ProductPage />}
+                      />
+                      <Route path="/cart" element={<CartPage />} />
+                      <Route
+                        path="/checkout"
+                        element={<CheckoutPageWithProvider />}
+                      />
+                    </Routes>
+                  </Suspense>
+                </ErrorBoundary>
+              </main>
+            </div>
+          </ErrorBoundary>
         </CartProvider>
       </ABTestProvider>
     </HelmetProvider>
