@@ -18,18 +18,24 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "test:ci": "react-scripts test --watchAll=false --ci",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "test:ci": "craco test --watchAll=false --ci",
     "eject": "react-scripts eject",
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
     "format": "prettier --write src/",
-    "format:check": "prettier --check src/"
+    "format:check": "prettier --check src/",
+    "analyze": "ANALYZE=true craco build",
+    "analyze:source-map": "source-map-explorer 'build/static/js/*.js' --html build/source-map-report.html"
   },
   "devDependencies": {
-    "prettier": "^3.4.2"
+    "@craco/craco": "^7.1.0",
+    "compression-webpack-plugin": "^11.1.0",
+    "prettier": "^3.4.2",
+    "source-map-explorer": "^2.5.3",
+    "webpack-bundle-analyzer": "^5.0.1"
   },
   "eslintConfig": {
     "extends": [
