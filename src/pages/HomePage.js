@@ -6,6 +6,13 @@ import {
   PRICE_RANGE,
   POLY_COUNT_RANGE,
 } from '../data/products';
+import { buildProductListSchema } from '../utils/structuredData';
+import {
+  FilterIcon,
+  SearchIcon,
+  CloseIcon,
+  SearchEmptyIcon,
+} from '../components/Icons/Icons';
 import ProductCard from '../components/ProductCard';
 import FilterSidebar from '../components/FilterSidebar';
 import './HomePage.scss';
@@ -60,38 +67,7 @@ function HomePage() {
       : 0) +
     (searchTerm ? 1 : 0);
 
-  const structuredData = {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    name: '3D Models Marketplace',
-    description:
-      'Premium 3D models and digital assets for creative professionals',
-    numberOfItems: filteredProducts.length,
-    itemListElement: filteredProducts.map((product, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      item: {
-        '@type': 'Product',
-        '@id': `${window.location.origin}/products/${product.id}`,
-        name: product.name,
-        description: product.description,
-        image: product.image,
-        category: product.category,
-        offers: {
-          '@type': 'Offer',
-          price: product.price,
-          priceCurrency: product.currency,
-          availability: 'https://schema.org/InStock',
-        },
-        aggregateRating: {
-          '@type': 'AggregateRating',
-          ratingValue: product.rating,
-          bestRating: 5,
-          worstRating: 1,
-        },
-      },
-    })),
-  };
+  const structuredData = buildProductListSchema(filteredProducts);
 
   return (
     <>
@@ -236,23 +212,7 @@ function HomePage() {
                   aria-expanded={isFilterOpen}
                   aria-controls="filter-sidebar"
                 >
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    aria-hidden="true"
-                  >
-                    <line x1="4" y1="21" x2="4" y2="14" />
-                    <line x1="4" y1="10" x2="4" y2="3" />
-                    <line x1="12" y1="21" x2="12" y2="12" />
-                    <line x1="12" y1="8" x2="12" y2="3" />
-                    <line x1="20" y1="21" x2="20" y2="16" />
-                    <line x1="20" y1="12" x2="20" y2="3" />
-                    <line x1="1" y1="14" x2="7" y2="14" />
-                    <line x1="9" y1="8" x2="15" y2="8" />
-                    <line x1="17" y1="16" x2="23" y2="16" />
-                  </svg>
+                  <FilterIcon />
                   Filters
                   {activeFiltersCount > 0 && (
                     <span
@@ -266,17 +226,7 @@ function HomePage() {
               </div>
 
               <div className="products__search">
-                <svg
-                  className="products__search-icon"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  aria-hidden="true"
-                >
-                  <circle cx="11" cy="11" r="8" />
-                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                </svg>
+                <SearchIcon className="products__search-icon" />
                 <input
                   type="search"
                   className="products__search-input"
@@ -292,16 +242,7 @@ function HomePage() {
                     onClick={() => setSearchTerm('')}
                     aria-label="Clear search"
                   >
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      aria-hidden="true"
-                    >
-                      <line x1="18" y1="6" x2="6" y2="18" />
-                      <line x1="6" y1="6" x2="18" y2="18" />
-                    </svg>
+                    <CloseIcon />
                   </button>
                 )}
               </div>
@@ -323,18 +264,7 @@ function HomePage() {
               </div>
             ) : (
               <div className="products__empty" role="status" aria-live="polite">
-                <svg
-                  className="products__empty-icon"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  aria-hidden="true"
-                >
-                  <circle cx="11" cy="11" r="8" />
-                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                  <line x1="8" y1="11" x2="14" y2="11" />
-                </svg>
+                <SearchEmptyIcon className="products__empty-icon" />
                 <p className="products__empty-title">No models found</p>
                 <p className="products__empty-text">
                   Try adjusting your filters or search term
