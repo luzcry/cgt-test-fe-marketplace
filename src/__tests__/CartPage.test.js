@@ -89,6 +89,11 @@ const renderCartPage = (items = []) => {
 };
 
 describe('CartPage', () => {
+  // Clear localStorage before each test to prevent cart persistence issues
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
   describe('Empty cart', () => {
     it('renders empty cart message', () => {
       renderCartPage();

@@ -30,8 +30,8 @@ jest.mock('../components/ModelViewer', () => {
 });
 
 // Use actual product IDs from the updated product data
-const PRODUCT_1_ID = 'cyber-warrior';
-const PRODUCT_2_ID = 'hover-bike';
+const PRODUCT_1_ID = 'tactical-soldier';
+const PRODUCT_2_ID = 'expressive-robot';
 
 const renderProductPage = (productId = PRODUCT_1_ID) => {
   return render(
@@ -48,10 +48,15 @@ const renderProductPage = (productId = PRODUCT_1_ID) => {
 };
 
 describe('ProductPage', () => {
-  describe('Cyber Warrior Product', () => {
+  // Clear localStorage before each test to prevent cart persistence issues
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  describe('Tactical Combat Soldier Product', () => {
     it('renders product name', () => {
       renderProductPage(PRODUCT_1_ID);
-      expect(screen.getByRole('heading', { name: 'Cyber Warrior' })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'Tactical Combat Soldier' })).toBeInTheDocument();
     });
 
     it('renders product price', () => {
@@ -65,10 +70,10 @@ describe('ProductPage', () => {
       expect(modelViewer).toBeInTheDocument();
     });
 
-    it('renders product image in model viewer', () => {
+    it('renders 3D model name in model viewer', () => {
       renderProductPage(PRODUCT_1_ID);
-      const image = screen.getByTestId('model-fallback-image');
-      expect(image).toBeInTheDocument();
+      const modelName = screen.getByTestId('model-name');
+      expect(modelName).toBeInTheDocument();
     });
 
     it('renders add to cart button', () => {
@@ -98,10 +103,10 @@ describe('ProductPage', () => {
     });
   });
 
-  describe('Hover Bike Product', () => {
+  describe('Expressive Robot Product', () => {
     it('renders product name', () => {
       renderProductPage(PRODUCT_2_ID);
-      expect(screen.getByRole('heading', { name: 'Hover Bike X-7' })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: 'Expressive Robot Character' })).toBeInTheDocument();
     });
 
     it('renders product price', () => {

@@ -2,8 +2,34 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import App from './App';
 
+// Mock ModelViewer component since Three.js requires WebGL
+jest.mock('./components/ModelViewer', () => {
+  return function MockModelViewer({ model, productName }) {
+    return (
+      <div
+        data-testid="model-viewer"
+        role="img"
+        aria-label={`Interactive 3D model of ${productName}. Use mouse to rotate and zoom.`}
+      >
+        {model && <span data-testid="model-name">{model.name}</span>}
+      </div>
+    );
+  };
+});
+
+// Mock ModelPreview component since Three.js requires WebGL
+jest.mock('./components/ModelPreview', () => {
+  return function MockModelPreview({ model, alt }) {
+    return (
+      <div data-testid="model-preview" aria-label={alt}>
+        {model && <span data-testid="model-preview-name">{model.name}</span>}
+      </div>
+    );
+  };
+});
+
 // Use actual product IDs from the updated product data
-const PRODUCT_1_ID = 'cyber-warrior';
+const PRODUCT_1_ID = 'tactical-soldier';
 
 const renderApp = (initialRoute = '/') => {
   return render(
@@ -14,6 +40,11 @@ const renderApp = (initialRoute = '/') => {
 };
 
 describe('App', () => {
+  // Clear localStorage before each test to prevent cart persistence
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
   describe('Layout', () => {
     it('renders header on all pages', () => {
       renderApp();
@@ -31,33 +62,35 @@ describe('App', () => {
   });
 
   describe('Routing', () => {
-    it('renders home page at /', () => {
+    it('renders home page at /', async () => {
       renderApp('/');
-      expect(screen.getByText('Next-Gen')).toBeInTheDocument();
+      expect(await screen.findByText('Next-Gen')).toBeInTheDocument();
       expect(screen.getByText('3D Assets')).toBeInTheDocument();
     });
 
-    it('renders product page at /products/:id', () => {
+    it('renders product page at /products/:id', async () => {
       renderApp(`/products/${PRODUCT_1_ID}`);
-      expect(screen.getByRole('heading', { name: 'Cyber Warrior' })).toBeInTheDocument();
+      expect(await screen.findByRole('heading', { name: 'Tactical Combat Soldier' })).toBeInTheDocument();
     });
 
-    it('renders cart page at /cart', () => {
+    it('renders cart page at /cart', async () => {
       renderApp('/cart');
-      expect(screen.getByText('Your Cart is Empty')).toBeInTheDocument();
+      expect(await screen.findByText('Your Cart is Empty')).toBeInTheDocument();
     });
   });
 
   describe('Integration', () => {
-    it('shows products on home page', () => {
+    it('shows products on home page', async () => {
       renderApp('/');
-      expect(screen.getByText('Cyber Warrior')).toBeInTheDocument();
-      expect(screen.getByText('Hover Bike X-7')).toBeInTheDocument();
+      expect(await screen.findByText('Tactical Combat Soldier')).toBeInTheDocument();
+      expect(screen.getByText('Classic Toy Car Model')).toBeInTheDocument();
     });
 
-    it('cart button is present', () => {
+    it('cart button is present', async () => {
       renderApp('/');
-      expect(screen.getByRole('link', { name: /cart/i })).toBeInTheDocument();
+      // Wait for page to load, then check header cart button
+      await screen.findByText('Next-Gen');
+      expect(screen.getByRole('link', { name: /shopping cart/i })).toBeInTheDocument();
     });
   });
 });

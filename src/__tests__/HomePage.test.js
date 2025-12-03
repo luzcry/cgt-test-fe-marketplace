@@ -74,13 +74,14 @@ describe('HomePage', () => {
     it('renders all products', () => {
       renderHomePage();
       // Test with actual product names from updated data
-      expect(screen.getByText('Cyber Warrior')).toBeInTheDocument();
-      expect(screen.getByText('Hover Bike X-7')).toBeInTheDocument();
+      expect(screen.getByText('Tactical Combat Soldier')).toBeInTheDocument();
+      expect(screen.getByText('Classic Toy Car Model')).toBeInTheDocument();
     });
 
     it('renders product prices', () => {
       renderHomePage();
-      expect(screen.getByText('$89')).toBeInTheDocument();
+      // Use getAllByText since multiple products may have the same price
+      expect(screen.getAllByText('$89').length).toBeGreaterThanOrEqual(1);
       expect(screen.getByText('$129')).toBeInTheDocument();
     });
 
@@ -108,11 +109,11 @@ describe('HomePage', () => {
       const searchInput = screen.getByPlaceholderText(/search models/i);
 
       // Initially all products should be visible
-      expect(screen.getByText('Cyber Warrior')).toBeInTheDocument();
+      expect(screen.getByText('Tactical Combat Soldier')).toBeInTheDocument();
 
       // Search for specific product
-      fireEvent.change(searchInput, { target: { value: 'cyber' } });
-      expect(screen.getByText('Cyber Warrior')).toBeInTheDocument();
+      fireEvent.change(searchInput, { target: { value: 'tactical' } });
+      expect(screen.getByText('Tactical Combat Soldier')).toBeInTheDocument();
     });
 
     it('shows filter toggle button on mobile', () => {
@@ -138,7 +139,7 @@ describe('HomePage', () => {
 
     it('add to cart button is clickable', () => {
       renderHomePage();
-      const addButton = screen.getByRole('button', { name: /add cyber warrior to cart/i });
+      const addButton = screen.getByRole('button', { name: /add tactical combat soldier to cart/i });
       expect(addButton).not.toBeDisabled();
       fireEvent.click(addButton);
     });
