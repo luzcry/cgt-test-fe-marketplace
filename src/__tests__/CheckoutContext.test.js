@@ -2,6 +2,8 @@ import { renderHook, act, waitFor } from '@testing-library/react';
 import {
   CheckoutProvider,
   useCheckout,
+  useCheckoutState,
+  useCheckoutActions,
   CHECKOUT_STEPS,
 } from '../context/CheckoutContext';
 import { CartProvider } from '../context/CartContext';
@@ -44,9 +46,10 @@ describe('CheckoutContext', () => {
         .spyOn(console, 'error')
         .mockImplementation(() => {});
 
+      // useCheckout internally calls useCheckoutState first
       expect(() => {
         renderHook(() => useCheckout());
-      }).toThrow('useCheckout must be used within a CheckoutProvider');
+      }).toThrow('useCheckoutState must be used within a CheckoutProvider');
 
       consoleSpy.mockRestore();
     });
@@ -62,6 +65,54 @@ describe('CheckoutContext', () => {
       expect(result.current.paymentInfo).toBeDefined();
       expect(result.current.isLoading).toBe(false);
       expect(result.current.errors).toEqual({});
+    });
+  });
+
+  describe('useCheckoutState hook', () => {
+    it('throws error when used outside CheckoutProvider', () => {
+      const consoleSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
+
+      expect(() => {
+        renderHook(() => useCheckoutState());
+      }).toThrow('useCheckoutState must be used within a CheckoutProvider');
+
+      consoleSpy.mockRestore();
+    });
+
+    it('provides state without actions', () => {
+      const { result } = renderHook(() => useCheckoutState(), {
+        wrapper: AllProviders,
+      });
+
+      expect(result.current.currentStep).toBe(CHECKOUT_STEPS.SHIPPING);
+      expect(result.current.totals).toBeDefined();
+      expect(result.current.goToStep).toBeUndefined();
+    });
+  });
+
+  describe('useCheckoutActions hook', () => {
+    it('throws error when used outside CheckoutProvider', () => {
+      const consoleSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
+
+      expect(() => {
+        renderHook(() => useCheckoutActions());
+      }).toThrow('useCheckoutActions must be used within a CheckoutProvider');
+
+      consoleSpy.mockRestore();
+    });
+
+    it('provides actions without state', () => {
+      const { result } = renderHook(() => useCheckoutActions(), {
+        wrapper: AllProviders,
+      });
+
+      expect(result.current.goToStep).toBeDefined();
+      expect(result.current.updateShippingInfo).toBeDefined();
+      expect(result.current.currentStep).toBeUndefined();
     });
   });
 
