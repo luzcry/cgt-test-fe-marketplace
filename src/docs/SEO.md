@@ -23,9 +23,18 @@ Location: `public/index.html`
 
 ```html
 <title>3D Marketplace | Premium Digital Assets & 3D Models</title>
-<meta name="title" content="3D Marketplace | Premium Digital Assets & 3D Models" />
-<meta name="description" content="Discover premium 3D models and digital assets for your creative projects..." />
-<meta name="keywords" content="3D models, digital assets, 3D marketplace, game assets, 3D design..." />
+<meta
+  name="title"
+  content="3D Marketplace | Premium Digital Assets & 3D Models"
+/>
+<meta
+  name="description"
+  content="Discover premium 3D models and digital assets for your creative projects..."
+/>
+<meta
+  name="keywords"
+  content="3D models, digital assets, 3D marketplace, game assets, 3D design..."
+/>
 <meta name="author" content="3D Marketplace" />
 <meta name="robots" content="index, follow" />
 <link rel="canonical" href="/" />
@@ -36,8 +45,14 @@ Location: `public/index.html`
 ```html
 <meta property="og:type" content="website" />
 <meta property="og:url" content="/" />
-<meta property="og:title" content="3D Marketplace | Premium Digital Assets & 3D Models" />
-<meta property="og:description" content="Discover premium 3D models and digital assets..." />
+<meta
+  property="og:title"
+  content="3D Marketplace | Premium Digital Assets & 3D Models"
+/>
+<meta
+  property="og:description"
+  content="Discover premium 3D models and digital assets..."
+/>
 <meta property="og:image" content="/og-image.png" />
 <meta property="og:site_name" content="3D Marketplace" />
 <meta property="og:locale" content="en_US" />
@@ -49,7 +64,10 @@ Location: `public/index.html`
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:url" content="/" />
 <meta name="twitter:title" content="3D Marketplace | Premium Digital Assets" />
-<meta name="twitter:description" content="Premium 3D models for creative projects" />
+<meta
+  name="twitter:description"
+  content="Premium 3D models for creative projects"
+/>
 <meta name="twitter:image" content="/og-image.png" />
 ```
 
@@ -80,9 +98,7 @@ import { HelmetProvider } from 'react-helmet-async';
 function App() {
   return (
     <HelmetProvider>
-      <CartProvider>
-        {/* Routes */}
-      </CartProvider>
+      <CartProvider>{/* Routes */}</CartProvider>
     </HelmetProvider>
   );
 }
@@ -102,7 +118,10 @@ function HomePage() {
         <link rel="canonical" href={window.location.origin} />
 
         {/* Open Graph */}
-        <meta property="og:title" content="3D Marketplace | Premium Digital Assets" />
+        <meta
+          property="og:title"
+          content="3D Marketplace | Premium Digital Assets"
+        />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={window.location.origin} />
 
@@ -119,6 +138,7 @@ function HomePage() {
 ```
 
 ### Benefits
+
 - Per-page titles and descriptions
 - Dynamic canonical URLs
 - Page-specific structured data
@@ -176,27 +196,32 @@ Using HTML microdata attributes:
 
 ```html
 <article itemScope itemType="https://schema.org/Product">
-  <img src="..." alt="..." itemProp="image" />
+  <img src="..." alt="..." itemprop="image" />
 
-  <h3 itemProp="name">Cyber Warrior</h3>
+  <h3 itemprop="name">Cyber Warrior</h3>
 
-  <p itemProp="description">Product description...</p>
+  <p itemprop="description">Product description...</p>
 
-  <span itemProp="aggregateRating" itemScope itemType="https://schema.org/AggregateRating">
-    <meta itemProp="ratingValue" content="4.8" />
-    <meta itemProp="bestRating" content="5" />
+  <span
+    itemProp="aggregateRating"
+    itemScope
+    itemType="https://schema.org/AggregateRating"
+  >
+    <meta itemprop="ratingValue" content="4.8" />
+    <meta itemprop="bestRating" content="5" />
     4.8
   </span>
 
-  <div itemProp="offers" itemScope itemType="https://schema.org/Offer">
-    <meta itemProp="priceCurrency" content="USD" />
+  <div itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+    <meta itemprop="priceCurrency" content="USD" />
     <span itemProp="price" content="89">$89</span>
-    <meta itemProp="availability" content="https://schema.org/InStock" />
+    <meta itemprop="availability" content="https://schema.org/InStock" />
   </div>
 </article>
 ```
 
 ### Benefits of Structured Data
+
 - Rich snippets in search results
 - Product carousels on Google
 - Price and availability display
@@ -211,7 +236,9 @@ Using HTML microdata attributes:
 
 ```html
 <html lang="en">
-  <head>...</head>
+  <head>
+    ...
+  </head>
   <body>
     <div id="root">
       <header role="banner">
@@ -239,6 +266,7 @@ Using HTML microdata attributes:
 ### Heading Hierarchy
 
 ✅ **Correct:**
+
 ```
 h1 - Next-Gen 3D Assets (Hero)
   h2 - All Models (Products Section)
@@ -247,6 +275,7 @@ h1 - Next-Gen 3D Assets (Hero)
 ```
 
 ❌ **Incorrect:**
+
 ```
 h1 - Next-Gen 3D Assets
   h3 - All Models (skips h2)
@@ -265,15 +294,12 @@ h1 - Next-Gen 3D Assets
 </section>
 
 <!-- Descriptive links -->
-<a href="/products/cyber-warrior"
-   aria-label="View Cyber Warrior details - $89">
+<a href="/products/cyber-warrior" aria-label="View Cyber Warrior details - $89">
   {/* Link content */}
 </a>
 
 <!-- Descriptive buttons -->
-<button aria-label="Add Cyber Warrior to cart for $89">
-  Add to Cart
-</button>
+<button aria-label="Add Cyber Warrior to cart for $89">Add to Cart</button>
 ```
 
 ---
@@ -293,11 +319,7 @@ h1 - Next-Gen 3D Assets
 
 <!-- Responsive images (future enhancement) -->
 <img
-  srcset="
-    /product-320.jpg 320w,
-    /product-640.jpg 640w,
-    /product-1280.jpg 1280w
-  "
+  srcset="/product-320.jpg 320w, /product-640.jpg 640w, /product-1280.jpg 1280w"
   sizes="(max-width: 768px) 100vw, 33vw"
   src="/product-640.jpg"
   alt="..."
@@ -312,12 +334,16 @@ h1 - Next-Gen 3D Assets
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
 <!-- Load fonts with display=swap to prevent FOIT -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;900&display=swap" rel="stylesheet" />
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@600;700;900&display=swap"
+  rel="stylesheet"
+/>
 ```
 
 ### Code Splitting
 
 React Router automatically code-splits by route:
+
 - HomePage bundle
 - ProductPage bundle
 - CartPage bundle

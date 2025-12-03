@@ -33,12 +33,12 @@ src/styles/
 
 ### Color Palette
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--color-background` | `hsl(220 30% 4%)` | Main background |
-| `--color-primary` | `hsl(210 15% 75%)` | Chrome silver |
-| `--color-accent` | `hsl(210 90% 55%)` | Electric blue |
-| `--color-foreground` | `hsl(210 20% 98%)` | Text |
+| Token                | Value              | Usage           |
+| -------------------- | ------------------ | --------------- |
+| `--color-background` | `hsl(220 30% 4%)`  | Main background |
+| `--color-primary`    | `hsl(210 15% 75%)` | Chrome silver   |
+| `--color-accent`     | `hsl(210 90% 55%)` | Electric blue   |
+| `--color-foreground` | `hsl(210 20% 98%)` | Text            |
 
 ### Typography
 
@@ -62,6 +62,7 @@ index.js (BrowserRouter, Global Styles)
 ## Key Features
 
 ### Accessibility
+
 - Skip link for keyboard navigation
 - Proper heading hierarchy (h1 → h2 → h3)
 - ARIA labels on interactive elements
@@ -69,12 +70,14 @@ index.js (BrowserRouter, Global Styles)
 - Reduced motion support
 
 ### SEO Best Practices
+
 - Semantic HTML (`<main>`, `<header>`, `<nav>`, `<article>`)
 - Proper document outline
 - Meaningful link text
 - Image alt attributes
 
 ### Performance
+
 - SCSS with CSS custom properties for theming
 - Lazy loading for images (`loading="lazy"`)
 - Font loading with `display=swap`
@@ -82,11 +85,11 @@ index.js (BrowserRouter, Global Styles)
 
 ## Routes
 
-| Path | Component | Description |
-|------|-----------|-------------|
-| `/` | HomePage | Hero section + product grid |
-| `/products/:productId` | ProductPage | Product detail with specs |
-| `/cart` | CartPage | Cart with order summary |
+| Path                   | Component   | Description                 |
+| ---------------------- | ----------- | --------------------------- |
+| `/`                    | HomePage    | Hero section + product grid |
+| `/products/:productId` | ProductPage | Product detail with specs   |
+| `/cart`                | CartPage    | Cart with order summary     |
 
 ## Dependencies
 
@@ -99,15 +102,18 @@ index.js (BrowserRouter, Global Styles)
 Located at `src/App.test.js`
 
 ### Layout Tests
+
 - Renders header on all pages
 - Renders navigation links
 - Skip link is present
 
 ### Routing Tests
+
 - Renders home page at /
 - Renders product page at /products/:id
 - Renders cart page at /cart
 
 ### Integration Tests
+
 - Shows products on home page
 - Cart count updates correctly

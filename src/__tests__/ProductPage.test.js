@@ -6,7 +6,12 @@ import ProductPage from '../pages/ProductPage';
 
 // Mock ModelViewer component since Three.js requires WebGL
 jest.mock('../components/ModelViewer', () => {
-  return function MockModelViewer({ model, productName, fallbackImage, previewColor }) {
+  return function MockModelViewer({
+    model,
+    productName,
+    fallbackImage,
+    previewColor,
+  }) {
     return (
       <div
         data-testid="model-viewer"
@@ -21,9 +26,7 @@ jest.mock('../components/ModelViewer', () => {
             data-testid="model-fallback-image"
           />
         )}
-        {model && (
-          <span data-testid="model-name">{model.name}</span>
-        )}
+        {model && <span data-testid="model-name">{model.name}</span>}
       </div>
     );
   };
@@ -56,7 +59,9 @@ describe('ProductPage', () => {
   describe('Tactical Combat Soldier Product', () => {
     it('renders product name', () => {
       renderProductPage(PRODUCT_1_ID);
-      expect(screen.getByRole('heading', { name: 'Tactical Combat Soldier' })).toBeInTheDocument();
+      expect(
+        screen.getByRole('heading', { name: 'Tactical Combat Soldier' })
+      ).toBeInTheDocument();
     });
 
     it('renders product price', () => {
@@ -78,12 +83,16 @@ describe('ProductPage', () => {
 
     it('renders add to cart button', () => {
       renderProductPage(PRODUCT_1_ID);
-      expect(screen.getByRole('button', { name: /add .+ to cart/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: /add .+ to cart/i })
+      ).toBeInTheDocument();
     });
 
     it('renders back link', () => {
       renderProductPage(PRODUCT_1_ID);
-      expect(screen.getByRole('link', { name: /back to products/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('link', { name: /back to products/i })
+      ).toBeInTheDocument();
     });
 
     it('renders category', () => {
@@ -94,19 +103,25 @@ describe('ProductPage', () => {
 
     it('renders specifications section', () => {
       renderProductPage(PRODUCT_1_ID);
-      expect(screen.getByRole('heading', { name: 'Technical Specifications' })).toBeInTheDocument();
+      expect(
+        screen.getByRole('heading', { name: 'Technical Specifications' })
+      ).toBeInTheDocument();
     });
 
     it('renders features section', () => {
       renderProductPage(PRODUCT_1_ID);
-      expect(screen.getByRole('heading', { name: /what's included/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('heading', { name: /what's included/i })
+      ).toBeInTheDocument();
     });
   });
 
   describe('Expressive Robot Product', () => {
     it('renders product name', () => {
       renderProductPage(PRODUCT_2_ID);
-      expect(screen.getByRole('heading', { name: 'Expressive Robot Character' })).toBeInTheDocument();
+      expect(
+        screen.getByRole('heading', { name: 'Expressive Robot Character' })
+      ).toBeInTheDocument();
     });
 
     it('renders product price', () => {
@@ -123,7 +138,9 @@ describe('ProductPage', () => {
 
     it('renders back to products button', () => {
       renderProductPage('xyz');
-      expect(screen.getByRole('button', { name: /back to products/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: /back to products/i })
+      ).toBeInTheDocument();
     });
   });
 

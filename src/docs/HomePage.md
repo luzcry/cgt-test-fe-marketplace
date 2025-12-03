@@ -16,6 +16,7 @@ The HomePage serves as the landing page with a tech-forward hero section, respon
 ## Features
 
 ### Filter & Search System
+
 - **Search bar**: Real-time search across product names, categories, and tags
 - **Filter sidebar**: Collapsible sections for:
   - Category filter (checkboxes)
@@ -27,12 +28,14 @@ The HomePage serves as the landing page with a tech-forward hero section, respon
 - **Mobile responsive**: Slide-in panel on mobile, sticky sidebar on desktop
 
 ### SEO Features
+
 - **Dynamic meta tags**: Via react-helmet-async
 - **JSON-LD structured data**: Schema.org ItemList with Product items
 - **Semantic HTML**: Proper heading hierarchy, ARIA labels
 - **Canonical URLs**: Prevents duplicate content issues
 
 ### Performance Optimizations
+
 - **Memoized filtering**: `useMemo` for filtered products
 - **Stable callbacks**: `useCallback` for event handlers
 - **Lazy loading**: Images load on-demand
@@ -41,6 +44,7 @@ The HomePage serves as the landing page with a tech-forward hero section, respon
 ## Visual Design
 
 ### Hero Section
+
 - **Background**: Tech gradient with grid pattern overlay
 - **Animated scanlines**: Moving horizontal lines effect
 - **Floating particles**: 20 animated dots rising upward
@@ -48,11 +52,13 @@ The HomePage serves as the landing page with a tech-forward hero section, respon
 - **Visual element**: Rotating rings with corner accents
 
 ### Product Grid
+
 - **Responsive columns**: 1 → 2 → 3 → 4 columns based on viewport
 - **Staggered animation**: Cards animate in sequence
 - **Hover effects**: Lift and border glow
 
 ### Product Cards
+
 - **Preview area**: Gradient background with rotating "3D" text
 - **Rating badge**: Star icon with rating value
 - **Specs badges**: Polygon count and file format
@@ -163,13 +169,13 @@ const filteredProducts = useMemo(() => {
 
 ## Responsive Behavior
 
-| Breakpoint | Grid Columns | Sidebar | Hero Layout |
-|------------|--------------|---------|-------------|
-| Mobile | 1 | Slide-in panel | Single column |
-| Tablet (768px+) | 2 | Slide-in panel | Single column |
-| Desktop (1024px+) | 2 | Sticky sidebar | Two columns |
-| Wide (1280px+) | 3 | Sticky sidebar | Two columns |
-| 2XL (1536px+) | 4 | Sticky sidebar | Two columns |
+| Breakpoint        | Grid Columns | Sidebar        | Hero Layout   |
+| ----------------- | ------------ | -------------- | ------------- |
+| Mobile            | 1            | Slide-in panel | Single column |
+| Tablet (768px+)   | 2            | Slide-in panel | Single column |
+| Desktop (1024px+) | 2            | Sticky sidebar | Two columns   |
+| Wide (1280px+)    | 3            | Sticky sidebar | Two columns   |
+| 2XL (1536px+)     | 4            | Sticky sidebar | Two columns   |
 
 ## Dependencies
 

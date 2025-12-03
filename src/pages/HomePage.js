@@ -1,6 +1,11 @@
 import { useState, useMemo, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { products, filterProducts, PRICE_RANGE, POLY_COUNT_RANGE } from '../data/products';
+import {
+  products,
+  filterProducts,
+  PRICE_RANGE,
+  POLY_COUNT_RANGE,
+} from '../data/products';
 import ProductCard from '../components/ProductCard';
 import FilterSidebar from '../components/FilterSidebar';
 import './HomePage.scss';
@@ -67,8 +72,14 @@ function HomePage() {
   const activeFiltersCount =
     filters.categories.length +
     filters.fileFormats.length +
-    (filters.priceRange[0] !== PRICE_RANGE.min || filters.priceRange[1] !== PRICE_RANGE.max ? 1 : 0) +
-    (filters.polyCountRange[0] !== POLY_COUNT_RANGE.min || filters.polyCountRange[1] !== POLY_COUNT_RANGE.max ? 1 : 0) +
+    (filters.priceRange[0] !== PRICE_RANGE.min ||
+    filters.priceRange[1] !== PRICE_RANGE.max
+      ? 1
+      : 0) +
+    (filters.polyCountRange[0] !== POLY_COUNT_RANGE.min ||
+    filters.polyCountRange[1] !== POLY_COUNT_RANGE.max
+      ? 1
+      : 0) +
     (searchTerm ? 1 : 0);
 
   // Generate JSON-LD structured data for SEO
@@ -76,7 +87,8 @@ function HomePage() {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     name: '3D Models Marketplace',
-    description: 'Premium 3D models and digital assets for creative professionals',
+    description:
+      'Premium 3D models and digital assets for creative professionals',
     numberOfItems: filteredProducts.length,
     itemListElement: filteredProducts.map((product, index) => ({
       '@type': 'ListItem',
@@ -116,7 +128,10 @@ function HomePage() {
         <link rel="canonical" href={window.location.origin} />
 
         {/* Open Graph */}
-        <meta property="og:title" content="3D Marketplace | Premium Digital Assets" />
+        <meta
+          property="og:title"
+          content="3D Marketplace | Premium Digital Assets"
+        />
         <meta
           property="og:description"
           content="Discover premium 3D models and digital assets for your creative projects."
@@ -126,14 +141,19 @@ function HomePage() {
 
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="3D Marketplace | Premium Digital Assets" />
+        <meta
+          name="twitter:title"
+          content="3D Marketplace | Premium Digital Assets"
+        />
         <meta
           name="twitter:description"
           content="Premium 3D models for game development and visualization."
         />
 
         {/* Structured Data */}
-        <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
       </Helmet>
 
       <div className="home">
@@ -170,13 +190,15 @@ function HomePage() {
 
                 <h1 id="hero-title" className="hero__title">
                   <span className="hero__title-line">Next-Gen</span>
-                  <span className="hero__title-line hero__title-gradient">3D Assets</span>
+                  <span className="hero__title-line hero__title-gradient">
+                    3D Assets
+                  </span>
                 </h1>
 
                 <p className="hero__description">
-                  Professional-grade 3D models optimized for real-time rendering,
-                  game development, and digital visualization. Industry-standard
-                  formats, instant downloads.
+                  Professional-grade 3D models optimized for real-time
+                  rendering, game development, and digital visualization.
+                  Industry-standard formats, instant downloads.
                 </p>
 
                 <div className="hero__features">
@@ -232,7 +254,9 @@ function HomePage() {
             <header className="products__header">
               <div className="products__header-top">
                 <div className="products__title-group">
-                  <h2 id="products-title" className="products__title">All Models</h2>
+                  <h2 id="products-title" className="products__title">
+                    All Models
+                  </h2>
                   <p className="products__count">
                     {filteredProducts.length} of {products.length}{' '}
                     {products.length === 1 ? 'model' : 'models'}
@@ -266,7 +290,10 @@ function HomePage() {
                   </svg>
                   Filters
                   {activeFiltersCount > 0 && (
-                    <span className="products__filter-badge" aria-label={`${activeFiltersCount} active filters`}>
+                    <span
+                      className="products__filter-badge"
+                      aria-label={`${activeFiltersCount} active filters`}
+                    >
                       {activeFiltersCount}
                     </span>
                   )}
@@ -301,7 +328,13 @@ function HomePage() {
                     onClick={() => setSearchTerm('')}
                     aria-label="Clear search"
                   >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      aria-hidden="true"
+                    >
                       <line x1="18" y1="6" x2="6" y2="18" />
                       <line x1="6" y1="6" x2="18" y2="18" />
                     </svg>
@@ -312,9 +345,17 @@ function HomePage() {
 
             {/* Products Grid */}
             {filteredProducts.length > 0 ? (
-              <div className="products__grid" role="list" aria-label="Product listings">
+              <div
+                className="products__grid"
+                role="list"
+                aria-label="Product listings"
+              >
                 {filteredProducts.map((product, index) => (
-                  <ProductCard key={product.id} product={product} index={index} />
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    index={index}
+                  />
                 ))}
               </div>
             ) : (

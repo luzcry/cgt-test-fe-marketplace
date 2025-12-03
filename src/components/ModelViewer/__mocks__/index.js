@@ -4,7 +4,12 @@ import React from 'react';
  * Mock ModelViewer component for testing
  * Three.js requires WebGL which isn't available in Jest/jsdom environment
  */
-const MockModelViewer = ({ modelUrl, productName, fallbackImage, previewColor }) => (
+const MockModelViewer = ({
+  modelUrl,
+  productName,
+  fallbackImage,
+  previewColor,
+}) => (
   <div
     data-testid="model-viewer"
     className="model-viewer model-viewer--mock"

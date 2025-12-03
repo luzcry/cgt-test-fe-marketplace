@@ -81,7 +81,9 @@
   border-radius: var(--radius-xl);
   overflow: hidden;
   text-decoration: none;
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base);
 
   @include sm {
     width: 8rem;

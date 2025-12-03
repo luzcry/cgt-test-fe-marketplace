@@ -445,7 +445,8 @@
   }
 
   @keyframes bounce {
-    0%, 100% {
+    0%,
+    100% {
       transform: translateY(0);
     }
     50% {
@@ -454,7 +455,8 @@
   }
 
   @keyframes float {
-    0%, 100% {
+    0%,
+    100% {
       transform: perspective(500px) rotateY(-15deg) translateY(0);
     }
     50% {

@@ -9,7 +9,7 @@ import React from 'react';
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockNavigate
+  useNavigate: () => mockNavigate,
 }));
 
 // Mock ModelPreview since it uses Three.js
@@ -118,7 +118,9 @@ describe('CartPage', () => {
   describe('Cart with items', () => {
     it('renders cart title', () => {
       renderCartPage([mockProduct]);
-      expect(screen.getByRole('heading', { name: 'Shopping Cart' })).toBeInTheDocument();
+      expect(
+        screen.getByRole('heading', { name: 'Shopping Cart' })
+      ).toBeInTheDocument();
     });
 
     it('renders product name', () => {
@@ -145,7 +147,9 @@ describe('CartPage', () => {
 
     it('renders order summary', () => {
       renderCartPage([mockProduct]);
-      expect(screen.getByRole('heading', { name: 'Order Summary' })).toBeInTheDocument();
+      expect(
+        screen.getByRole('heading', { name: 'Order Summary' })
+      ).toBeInTheDocument();
     });
 
     it('renders checkout button', () => {
@@ -251,7 +255,9 @@ describe('CartPage', () => {
       expect(screen.getByText('$11.00')).toBeInTheDocument();
 
       // Increase quantity
-      const increaseBtn = screen.getByRole('button', { name: /increase quantity/i });
+      const increaseBtn = screen.getByRole('button', {
+        name: /increase quantity/i,
+      });
       fireEvent.click(increaseBtn);
 
       // New total: $20 + $2 tax = $22.00
@@ -275,7 +281,9 @@ describe('CartPage', () => {
     it('navigates to checkout when proceed to checkout is clicked', () => {
       renderCartPage([mockProduct]);
 
-      fireEvent.click(screen.getByRole('button', { name: /proceed to checkout/i }));
+      fireEvent.click(
+        screen.getByRole('button', { name: /proceed to checkout/i })
+      );
 
       expect(mockNavigate).toHaveBeenCalledWith('/checkout');
     });
@@ -283,7 +291,9 @@ describe('CartPage', () => {
     it('navigates to home when continue shopping is clicked', () => {
       renderCartPage([mockProduct]);
 
-      fireEvent.click(screen.getByRole('button', { name: /continue shopping/i }));
+      fireEvent.click(
+        screen.getByRole('button', { name: /continue shopping/i })
+      );
 
       expect(mockNavigate).toHaveBeenCalledWith('/');
     });
@@ -303,27 +313,39 @@ describe('CartPage', () => {
     it('cart items section has aria-label', () => {
       renderCartPage([mockProduct]);
 
-      expect(screen.getByRole('region', { name: /cart items/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('region', { name: /cart items/i })
+      ).toBeInTheDocument();
     });
 
     it('order summary has aria-label', () => {
       renderCartPage([mockProduct]);
 
-      expect(screen.getByRole('complementary', { name: /order summary/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('complementary', { name: /order summary/i })
+      ).toBeInTheDocument();
     });
 
     it('quantity controls have accessible labels', () => {
       renderCartPage([mockProduct]);
 
-      expect(screen.getByRole('button', { name: /decrease quantity of product a/i })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: /increase quantity of product a/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: /decrease quantity of product a/i })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: /increase quantity of product a/i })
+      ).toBeInTheDocument();
     });
 
     it('remove buttons have accessible labels for each product', () => {
       renderCartPage([mockProduct, mockProduct2]);
 
-      expect(screen.getByRole('button', { name: /remove product a from cart/i })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: /remove product b from cart/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: /remove product a from cart/i })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: /remove product b from cart/i })
+      ).toBeInTheDocument();
     });
 
     it('quantity value has accessible label', () => {
@@ -351,8 +373,12 @@ describe('CartPage', () => {
     it('each item has its own controls', () => {
       renderCartPage([mockProduct, mockProduct2]);
 
-      const decreaseButtons = screen.getAllByRole('button', { name: /decrease quantity/i });
-      const increaseButtons = screen.getAllByRole('button', { name: /increase quantity/i });
+      const decreaseButtons = screen.getAllByRole('button', {
+        name: /decrease quantity/i,
+      });
+      const increaseButtons = screen.getAllByRole('button', {
+        name: /increase quantity/i,
+      });
 
       expect(decreaseButtons).toHaveLength(2);
       expect(increaseButtons).toHaveLength(2);
@@ -361,7 +387,9 @@ describe('CartPage', () => {
     it('removing one item keeps others', () => {
       renderCartPage([mockProduct, mockProduct2]);
 
-      const removeBtn = screen.getByRole('button', { name: /remove product a/i });
+      const removeBtn = screen.getByRole('button', {
+        name: /remove product a/i,
+      });
       fireEvent.click(removeBtn);
 
       expect(screen.queryByText('Product A')).not.toBeInTheDocument();
@@ -380,14 +408,18 @@ describe('CartPage', () => {
     it('disables decrease button when quantity is 1', () => {
       renderCartPage([mockProduct]);
 
-      const decreaseBtn = screen.getByRole('button', { name: /decrease quantity/i });
+      const decreaseBtn = screen.getByRole('button', {
+        name: /decrease quantity/i,
+      });
       expect(decreaseBtn).toBeDisabled();
     });
 
     it('enables decrease button when quantity is greater than 1', () => {
       renderCartPage([{ ...mockProduct, quantity: 2 }]);
 
-      const decreaseBtn = screen.getByRole('button', { name: /decrease quantity/i });
+      const decreaseBtn = screen.getByRole('button', {
+        name: /decrease quantity/i,
+      });
       expect(decreaseBtn).not.toBeDisabled();
     });
 
@@ -447,7 +479,7 @@ describe('CartPage responsive behavior', () => {
     Object.defineProperty(window, 'innerWidth', {
       writable: true,
       configurable: true,
-      value: 375
+      value: 375,
     });
 
     renderCartPage([mockProduct]);
@@ -459,7 +491,7 @@ describe('CartPage responsive behavior', () => {
     Object.defineProperty(window, 'innerWidth', {
       writable: true,
       configurable: true,
-      value: 768
+      value: 768,
     });
 
     renderCartPage([mockProduct]);
@@ -471,7 +503,7 @@ describe('CartPage responsive behavior', () => {
     Object.defineProperty(window, 'innerWidth', {
       writable: true,
       configurable: true,
-      value: 1200
+      value: 1200,
     });
 
     renderCartPage([mockProduct]);

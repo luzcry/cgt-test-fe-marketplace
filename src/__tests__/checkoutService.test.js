@@ -5,7 +5,7 @@ import {
   createOrder,
   validatePromoCode,
   detectCardType,
-  getShippingOptions
+  getShippingOptions,
 } from '../services/checkoutService';
 
 describe('Checkout Service', () => {
@@ -20,7 +20,7 @@ describe('Checkout Service', () => {
         city: 'New York',
         state: 'NY',
         zipCode: '10001',
-        country: 'United States'
+        country: 'United States',
       };
 
       const result = await validateAddress(address);
@@ -40,7 +40,7 @@ describe('Checkout Service', () => {
         city: '',
         state: '',
         zipCode: '',
-        country: ''
+        country: '',
       };
 
       const result = await validateAddress(address);
@@ -61,7 +61,7 @@ describe('Checkout Service', () => {
         city: 'New York',
         state: 'NY',
         zipCode: '10001',
-        country: 'United States'
+        country: 'United States',
       };
 
       const result = await validateAddress(address);
@@ -80,7 +80,7 @@ describe('Checkout Service', () => {
         city: 'New York',
         state: 'NY',
         zipCode: 'invalid',
-        country: 'United States'
+        country: 'United States',
       };
 
       const result = await validateAddress(address);
@@ -99,7 +99,7 @@ describe('Checkout Service', () => {
         city: 'New York',
         state: 'NY',
         zipCode: '10001',
-        country: 'United States'
+        country: 'United States',
       };
 
       const result = await validateAddress(address);
@@ -145,7 +145,7 @@ describe('Checkout Service', () => {
         cardNumber: '4111111111111111',
         cardHolder: 'JOHN DOE',
         expiryDate: '12/28',
-        cvv: '123'
+        cvv: '123',
       };
 
       const result = await validatePaymentDetails(payment);
@@ -160,7 +160,7 @@ describe('Checkout Service', () => {
         cardNumber: '',
         cardHolder: '',
         expiryDate: '',
-        cvv: ''
+        cvv: '',
       };
 
       const result = await validatePaymentDetails(payment);
@@ -175,7 +175,7 @@ describe('Checkout Service', () => {
         cardNumber: '1234567890123456', // Invalid Luhn
         cardHolder: 'JOHN DOE',
         expiryDate: '12/28',
-        cvv: '123'
+        cvv: '123',
       };
 
       const result = await validatePaymentDetails(payment);
@@ -189,7 +189,7 @@ describe('Checkout Service', () => {
         cardNumber: '4111111111111111',
         cardHolder: 'JOHN DOE',
         expiryDate: 'invalid',
-        cvv: '123'
+        cvv: '123',
       };
 
       const result = await validatePaymentDetails(payment);
@@ -203,7 +203,7 @@ describe('Checkout Service', () => {
         cardNumber: '4111111111111111',
         cardHolder: 'JOHN DOE',
         expiryDate: '01/20', // Past date
-        cvv: '123'
+        cvv: '123',
       };
 
       const result = await validatePaymentDetails(payment);
@@ -217,7 +217,7 @@ describe('Checkout Service', () => {
         cardNumber: '371111111111111', // Amex
         cardHolder: 'JOHN DOE',
         expiryDate: '12/28',
-        cvv: '123' // Should be 4 digits for Amex
+        cvv: '123', // Should be 4 digits for Amex
       };
 
       const result = await validatePaymentDetails(payment);
@@ -231,7 +231,7 @@ describe('Checkout Service', () => {
     it('processes payment successfully', async () => {
       const payment = {
         cardNumber: '4111111111111111',
-        cardHolder: 'JOHN DOE'
+        cardHolder: 'JOHN DOE',
       };
 
       const result = await processPayment(payment, 100);
@@ -244,7 +244,7 @@ describe('Checkout Service', () => {
     it('declines cards ending in 0 (insufficient funds)', async () => {
       const payment = {
         cardNumber: '4111111111111110',
-        cardHolder: 'JOHN DOE'
+        cardHolder: 'JOHN DOE',
       };
 
       const result = await processPayment(payment, 100);
@@ -256,7 +256,7 @@ describe('Checkout Service', () => {
     it('declines cards ending in 9', async () => {
       const payment = {
         cardNumber: '4111111111111119',
-        cardHolder: 'JOHN DOE'
+        cardHolder: 'JOHN DOE',
       };
 
       const result = await processPayment(payment, 100);
@@ -270,7 +270,13 @@ describe('Checkout Service', () => {
     it('creates order successfully', async () => {
       const orderData = {
         items: [
-          { id: '1', name: 'Test Product', price: 50, quantity: 2, category: 'Props' }
+          {
+            id: '1',
+            name: 'Test Product',
+            price: 50,
+            quantity: 2,
+            category: 'Props',
+          },
         ],
         shippingAddress: {
           firstName: 'John',
@@ -279,20 +285,20 @@ describe('Checkout Service', () => {
           street: '123 Main St',
           city: 'New York',
           state: 'NY',
-          zipCode: '10001'
+          zipCode: '10001',
         },
         paymentResult: {
           transactionId: 'TXN-123',
           cardType: 'visa',
           lastFour: '1111',
-          amount: 110
+          amount: 110,
         },
         totals: {
           subtotal: 100,
           tax: 10,
           shipping: 0,
-          total: 110
-        }
+          total: 110,
+        },
       };
 
       const result = await createOrder(orderData);
@@ -309,7 +315,7 @@ describe('Checkout Service', () => {
         items: [],
         shippingAddress: {},
         paymentResult: {},
-        totals: {}
+        totals: {},
       };
 
       const result = await createOrder(orderData);
@@ -372,7 +378,7 @@ describe('Checkout Service', () => {
     it('marks instant download as recommended', async () => {
       const result = await getShippingOptions({});
 
-      const instantOption = result.options.find(o => o.id === 'instant');
+      const instantOption = result.options.find((o) => o.id === 'instant');
       expect(instantOption.recommended).toBe(true);
     });
   });

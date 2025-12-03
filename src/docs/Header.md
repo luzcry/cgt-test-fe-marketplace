@@ -17,6 +17,7 @@ The Header component provides the main navigation for the marketplace applicatio
 ## Visual Design
 
 ### Features
+
 - **Frosted glass effect**: `backdrop-filter: blur(16px)` with semi-transparent background
 - **Fixed positioning**: Stays at top on scroll
 - **Animated logo**: CPU icon with glow effect, rotates on hover
@@ -24,6 +25,7 @@ The Header component provides the main navigation for the marketplace applicatio
 - **Cart button**: With animated badge showing item count
 
 ### CSS Classes (BEM)
+
 ```scss
 .header                    // Main container
 .header__nav              // Navigation wrapper
@@ -40,6 +42,7 @@ The Header component provides the main navigation for the marketplace applicatio
 ```
 
 ### Animations
+
 - `header-slide-down`: Entry animation from top
 - `logo-glow`: Pulsing glow behind icon
 - `badge-pop`: Scale-in animation for badge
@@ -84,9 +87,9 @@ None. Uses `useCart()` hook internally for cart count.
 
 ## Responsive Behavior
 
-| Breakpoint | Changes |
-|------------|---------|
-| Mobile | Compact layout, cart text hidden |
+| Breakpoint       | Changes                            |
+| ---------------- | ---------------------------------- |
+| Mobile           | Compact layout, cart text hidden   |
 | Desktop (768px+) | Full layout with cart text visible |
 
 ## Tests

@@ -1,5 +1,9 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
-import { CheckoutProvider, useCheckout, CHECKOUT_STEPS } from '../context/CheckoutContext';
+import {
+  CheckoutProvider,
+  useCheckout,
+  CHECKOUT_STEPS,
+} from '../context/CheckoutContext';
 import { CartProvider } from '../context/CartContext';
 
 // Mock the checkout service
@@ -10,7 +14,7 @@ jest.mock('../services/checkoutService', () => ({
   createOrder: jest.fn(),
   validatePromoCode: jest.fn(),
   detectCardType: jest.fn(() => 'visa'),
-  trackCheckoutStep: jest.fn()
+  trackCheckoutStep: jest.fn(),
 }));
 
 import {
@@ -18,7 +22,7 @@ import {
   validatePaymentDetails,
   processPayment,
   createOrder,
-  validatePromoCode
+  validatePromoCode,
 } from '../services/checkoutService';
 
 // Wrapper component for hooks
@@ -36,7 +40,9 @@ describe('CheckoutContext', () => {
   describe('useCheckout hook', () => {
     it('throws error when used outside CheckoutProvider', () => {
       // Suppress console.error for this test
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const consoleSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
 
       expect(() => {
         renderHook(() => useCheckout());
@@ -46,7 +52,9 @@ describe('CheckoutContext', () => {
     });
 
     it('provides initial state', () => {
-      const { result } = renderHook(() => useCheckout(), { wrapper: AllProviders });
+      const { result } = renderHook(() => useCheckout(), {
+        wrapper: AllProviders,
+      });
 
       expect(result.current.currentStep).toBe(CHECKOUT_STEPS.SHIPPING);
       expect(result.current.completedSteps).toEqual([]);
@@ -59,7 +67,9 @@ describe('CheckoutContext', () => {
 
   describe('Shipping Information', () => {
     it('updates shipping info fields', () => {
-      const { result } = renderHook(() => useCheckout(), { wrapper: AllProviders });
+      const { result } = renderHook(() => useCheckout(), {
+        wrapper: AllProviders,
+      });
 
       act(() => {
         result.current.updateShippingInfo('firstName', 'John');
@@ -84,11 +94,13 @@ describe('CheckoutContext', () => {
           city: 'New York',
           state: 'NY',
           zipCode: '10001',
-          country: 'United States'
-        }
+          country: 'United States',
+        },
       });
 
-      const { result } = renderHook(() => useCheckout(), { wrapper: AllProviders });
+      const { result } = renderHook(() => useCheckout(), {
+        wrapper: AllProviders,
+      });
 
       // Fill in shipping info
       act(() => {
@@ -108,7 +120,9 @@ describe('CheckoutContext', () => {
 
       await waitFor(() => {
         expect(result.current.currentStep).toBe(CHECKOUT_STEPS.PAYMENT);
-        expect(result.current.completedSteps).toContain(CHECKOUT_STEPS.SHIPPING);
+        expect(result.current.completedSteps).toContain(
+          CHECKOUT_STEPS.SHIPPING
+        );
       });
     });
 
@@ -117,19 +131,25 @@ describe('CheckoutContext', () => {
         success: false,
         errors: {
           firstName: 'First name is required',
-          email: 'Please enter a valid email address'
-        }
+          email: 'Please enter a valid email address',
+        },
       });
 
-      const { result } = renderHook(() => useCheckout(), { wrapper: AllProviders });
+      const { result } = renderHook(() => useCheckout(), {
+        wrapper: AllProviders,
+      });
 
       await act(async () => {
         await result.current.submitShippingInfo();
       });
 
       await waitFor(() => {
-        expect(result.current.fieldErrors.firstName).toBe('First name is required');
-        expect(result.current.fieldErrors.email).toBe('Please enter a valid email address');
+        expect(result.current.fieldErrors.firstName).toBe(
+          'First name is required'
+        );
+        expect(result.current.fieldErrors.email).toBe(
+          'Please enter a valid email address'
+        );
         expect(result.current.currentStep).toBe(CHECKOUT_STEPS.SHIPPING);
       });
     });
@@ -137,7 +157,9 @@ describe('CheckoutContext', () => {
 
   describe('Payment Information', () => {
     it('updates payment info fields', () => {
-      const { result } = renderHook(() => useCheckout(), { wrapper: AllProviders });
+      const { result } = renderHook(() => useCheckout(), {
+        wrapper: AllProviders,
+      });
 
       act(() => {
         result.current.updatePaymentInfo('cardNumber', '4111 1111 1111 1111');
@@ -156,15 +178,17 @@ describe('CheckoutContext', () => {
       validatePaymentDetails.mockResolvedValue({
         success: true,
         cardType: 'visa',
-        lastFour: '1111'
+        lastFour: '1111',
       });
 
-      const { result } = renderHook(() => useCheckout(), { wrapper: AllProviders });
+      const { result } = renderHook(() => useCheckout(), {
+        wrapper: AllProviders,
+      });
 
       // First complete shipping
       validateAddress.mockResolvedValue({
         success: true,
-        normalizedAddress: { firstName: 'John' }
+        normalizedAddress: { firstName: 'John' },
       });
 
       await act(async () => {
@@ -194,11 +218,13 @@ describe('CheckoutContext', () => {
         success: false,
         errors: {
           cardNumber: 'Invalid card number',
-          cvv: 'CVV must be 3 digits'
-        }
+          cvv: 'CVV must be 3 digits',
+        },
       });
 
-      const { result } = renderHook(() => useCheckout(), { wrapper: AllProviders });
+      const { result } = renderHook(() => useCheckout(), {
+        wrapper: AllProviders,
+      });
 
       // Go to payment step first
       act(() => {
@@ -210,7 +236,9 @@ describe('CheckoutContext', () => {
       });
 
       await waitFor(() => {
-        expect(result.current.fieldErrors.cardNumber).toBe('Invalid card number');
+        expect(result.current.fieldErrors.cardNumber).toBe(
+          'Invalid card number'
+        );
         expect(result.current.fieldErrors.cvv).toBe('CVV must be 3 digits');
       });
     });
@@ -222,10 +250,12 @@ describe('CheckoutContext', () => {
         success: true,
         code: 'SAVE20',
         discount: 20,
-        description: '20% off'
+        description: '20% off',
       });
 
-      const { result } = renderHook(() => useCheckout(), { wrapper: AllProviders });
+      const { result } = renderHook(() => useCheckout(), {
+        wrapper: AllProviders,
+      });
 
       await act(async () => {
         await result.current.applyPromoCode('SAVE20');
@@ -240,10 +270,12 @@ describe('CheckoutContext', () => {
     it('shows error for invalid promo code', async () => {
       validatePromoCode.mockResolvedValue({
         success: false,
-        message: 'Invalid promo code'
+        message: 'Invalid promo code',
       });
 
-      const { result } = renderHook(() => useCheckout(), { wrapper: AllProviders });
+      const { result } = renderHook(() => useCheckout(), {
+        wrapper: AllProviders,
+      });
 
       await act(async () => {
         await result.current.applyPromoCode('INVALID');
@@ -259,10 +291,12 @@ describe('CheckoutContext', () => {
       validatePromoCode.mockResolvedValue({
         success: true,
         code: 'SAVE20',
-        discount: 20
+        discount: 20,
       });
 
-      const { result } = renderHook(() => useCheckout(), { wrapper: AllProviders });
+      const { result } = renderHook(() => useCheckout(), {
+        wrapper: AllProviders,
+      });
 
       await act(async () => {
         await result.current.applyPromoCode('SAVE20');
@@ -281,10 +315,12 @@ describe('CheckoutContext', () => {
     it('can navigate back to previous step', async () => {
       validateAddress.mockResolvedValue({
         success: true,
-        normalizedAddress: {}
+        normalizedAddress: {},
       });
 
-      const { result } = renderHook(() => useCheckout(), { wrapper: AllProviders });
+      const { result } = renderHook(() => useCheckout(), {
+        wrapper: AllProviders,
+      });
 
       // Complete shipping step
       await act(async () => {
@@ -303,13 +339,15 @@ describe('CheckoutContext', () => {
     it('can navigate to completed steps', async () => {
       validateAddress.mockResolvedValue({
         success: true,
-        normalizedAddress: {}
+        normalizedAddress: {},
       });
       validatePaymentDetails.mockResolvedValue({
-        success: true
+        success: true,
       });
 
-      const { result } = renderHook(() => useCheckout(), { wrapper: AllProviders });
+      const { result } = renderHook(() => useCheckout(), {
+        wrapper: AllProviders,
+      });
 
       // Complete shipping and payment
       await act(async () => {
@@ -331,7 +369,9 @@ describe('CheckoutContext', () => {
     });
 
     it('provides correct step index', () => {
-      const { result } = renderHook(() => useCheckout(), { wrapper: AllProviders });
+      const { result } = renderHook(() => useCheckout(), {
+        wrapper: AllProviders,
+      });
 
       expect(result.current.currentStepIndex).toBe(0);
 
@@ -351,7 +391,7 @@ describe('CheckoutContext', () => {
         transactionId: 'TXN-123',
         amount: 100,
         cardType: 'visa',
-        lastFour: '1111'
+        lastFour: '1111',
       });
 
       createOrder.mockResolvedValue({
@@ -360,11 +400,13 @@ describe('CheckoutContext', () => {
           orderId: '3DM-ABC123',
           status: 'confirmed',
           items: [],
-          totals: { subtotal: 100, tax: 10, shipping: 0, total: 110 }
-        }
+          totals: { subtotal: 100, tax: 10, shipping: 0, total: 110 },
+        },
       });
 
-      const { result } = renderHook(() => useCheckout(), { wrapper: AllProviders });
+      const { result } = renderHook(() => useCheckout(), {
+        wrapper: AllProviders,
+      });
 
       await act(async () => {
         const success = await result.current.placeOrder();
@@ -381,10 +423,12 @@ describe('CheckoutContext', () => {
     it('handles payment failure', async () => {
       processPayment.mockResolvedValue({
         success: false,
-        message: 'Transaction declined: Insufficient funds'
+        message: 'Transaction declined: Insufficient funds',
       });
 
-      const { result } = renderHook(() => useCheckout(), { wrapper: AllProviders });
+      const { result } = renderHook(() => useCheckout(), {
+        wrapper: AllProviders,
+      });
 
       await act(async () => {
         const success = await result.current.placeOrder();
@@ -392,7 +436,9 @@ describe('CheckoutContext', () => {
       });
 
       await waitFor(() => {
-        expect(result.current.errors.payment).toBe('Transaction declined: Insufficient funds');
+        expect(result.current.errors.payment).toBe(
+          'Transaction declined: Insufficient funds'
+        );
         expect(result.current.orderResult).toBeNull();
       });
     });
@@ -402,10 +448,12 @@ describe('CheckoutContext', () => {
     it('resets checkout state', async () => {
       validateAddress.mockResolvedValue({
         success: true,
-        normalizedAddress: { firstName: 'John' }
+        normalizedAddress: { firstName: 'John' },
       });
 
-      const { result } = renderHook(() => useCheckout(), { wrapper: AllProviders });
+      const { result } = renderHook(() => useCheckout(), {
+        wrapper: AllProviders,
+      });
 
       // Make some changes
       act(() => {
@@ -429,7 +477,9 @@ describe('CheckoutContext', () => {
 
   describe('Totals Calculation', () => {
     it('calculates totals correctly', () => {
-      const { result } = renderHook(() => useCheckout(), { wrapper: AllProviders });
+      const { result } = renderHook(() => useCheckout(), {
+        wrapper: AllProviders,
+      });
 
       expect(result.current.totals).toBeDefined();
       expect(result.current.totals.subtotal).toBe(0);
@@ -439,7 +489,9 @@ describe('CheckoutContext', () => {
     });
 
     it('includes shipping cost for priority option', () => {
-      const { result } = renderHook(() => useCheckout(), { wrapper: AllProviders });
+      const { result } = renderHook(() => useCheckout(), {
+        wrapper: AllProviders,
+      });
 
       act(() => {
         result.current.setShippingOption('priority');

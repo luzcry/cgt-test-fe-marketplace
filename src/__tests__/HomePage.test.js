@@ -7,7 +7,12 @@ import { products } from '../data/products';
 
 // Mock ModelPreview component since Three.js requires WebGL
 jest.mock('../components/ModelPreview', () => {
-  return function MockModelPreview({ model, fallbackImage, previewColor, alt }) {
+  return function MockModelPreview({
+    model,
+    fallbackImage,
+    previewColor,
+    alt,
+  }) {
     return (
       <div
         data-testid="model-preview"
@@ -68,7 +73,9 @@ describe('HomePage', () => {
   describe('Products section', () => {
     it('renders products title', () => {
       renderHomePage();
-      expect(screen.getByRole('heading', { name: 'All Models' })).toBeInTheDocument();
+      expect(
+        screen.getByRole('heading', { name: 'All Models' })
+      ).toBeInTheDocument();
     });
 
     it('renders all products', () => {
@@ -87,13 +94,17 @@ describe('HomePage', () => {
 
     it('renders product links', () => {
       renderHomePage();
-      const productLinks = screen.getAllByRole('link', { name: /view .+ details/i });
+      const productLinks = screen.getAllByRole('link', {
+        name: /view .+ details/i,
+      });
       expect(productLinks.length).toBeGreaterThanOrEqual(2);
     });
 
     it('renders product categories', () => {
       renderHomePage();
-      expect(screen.getAllByText('Characters').length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText('Characters').length).toBeGreaterThanOrEqual(
+        1
+      );
       expect(screen.getAllByText('Vehicles').length).toBeGreaterThanOrEqual(1);
     });
   });
@@ -133,13 +144,17 @@ describe('HomePage', () => {
   describe('Add to cart functionality', () => {
     it('renders add to cart buttons', () => {
       renderHomePage();
-      const addButtons = screen.getAllByRole('button', { name: /add .+ to cart/i });
+      const addButtons = screen.getAllByRole('button', {
+        name: /add .+ to cart/i,
+      });
       expect(addButtons.length).toBe(products.length);
     });
 
     it('add to cart button is clickable', () => {
       renderHomePage();
-      const addButton = screen.getByRole('button', { name: /add tactical combat soldier to cart/i });
+      const addButton = screen.getByRole('button', {
+        name: /add tactical combat soldier to cart/i,
+      });
       expect(addButton).not.toBeDisabled();
       fireEvent.click(addButton);
     });
@@ -159,14 +174,18 @@ describe('HomePage', () => {
 
     it('has product grid with list role', () => {
       renderHomePage();
-      expect(screen.getByRole('list', { name: /product listings/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('list', { name: /product listings/i })
+      ).toBeInTheDocument();
     });
   });
 
   describe('SEO', () => {
     it('renders product cards with schema markup', () => {
       const { container } = renderHomePage();
-      const productArticles = container.querySelectorAll('[itemtype="https://schema.org/Product"]');
+      const productArticles = container.querySelectorAll(
+        '[itemtype="https://schema.org/Product"]'
+      );
       expect(productArticles.length).toBe(products.length);
     });
   });

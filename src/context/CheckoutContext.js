@@ -9,14 +9,20 @@
  * - Loading and error states
  */
 
-import { createContext, useContext, useCallback, useMemo, useReducer } from 'react';
+import {
+  createContext,
+  useContext,
+  useCallback,
+  useMemo,
+  useReducer,
+} from 'react';
 import {
   validateAddress,
   validatePaymentDetails,
   processPayment,
   createOrder,
   validatePromoCode,
-  trackCheckoutStep
+  trackCheckoutStep,
 } from '../services/checkoutService';
 import { useCart } from './CartContext';
 
@@ -25,21 +31,21 @@ export const CHECKOUT_STEPS = {
   SHIPPING: 'shipping',
   PAYMENT: 'payment',
   REVIEW: 'review',
-  CONFIRMATION: 'confirmation'
+  CONFIRMATION: 'confirmation',
 };
 
 export const STEP_ORDER = [
   CHECKOUT_STEPS.SHIPPING,
   CHECKOUT_STEPS.PAYMENT,
   CHECKOUT_STEPS.REVIEW,
-  CHECKOUT_STEPS.CONFIRMATION
+  CHECKOUT_STEPS.CONFIRMATION,
 ];
 
 export const STEP_TITLES = {
   [CHECKOUT_STEPS.SHIPPING]: 'Shipping',
   [CHECKOUT_STEPS.PAYMENT]: 'Payment',
   [CHECKOUT_STEPS.REVIEW]: 'Review',
-  [CHECKOUT_STEPS.CONFIRMATION]: 'Confirmation'
+  [CHECKOUT_STEPS.CONFIRMATION]: 'Confirmation',
 };
 
 // Initial state
@@ -55,14 +61,14 @@ const initialState = {
     city: '',
     state: '',
     zipCode: '',
-    country: 'United States'
+    country: 'United States',
   },
   paymentInfo: {
     cardNumber: '',
     cardHolder: '',
     expiryDate: '',
     cvv: '',
-    saveCard: false
+    saveCard: false,
   },
   shippingOption: 'instant',
   promoCode: null,
@@ -71,7 +77,7 @@ const initialState = {
   paymentResult: null,
   isLoading: false,
   errors: {},
-  fieldErrors: {}
+  fieldErrors: {},
 };
 
 // Action types
@@ -90,7 +96,7 @@ const ACTIONS = {
   SET_FIELD_ERRORS: 'SET_FIELD_ERRORS',
   CLEAR_ERRORS: 'CLEAR_ERRORS',
   CLEAR_FIELD_ERROR: 'CLEAR_FIELD_ERROR',
-  RESET: 'RESET'
+  RESET: 'RESET',
 };
 
 // Reducer
@@ -103,7 +109,7 @@ function checkoutReducer(state, action) {
       if (!state.completedSteps.includes(action.payload)) {
         return {
           ...state,
-          completedSteps: [...state.completedSteps, action.payload]
+          completedSteps: [...state.completedSteps, action.payload],
         };
       }
       return state;
@@ -111,13 +117,13 @@ function checkoutReducer(state, action) {
     case ACTIONS.UPDATE_SHIPPING:
       return {
         ...state,
-        shippingInfo: { ...state.shippingInfo, ...action.payload }
+        shippingInfo: { ...state.shippingInfo, ...action.payload },
       };
 
     case ACTIONS.UPDATE_PAYMENT:
       return {
         ...state,
-        paymentInfo: { ...state.paymentInfo, ...action.payload }
+        paymentInfo: { ...state.paymentInfo, ...action.payload },
       };
 
     case ACTIONS.SET_SHIPPING_OPTION:
@@ -127,7 +133,7 @@ function checkoutReducer(state, action) {
       return {
         ...state,
         promoCode: action.payload.code,
-        discount: action.payload.discount
+        discount: action.payload.discount,
       };
 
     case ACTIONS.CLEAR_PROMO:
@@ -152,7 +158,8 @@ function checkoutReducer(state, action) {
       return { ...state, errors: {}, fieldErrors: {} };
 
     case ACTIONS.CLEAR_FIELD_ERROR:
-      const { [action.payload]: removed, ...remainingErrors } = state.fieldErrors;
+      const { [action.payload]: removed, ...remainingErrors } =
+        state.fieldErrors;
       return { ...state, fieldErrors: remainingErrors };
 
     case ACTIONS.RESET:
@@ -186,7 +193,7 @@ export function CheckoutProvider({ children }) {
       discountedSubtotal,
       tax,
       shipping,
-      total
+      total,
     };
   }, [cartTotal, state.discount, state.shippingOption]);
 
@@ -195,25 +202,31 @@ export function CheckoutProvider({ children }) {
     return STEP_ORDER.indexOf(state.currentStep);
   }, [state.currentStep]);
 
-  const canGoToStep = useCallback((step) => {
-    const targetIndex = STEP_ORDER.indexOf(step);
-    const currentIndex = getCurrentStepIndex();
+  const canGoToStep = useCallback(
+    (step) => {
+      const targetIndex = STEP_ORDER.indexOf(step);
+      const currentIndex = getCurrentStepIndex();
 
-    // Can always go back
-    if (targetIndex < currentIndex) return true;
+      // Can always go back
+      if (targetIndex < currentIndex) return true;
 
-    // Can go forward only if all previous steps are completed
-    const requiredSteps = STEP_ORDER.slice(0, targetIndex);
-    return requiredSteps.every(s => state.completedSteps.includes(s));
-  }, [state.completedSteps, getCurrentStepIndex]);
+      // Can go forward only if all previous steps are completed
+      const requiredSteps = STEP_ORDER.slice(0, targetIndex);
+      return requiredSteps.every((s) => state.completedSteps.includes(s));
+    },
+    [state.completedSteps, getCurrentStepIndex]
+  );
 
-  const goToStep = useCallback((step) => {
-    if (canGoToStep(step)) {
-      dispatch({ type: ACTIONS.SET_STEP, payload: step });
-      dispatch({ type: ACTIONS.CLEAR_ERRORS });
-      trackCheckoutStep(step, { cartItems: cartItems.length });
-    }
-  }, [canGoToStep, cartItems.length]);
+  const goToStep = useCallback(
+    (step) => {
+      if (canGoToStep(step)) {
+        dispatch({ type: ACTIONS.SET_STEP, payload: step });
+        dispatch({ type: ACTIONS.CLEAR_ERRORS });
+        trackCheckoutStep(step, { cartItems: cartItems.length });
+      }
+    },
+    [canGoToStep, cartItems.length]
+  );
 
   const goToNextStep = useCallback(() => {
     const currentIndex = getCurrentStepIndex();
@@ -250,16 +263,24 @@ export function CheckoutProvider({ children }) {
         return false;
       }
 
-      dispatch({ type: ACTIONS.UPDATE_SHIPPING, payload: result.normalizedAddress });
-      dispatch({ type: ACTIONS.COMPLETE_STEP, payload: CHECKOUT_STEPS.SHIPPING });
+      dispatch({
+        type: ACTIONS.UPDATE_SHIPPING,
+        payload: result.normalizedAddress,
+      });
+      dispatch({
+        type: ACTIONS.COMPLETE_STEP,
+        payload: CHECKOUT_STEPS.SHIPPING,
+      });
       dispatch({ type: ACTIONS.SET_STEP, payload: CHECKOUT_STEPS.PAYMENT });
       dispatch({ type: ACTIONS.SET_LOADING, payload: false });
-      trackCheckoutStep(CHECKOUT_STEPS.PAYMENT, { cartItems: cartItems.length });
+      trackCheckoutStep(CHECKOUT_STEPS.PAYMENT, {
+        cartItems: cartItems.length,
+      });
       return true;
     } catch (error) {
       dispatch({
         type: ACTIONS.SET_ERRORS,
-        payload: { general: 'Failed to validate address. Please try again.' }
+        payload: { general: 'Failed to validate address. Please try again.' },
       });
       dispatch({ type: ACTIONS.SET_LOADING, payload: false });
       return false;
@@ -285,7 +306,10 @@ export function CheckoutProvider({ children }) {
         return false;
       }
 
-      dispatch({ type: ACTIONS.COMPLETE_STEP, payload: CHECKOUT_STEPS.PAYMENT });
+      dispatch({
+        type: ACTIONS.COMPLETE_STEP,
+        payload: CHECKOUT_STEPS.PAYMENT,
+      });
       dispatch({ type: ACTIONS.SET_STEP, payload: CHECKOUT_STEPS.REVIEW });
       dispatch({ type: ACTIONS.SET_LOADING, payload: false });
       trackCheckoutStep(CHECKOUT_STEPS.REVIEW, { cartItems: cartItems.length });
@@ -293,7 +317,7 @@ export function CheckoutProvider({ children }) {
     } catch (error) {
       dispatch({
         type: ACTIONS.SET_ERRORS,
-        payload: { general: 'Failed to validate payment. Please try again.' }
+        payload: { general: 'Failed to validate payment. Please try again.' },
       });
       dispatch({ type: ACTIONS.SET_LOADING, payload: false });
       return false;
@@ -301,37 +325,40 @@ export function CheckoutProvider({ children }) {
   }, [state.paymentInfo, cartItems.length]);
 
   // Promo code handler
-  const applyPromoCode = useCallback(async (code) => {
-    dispatch({ type: ACTIONS.SET_LOADING, payload: true });
-    dispatch({ type: ACTIONS.CLEAR_ERRORS });
+  const applyPromoCode = useCallback(
+    async (code) => {
+      dispatch({ type: ACTIONS.SET_LOADING, payload: true });
+      dispatch({ type: ACTIONS.CLEAR_ERRORS });
 
-    try {
-      const result = await validatePromoCode(code, totals.subtotal);
+      try {
+        const result = await validatePromoCode(code, totals.subtotal);
 
-      if (!result.success) {
+        if (!result.success) {
+          dispatch({
+            type: ACTIONS.SET_ERRORS,
+            payload: { promo: result.message },
+          });
+          dispatch({ type: ACTIONS.SET_LOADING, payload: false });
+          return false;
+        }
+
+        dispatch({
+          type: ACTIONS.SET_PROMO,
+          payload: { code: result.code, discount: result.discount },
+        });
+        dispatch({ type: ACTIONS.SET_LOADING, payload: false });
+        return true;
+      } catch (error) {
         dispatch({
           type: ACTIONS.SET_ERRORS,
-          payload: { promo: result.message }
+          payload: { promo: 'Failed to apply promo code.' },
         });
         dispatch({ type: ACTIONS.SET_LOADING, payload: false });
         return false;
       }
-
-      dispatch({
-        type: ACTIONS.SET_PROMO,
-        payload: { code: result.code, discount: result.discount }
-      });
-      dispatch({ type: ACTIONS.SET_LOADING, payload: false });
-      return true;
-    } catch (error) {
-      dispatch({
-        type: ACTIONS.SET_ERRORS,
-        payload: { promo: 'Failed to apply promo code.' }
-      });
-      dispatch({ type: ACTIONS.SET_LOADING, payload: false });
-      return false;
-    }
-  }, [totals.subtotal]);
+    },
+    [totals.subtotal]
+  );
 
   const removePromoCode = useCallback(() => {
     dispatch({ type: ACTIONS.CLEAR_PROMO });
@@ -349,12 +376,15 @@ export function CheckoutProvider({ children }) {
 
     try {
       // Process payment
-      const paymentResult = await processPayment(state.paymentInfo, totals.total);
+      const paymentResult = await processPayment(
+        state.paymentInfo,
+        totals.total
+      );
 
       if (!paymentResult.success) {
         dispatch({
           type: ACTIONS.SET_ERRORS,
-          payload: { payment: paymentResult.message }
+          payload: { payment: paymentResult.message },
         });
         dispatch({ type: ACTIONS.SET_LOADING, payload: false });
         return false;
@@ -367,13 +397,13 @@ export function CheckoutProvider({ children }) {
         items: cartItems,
         shippingAddress: state.shippingInfo,
         paymentResult,
-        totals
+        totals,
       });
 
       if (!orderResult.success) {
         dispatch({
           type: ACTIONS.SET_ERRORS,
-          payload: { order: 'Failed to create order. Please try again.' }
+          payload: { order: 'Failed to create order. Please try again.' },
         });
         dispatch({ type: ACTIONS.SET_LOADING, payload: false });
         return false;
@@ -381,18 +411,23 @@ export function CheckoutProvider({ children }) {
 
       dispatch({ type: ACTIONS.SET_ORDER_RESULT, payload: orderResult.order });
       dispatch({ type: ACTIONS.COMPLETE_STEP, payload: CHECKOUT_STEPS.REVIEW });
-      dispatch({ type: ACTIONS.SET_STEP, payload: CHECKOUT_STEPS.CONFIRMATION });
+      dispatch({
+        type: ACTIONS.SET_STEP,
+        payload: CHECKOUT_STEPS.CONFIRMATION,
+      });
       dispatch({ type: ACTIONS.SET_LOADING, payload: false });
 
       // Clear cart after successful order
       clearCart();
 
-      trackCheckoutStep(CHECKOUT_STEPS.CONFIRMATION, { orderId: orderResult.order.orderId });
+      trackCheckoutStep(CHECKOUT_STEPS.CONFIRMATION, {
+        orderId: orderResult.order.orderId,
+      });
       return true;
     } catch (error) {
       dispatch({
         type: ACTIONS.SET_ERRORS,
-        payload: { general: 'An unexpected error occurred. Please try again.' }
+        payload: { general: 'An unexpected error occurred. Please try again.' },
       });
       dispatch({ type: ACTIONS.SET_LOADING, payload: false });
       return false;
@@ -405,57 +440,60 @@ export function CheckoutProvider({ children }) {
   }, []);
 
   // Context value
-  const value = useMemo(() => ({
-    // State
-    ...state,
-    cartItems,
-    totals,
+  const value = useMemo(
+    () => ({
+      // State
+      ...state,
+      cartItems,
+      totals,
 
-    // Step navigation
-    currentStepIndex: getCurrentStepIndex(),
-    totalSteps: STEP_ORDER.length,
-    canGoToStep,
-    goToStep,
-    goToNextStep,
-    goToPreviousStep,
+      // Step navigation
+      currentStepIndex: getCurrentStepIndex(),
+      totalSteps: STEP_ORDER.length,
+      canGoToStep,
+      goToStep,
+      goToNextStep,
+      goToPreviousStep,
 
-    // Shipping
-    updateShippingInfo,
-    submitShippingInfo,
+      // Shipping
+      updateShippingInfo,
+      submitShippingInfo,
 
-    // Payment
-    updatePaymentInfo,
-    submitPaymentInfo,
+      // Payment
+      updatePaymentInfo,
+      submitPaymentInfo,
 
-    // Promo
-    applyPromoCode,
-    removePromoCode,
+      // Promo
+      applyPromoCode,
+      removePromoCode,
 
-    // Shipping option
-    setShippingOption,
+      // Shipping option
+      setShippingOption,
 
-    // Order
-    placeOrder,
-    resetCheckout
-  }), [
-    state,
-    cartItems,
-    totals,
-    getCurrentStepIndex,
-    canGoToStep,
-    goToStep,
-    goToNextStep,
-    goToPreviousStep,
-    updateShippingInfo,
-    submitShippingInfo,
-    updatePaymentInfo,
-    submitPaymentInfo,
-    applyPromoCode,
-    removePromoCode,
-    setShippingOption,
-    placeOrder,
-    resetCheckout
-  ]);
+      // Order
+      placeOrder,
+      resetCheckout,
+    }),
+    [
+      state,
+      cartItems,
+      totals,
+      getCurrentStepIndex,
+      canGoToStep,
+      goToStep,
+      goToNextStep,
+      goToPreviousStep,
+      updateShippingInfo,
+      submitShippingInfo,
+      updatePaymentInfo,
+      submitPaymentInfo,
+      applyPromoCode,
+      removePromoCode,
+      setShippingOption,
+      placeOrder,
+      resetCheckout,
+    ]
+  );
 
   return (
     <CheckoutContext.Provider value={value}>

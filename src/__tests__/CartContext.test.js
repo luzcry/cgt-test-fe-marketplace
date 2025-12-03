@@ -23,7 +23,9 @@ describe('CartContext', () => {
   });
   describe('useCart hook', () => {
     it('throws error when used outside CartProvider', () => {
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      const consoleSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
 
       expect(() => {
         renderHook(() => useCart());
@@ -222,7 +224,10 @@ describe('CartContext', () => {
     it('provides initial notification state as hidden', () => {
       const { result } = renderHook(() => useCart(), { wrapper });
 
-      expect(result.current.notification).toEqual({ show: false, product: null });
+      expect(result.current.notification).toEqual({
+        show: false,
+        product: null,
+      });
     });
 
     it('shows notification when product is added to cart', () => {
@@ -265,7 +270,10 @@ describe('CartContext', () => {
         result.current.hideNotification();
       });
 
-      expect(result.current.notification).toEqual({ show: false, product: null });
+      expect(result.current.notification).toEqual({
+        show: false,
+        product: null,
+      });
     });
   });
 });

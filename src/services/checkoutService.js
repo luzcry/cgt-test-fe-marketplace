@@ -13,7 +13,7 @@ const DELAY_MAX = 1500;
  * Generates a random delay to simulate network latency
  */
 const simulateNetworkDelay = () =>
-  new Promise(resolve =>
+  new Promise((resolve) =>
     setTimeout(resolve, Math.random() * (DELAY_MAX - DELAY_MIN) + DELAY_MIN)
   );
 
@@ -53,7 +53,17 @@ const generateTransactionId = () => {
 export const validateAddress = async (address) => {
   await simulateNetworkDelay();
 
-  const { firstName, lastName, email, phone, street, city, state, zipCode, country } = address;
+  const {
+    firstName,
+    lastName,
+    email,
+    phone,
+    street,
+    city,
+    state,
+    zipCode,
+    country,
+  } = address;
   const errors = {};
 
   // Validate required fields
@@ -75,7 +85,8 @@ export const validateAddress = async (address) => {
   if (!zipCode?.trim()) {
     errors.zipCode = 'ZIP code is required';
   } else if (!/^\d{5}(-\d{4})?$/.test(zipCode)) {
-    errors.zipCode = 'Please enter a valid ZIP code (e.g., 12345 or 12345-6789)';
+    errors.zipCode =
+      'Please enter a valid ZIP code (e.g., 12345 or 12345-6789)';
   }
   if (!country?.trim()) errors.country = 'Country is required';
 
@@ -83,7 +94,7 @@ export const validateAddress = async (address) => {
     return {
       success: false,
       errors,
-      message: 'Please correct the errors in your address'
+      message: 'Please correct the errors in your address',
     };
   }
 
@@ -101,9 +112,9 @@ export const validateAddress = async (address) => {
       state: state.trim().toUpperCase(),
       zipCode: zipCode.trim(),
       country: country.trim(),
-      formatted: `${street.trim()}, ${city.trim()}, ${state.trim().toUpperCase()} ${zipCode.trim()}`
+      formatted: `${street.trim()}, ${city.trim()}, ${state.trim().toUpperCase()} ${zipCode.trim()}`,
     },
-    message: 'Address validated successfully'
+    message: 'Address validated successfully',
   };
 };
 
@@ -173,7 +184,7 @@ export const validatePaymentDetails = async (paymentDetails) => {
   if (!expiryDate?.trim()) {
     errors.expiryDate = 'Expiry date is required';
   } else {
-    const [month, year] = expiryDate.split('/').map(s => s?.trim());
+    const [month, year] = expiryDate.split('/').map((s) => s?.trim());
     const expMonth = parseInt(month, 10);
     const expYear = parseInt(`20${year}`, 10);
     const now = new Date();
@@ -184,7 +195,10 @@ export const validatePaymentDetails = async (paymentDetails) => {
       errors.expiryDate = 'Please enter a valid expiry date (MM/YY)';
     } else if (expMonth < 1 || expMonth > 12) {
       errors.expiryDate = 'Invalid month';
-    } else if (expYear < currentYear || (expYear === currentYear && expMonth < currentMonth)) {
+    } else if (
+      expYear < currentYear ||
+      (expYear === currentYear && expMonth < currentMonth)
+    ) {
       errors.expiryDate = 'Card has expired';
     }
   }
@@ -202,7 +216,7 @@ export const validatePaymentDetails = async (paymentDetails) => {
     return {
       success: false,
       errors,
-      message: 'Please correct the errors in your payment details'
+      message: 'Please correct the errors in your payment details',
     };
   }
 
@@ -210,7 +224,7 @@ export const validatePaymentDetails = async (paymentDetails) => {
     success: true,
     cardType,
     lastFour: cleanNumber.slice(-4),
-    message: 'Payment details validated'
+    message: 'Payment details validated',
   };
 };
 
@@ -237,7 +251,7 @@ export const processPayment = async (paymentInfo, amount) => {
       success: false,
       error: 'insufficient_funds',
       message: 'Transaction declined: Insufficient funds',
-      code: 'PAYMENT_DECLINED'
+      code: 'PAYMENT_DECLINED',
     };
   }
 
@@ -247,7 +261,7 @@ export const processPayment = async (paymentInfo, amount) => {
       success: false,
       error: 'card_declined',
       message: 'Transaction declined: Please contact your bank',
-      code: 'CARD_DECLINED'
+      code: 'CARD_DECLINED',
     };
   }
 
@@ -261,7 +275,7 @@ export const processPayment = async (paymentInfo, amount) => {
     lastFour: cleanNumber.slice(-4),
     cardHolder: cardHolder,
     timestamp: new Date().toISOString(),
-    message: 'Payment processed successfully'
+    message: 'Payment processed successfully',
   };
 };
 
@@ -282,37 +296,39 @@ export const createOrder = async (orderData) => {
 
   const orderId = generateOrderId();
   const estimatedDelivery = new Date();
-  estimatedDelivery.setDate(estimatedDelivery.getDate() + Math.floor(Math.random() * 3) + 3); // 3-5 days
+  estimatedDelivery.setDate(
+    estimatedDelivery.getDate() + Math.floor(Math.random() * 3) + 3
+  ); // 3-5 days
 
   return {
     success: true,
     order: {
       orderId,
       status: 'confirmed',
-      items: items.map(item => ({
+      items: items.map((item) => ({
         id: item.id,
         name: item.name,
         price: item.price,
         quantity: item.quantity,
         category: item.category,
-        subtotal: item.price * item.quantity
+        subtotal: item.price * item.quantity,
       })),
       itemCount: items.reduce((acc, item) => acc + item.quantity, 0),
       shippingAddress: {
         ...shippingAddress,
-        formatted: `${shippingAddress.street}, ${shippingAddress.city}, ${shippingAddress.state} ${shippingAddress.zipCode}`
+        formatted: `${shippingAddress.street}, ${shippingAddress.city}, ${shippingAddress.state} ${shippingAddress.zipCode}`,
       },
       payment: {
         transactionId: paymentResult.transactionId,
         cardType: paymentResult.cardType,
         lastFour: paymentResult.lastFour,
-        amount: paymentResult.amount
+        amount: paymentResult.amount,
       },
       totals: {
         subtotal: totals.subtotal,
         tax: totals.tax,
         shipping: totals.shipping,
-        total: totals.total
+        total: totals.total,
       },
       estimatedDelivery: estimatedDelivery.toISOString(),
       createdAt: new Date().toISOString(),
@@ -321,29 +337,29 @@ export const createOrder = async (orderData) => {
           status: 'Order Placed',
           description: 'Your order has been received',
           timestamp: new Date().toISOString(),
-          completed: true
+          completed: true,
         },
         {
           status: 'Processing',
           description: 'Preparing your digital assets',
           timestamp: null,
-          completed: false
+          completed: false,
         },
         {
           status: 'Ready for Download',
           description: 'Your files are ready',
           timestamp: null,
-          completed: false
+          completed: false,
         },
         {
           status: 'Delivered',
           description: 'Download links sent to email',
           timestamp: estimatedDelivery.toISOString(),
-          completed: false
-        }
-      ]
+          completed: false,
+        },
+      ],
     },
-    message: 'Order created successfully'
+    message: 'Order created successfully',
   };
 };
 
@@ -367,7 +383,7 @@ export const getShippingOptions = async (address) => {
         description: 'Get immediate access to your files',
         price: 0,
         estimatedDays: 0,
-        recommended: true
+        recommended: true,
       },
       {
         id: 'priority',
@@ -375,9 +391,9 @@ export const getShippingOptions = async (address) => {
         description: 'Priority queue for download links',
         price: 4.99,
         estimatedDays: 0,
-        recommended: false
-      }
-    ]
+        recommended: false,
+      },
+    ],
   };
 };
 
@@ -399,10 +415,30 @@ export const validatePromoCode = async (code, subtotal) => {
 
   // Mock promo codes
   const promoCodes = {
-    'WELCOME10': { type: 'percentage', value: 10, minOrder: 0, description: '10% off your order' },
-    'SAVE20': { type: 'percentage', value: 20, minOrder: 100, description: '20% off orders over $100' },
-    '3DFREE': { type: 'fixed', value: 25, minOrder: 50, description: '$25 off orders over $50' },
-    'NEWUSER': { type: 'percentage', value: 15, minOrder: 0, description: '15% new user discount' }
+    WELCOME10: {
+      type: 'percentage',
+      value: 10,
+      minOrder: 0,
+      description: '10% off your order',
+    },
+    SAVE20: {
+      type: 'percentage',
+      value: 20,
+      minOrder: 100,
+      description: '20% off orders over $100',
+    },
+    '3DFREE': {
+      type: 'fixed',
+      value: 25,
+      minOrder: 50,
+      description: '$25 off orders over $50',
+    },
+    NEWUSER: {
+      type: 'percentage',
+      value: 15,
+      minOrder: 0,
+      description: '15% new user discount',
+    },
   };
 
   const promo = promoCodes[normalizedCode];
@@ -411,7 +447,7 @@ export const validatePromoCode = async (code, subtotal) => {
     return {
       success: false,
       error: 'invalid_code',
-      message: 'Invalid promo code'
+      message: 'Invalid promo code',
     };
   }
 
@@ -419,13 +455,12 @@ export const validatePromoCode = async (code, subtotal) => {
     return {
       success: false,
       error: 'minimum_not_met',
-      message: `Minimum order of $${promo.minOrder} required for this code`
+      message: `Minimum order of $${promo.minOrder} required for this code`,
     };
   }
 
-  const discount = promo.type === 'percentage'
-    ? (subtotal * promo.value / 100)
-    : promo.value;
+  const discount =
+    promo.type === 'percentage' ? (subtotal * promo.value) / 100 : promo.value;
 
   return {
     success: true,
@@ -434,7 +469,7 @@ export const validatePromoCode = async (code, subtotal) => {
     value: promo.value,
     discount: Math.min(discount, subtotal), // Can't discount more than subtotal
     description: promo.description,
-    message: `Promo code applied: ${promo.description}`
+    message: `Promo code applied: ${promo.description}`,
   };
 };
 
@@ -452,7 +487,7 @@ export const trackCheckoutStep = async (step, data = {}) => {
   // In a real app, this would send to analytics
   console.log(`[Analytics] Checkout Step: ${step}`, {
     timestamp: new Date().toISOString(),
-    ...data
+    ...data,
   });
   return { tracked: true };
 };
@@ -465,7 +500,7 @@ const checkoutService = {
   createOrder,
   getShippingOptions,
   validatePromoCode,
-  trackCheckoutStep
+  trackCheckoutStep,
 };
 
 export default checkoutService;

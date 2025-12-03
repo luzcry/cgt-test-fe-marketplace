@@ -10,7 +10,9 @@
   z-index: 40;
   opacity: 0;
   visibility: hidden;
-  transition: opacity var(--transition-base), visibility var(--transition-base);
+  transition:
+    opacity var(--transition-base),
+    visibility var(--transition-base);
 
   @media (min-width: $breakpoint-lg) {
     display: none;
@@ -237,7 +239,9 @@
     max-height: 0;
     overflow: hidden;
     opacity: 0;
-    transition: max-height 0.3s ease, opacity 0.3s ease;
+    transition:
+      max-height 0.3s ease,
+      opacity 0.3s ease;
 
     &--expanded {
       max-height: 500px;
@@ -288,7 +292,9 @@
     border: 2px solid rgba(var(--color-primary-rgb), 0.3);
     border-radius: var(--radius-sm);
     background: transparent;
-    transition: background var(--transition-fast), border-color var(--transition-fast);
+    transition:
+      background var(--transition-fast),
+      border-color var(--transition-fast);
 
     svg {
       width: 0.875rem;
@@ -296,7 +302,9 @@
       stroke: var(--color-background);
       opacity: 0;
       transform: scale(0.5);
-      transition: opacity var(--transition-fast), transform var(--transition-fast);
+      transition:
+        opacity var(--transition-fast),
+        transform var(--transition-fast);
     }
   }
 
@@ -353,7 +361,9 @@
       border-radius: 50%;
       cursor: pointer;
       pointer-events: all;
-      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+      transition:
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast);
 
       &:hover {
         transform: scale(1.1);
@@ -369,7 +379,9 @@
       border-radius: 50%;
       cursor: pointer;
       pointer-events: all;
-      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+      transition:
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast);
 
       &:hover {
         transform: scale(1.1);

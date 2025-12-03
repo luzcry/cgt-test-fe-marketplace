@@ -13,16 +13,17 @@ const CartPage = lazy(() => import('./pages/CartPage'));
 
 // Lazy load CheckoutPage with its provider to avoid loading checkout code on other pages
 const CheckoutPageWithProvider = lazy(() =>
-  import(/* webpackChunkName: "checkout" */ './pages/CheckoutPage').then((module) =>
-    import(/* webpackChunkName: "checkout" */ './context/CheckoutContext').then(
-      ({ CheckoutProvider }) => ({
+  import(/* webpackChunkName: "checkout" */ './pages/CheckoutPage').then(
+    (module) =>
+      import(
+        /* webpackChunkName: "checkout" */ './context/CheckoutContext'
+      ).then(({ CheckoutProvider }) => ({
         default: () => (
           <CheckoutProvider>
             <module.default />
           </CheckoutProvider>
         ),
-      })
-    )
+      }))
   )
 );
 
@@ -63,7 +64,10 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/products/:productId" element={<ProductPage />} />
                 <Route path="/cart" element={<CartPage />} />
-                <Route path="/checkout" element={<CheckoutPageWithProvider />} />
+                <Route
+                  path="/checkout"
+                  element={<CheckoutPageWithProvider />}
+                />
               </Routes>
             </Suspense>
           </main>

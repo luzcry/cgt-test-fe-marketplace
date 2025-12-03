@@ -70,7 +70,9 @@ describe('App', () => {
 
     it('renders product page at /products/:id', async () => {
       renderApp(`/products/${PRODUCT_1_ID}`);
-      expect(await screen.findByRole('heading', { name: 'Tactical Combat Soldier' })).toBeInTheDocument();
+      expect(
+        await screen.findByRole('heading', { name: 'Tactical Combat Soldier' })
+      ).toBeInTheDocument();
     });
 
     it('renders cart page at /cart', async () => {
@@ -82,7 +84,9 @@ describe('App', () => {
   describe('Integration', () => {
     it('shows products on home page', async () => {
       renderApp('/');
-      expect(await screen.findByText('Tactical Combat Soldier')).toBeInTheDocument();
+      expect(
+        await screen.findByText('Tactical Combat Soldier')
+      ).toBeInTheDocument();
       expect(screen.getByText('Classic Toy Car Model')).toBeInTheDocument();
     });
 
@@ -90,7 +94,9 @@ describe('App', () => {
       renderApp('/');
       // Wait for page to load, then check header cart button
       await screen.findByText('Next-Gen');
-      expect(screen.getByRole('link', { name: /shopping cart/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('link', { name: /shopping cart/i })
+      ).toBeInTheDocument();
     });
   });
 });

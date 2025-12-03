@@ -14,7 +14,7 @@ jest.mock('../services/checkoutService', () => ({
   createOrder: jest.fn(),
   validatePromoCode: jest.fn(),
   detectCardType: jest.fn(() => 'visa'),
-  trackCheckoutStep: jest.fn()
+  trackCheckoutStep: jest.fn(),
 }));
 
 import {
@@ -22,14 +22,14 @@ import {
   validatePaymentDetails,
   processPayment,
   createOrder,
-  validatePromoCode
+  validatePromoCode,
 } from '../services/checkoutService';
 
 // Mock useNavigate
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockNavigate
+  useNavigate: () => mockNavigate,
 }));
 
 // Test wrapper with all providers
@@ -39,9 +39,7 @@ const renderWithProviders = (ui) => {
       <HelmetProvider>
         <BrowserRouter>
           <CartProvider>
-            <CheckoutProvider>
-              {children}
-            </CheckoutProvider>
+            <CheckoutProvider>{children}</CheckoutProvider>
           </CartProvider>
         </BrowserRouter>
       </HelmetProvider>
@@ -75,13 +73,17 @@ describe('CheckoutPage', () => {
     it('has accessible navigation', () => {
       renderWithProviders(<CheckoutPage />);
 
-      expect(screen.getByRole('navigation', { name: /checkout progress/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('navigation', { name: /checkout progress/i })
+      ).toBeInTheDocument();
     });
 
     it('renders checkout title', () => {
       renderWithProviders(<CheckoutPage />);
 
-      expect(screen.getByRole('heading', { name: /checkout/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('heading', { name: /checkout/i })
+      ).toBeInTheDocument();
     });
   });
 
@@ -118,7 +120,9 @@ describe('CheckoutPage', () => {
     it('has continue to payment button', () => {
       renderWithProviders(<CheckoutPage />);
 
-      expect(screen.getByRole('button', { name: /continue to payment/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: /continue to payment/i })
+      ).toBeInTheDocument();
     });
 
     it('shows validation errors on invalid submission', async () => {
@@ -126,17 +130,21 @@ describe('CheckoutPage', () => {
         success: false,
         errors: {
           firstName: 'First name is required',
-          email: 'Please enter a valid email address'
-        }
+          email: 'Please enter a valid email address',
+        },
       });
 
       renderWithProviders(<CheckoutPage />);
 
-      await userEvent.click(screen.getByRole('button', { name: /continue to payment/i }));
+      await userEvent.click(
+        screen.getByRole('button', { name: /continue to payment/i })
+      );
 
       await waitFor(() => {
         expect(screen.getByText('First name is required')).toBeInTheDocument();
-        expect(screen.getByText('Please enter a valid email address')).toBeInTheDocument();
+        expect(
+          screen.getByText('Please enter a valid email address')
+        ).toBeInTheDocument();
       });
     });
 
@@ -152,8 +160,8 @@ describe('CheckoutPage', () => {
           city: 'New York',
           state: 'NY',
           zipCode: '10001',
-          country: 'United States'
-        }
+          country: 'United States',
+        },
       });
 
       renderWithProviders(<CheckoutPage />);
@@ -161,14 +169,19 @@ describe('CheckoutPage', () => {
       // Fill required fields
       await userEvent.type(screen.getByLabelText(/first name/i), 'John');
       await userEvent.type(screen.getByLabelText(/last name/i), 'Doe');
-      await userEvent.type(screen.getByLabelText(/email address/i), 'john@example.com');
+      await userEvent.type(
+        screen.getByLabelText(/email address/i),
+        'john@example.com'
+      );
       await userEvent.type(screen.getByLabelText(/phone/i), '555-123-4567');
       await userEvent.type(screen.getByLabelText(/street/i), '123 Main St');
       await userEvent.type(screen.getByLabelText(/city/i), 'New York');
       await userEvent.type(screen.getByLabelText(/state/i), 'NY');
       await userEvent.type(screen.getByLabelText(/zip/i), '10001');
 
-      await userEvent.click(screen.getByRole('button', { name: /continue to payment/i }));
+      await userEvent.click(
+        screen.getByRole('button', { name: /continue to payment/i })
+      );
 
       await waitFor(() => {
         expect(screen.getByText(/payment details/i)).toBeInTheDocument();
@@ -180,14 +193,16 @@ describe('CheckoutPage', () => {
     beforeEach(async () => {
       validateAddress.mockResolvedValue({
         success: true,
-        normalizedAddress: {}
+        normalizedAddress: {},
       });
     });
 
     const goToPaymentStep = async () => {
       renderWithProviders(<CheckoutPage />);
 
-      await userEvent.click(screen.getByRole('button', { name: /continue to payment/i }));
+      await userEvent.click(
+        screen.getByRole('button', { name: /continue to payment/i })
+      );
 
       await waitFor(() => {
         expect(screen.getByText(/payment details/i)).toBeInTheDocument();
@@ -213,13 +228,17 @@ describe('CheckoutPage', () => {
     it('shows security message', async () => {
       await goToPaymentStep();
 
-      expect(screen.getByText(/payment information is encrypted/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/payment information is encrypted/i)
+      ).toBeInTheDocument();
     });
 
     it('has save card checkbox', async () => {
       await goToPaymentStep();
 
-      expect(screen.getByText(/save card for future purchases/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/save card for future purchases/i)
+      ).toBeInTheDocument();
     });
   });
 
@@ -241,12 +260,14 @@ describe('CheckoutPage', () => {
     it('error messages are associated with inputs', async () => {
       validateAddress.mockResolvedValue({
         success: false,
-        errors: { firstName: 'First name is required' }
+        errors: { firstName: 'First name is required' },
       });
 
       renderWithProviders(<CheckoutPage />);
 
-      await userEvent.click(screen.getByRole('button', { name: /continue to payment/i }));
+      await userEvent.click(
+        screen.getByRole('button', { name: /continue to payment/i })
+      );
 
       await waitFor(() => {
         const firstNameInput = screen.getByLabelText(/first name/i);
@@ -257,13 +278,17 @@ describe('CheckoutPage', () => {
     it('buttons have accessible names', () => {
       renderWithProviders(<CheckoutPage />);
 
-      expect(screen.getByRole('button', { name: /continue to payment/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: /continue to payment/i })
+      ).toBeInTheDocument();
     });
 
     it('step buttons indicate current step', () => {
       renderWithProviders(<CheckoutPage />);
 
-      const shippingButton = screen.getByRole('button', { name: /1.*shipping/i });
+      const shippingButton = screen.getByRole('button', {
+        name: /1.*shipping/i,
+      });
       expect(shippingButton).toHaveAttribute('aria-current', 'step');
     });
   });
@@ -271,25 +296,41 @@ describe('CheckoutPage', () => {
   describe('Loading States', () => {
     it('shows loading spinner during form submission', async () => {
       // Mock a slow response
-      validateAddress.mockImplementation(() => new Promise(resolve => {
-        setTimeout(() => resolve({ success: true, normalizedAddress: {} }), 1000);
-      }));
+      validateAddress.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            setTimeout(
+              () => resolve({ success: true, normalizedAddress: {} }),
+              1000
+            );
+          })
+      );
 
       renderWithProviders(<CheckoutPage />);
 
-      fireEvent.click(screen.getByRole('button', { name: /continue to payment/i }));
+      fireEvent.click(
+        screen.getByRole('button', { name: /continue to payment/i })
+      );
 
       expect(screen.getByText(/validating/i)).toBeInTheDocument();
     });
 
     it('disables submit button during loading', async () => {
-      validateAddress.mockImplementation(() => new Promise(resolve => {
-        setTimeout(() => resolve({ success: true, normalizedAddress: {} }), 1000);
-      }));
+      validateAddress.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            setTimeout(
+              () => resolve({ success: true, normalizedAddress: {} }),
+              1000
+            );
+          })
+      );
 
       renderWithProviders(<CheckoutPage />);
 
-      const submitButton = screen.getByRole('button', { name: /continue to payment/i });
+      const submitButton = screen.getByRole('button', {
+        name: /continue to payment/i,
+      });
       fireEvent.click(submitButton);
 
       expect(submitButton).toBeDisabled();
@@ -300,7 +341,9 @@ describe('CheckoutPage', () => {
     it('displays copyright information', () => {
       renderWithProviders(<CheckoutPage />);
 
-      expect(screen.getByText(/3D Marketplace. All rights reserved/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/3D Marketplace. All rights reserved/i)
+      ).toBeInTheDocument();
     });
 
     it('has footer links', () => {
@@ -325,15 +368,17 @@ describe('CheckoutPage Integration', () => {
       normalizedAddress: {
         firstName: 'John',
         lastName: 'Doe',
-        email: 'john@example.com'
-      }
+        email: 'john@example.com',
+      },
     });
 
     renderWithProviders(<CheckoutPage />);
 
     // Step 1: Shipping
     await userEvent.type(screen.getByLabelText(/first name/i), 'John');
-    await userEvent.click(screen.getByRole('button', { name: /continue to payment/i }));
+    await userEvent.click(
+      screen.getByRole('button', { name: /continue to payment/i })
+    );
 
     await waitFor(() => {
       expect(screen.getByText(/payment details/i)).toBeInTheDocument();
@@ -361,26 +406,34 @@ describe('Confirmation Step', () => {
         orderResult: {
           orderId: 'ORD-2024-ABC123',
           items: [
-            { id: '1', name: 'Test Product', quantity: 1, subtotal: 49.99 }
+            { id: '1', name: 'Test Product', quantity: 1, subtotal: 49.99 },
           ],
           totals: {
             subtotal: 49.99,
-            tax: 5.00,
+            tax: 5.0,
             shipping: 0,
-            total: 54.99
+            total: 54.99,
           },
           shippingAddress: {
-            email: 'test@example.com'
+            email: 'test@example.com',
           },
           estimatedDelivery: new Date().toISOString(),
           timeline: [
-            { status: 'Order Placed', description: 'Your order has been received', completed: true },
-            { status: 'Processing', description: 'We are preparing your order', completed: false }
-          ]
+            {
+              status: 'Order Placed',
+              description: 'Your order has been received',
+              completed: true,
+            },
+            {
+              status: 'Processing',
+              description: 'We are preparing your order',
+              completed: false,
+            },
+          ],
         },
         resetCheckout: jest.fn(),
-        goToStep: jest.fn()
-      })
+        goToStep: jest.fn(),
+      }),
     }));
 
     renderWithProviders(<CheckoutPage />);
@@ -410,8 +463,8 @@ describe('Confirmation Step', () => {
       // Mock clipboard API
       Object.assign(navigator, {
         clipboard: {
-          writeText: jest.fn().mockResolvedValue(undefined)
-        }
+          writeText: jest.fn().mockResolvedValue(undefined),
+        },
       });
     });
 
@@ -438,7 +491,7 @@ describe('Animation and Performance', () => {
   describe('Reduced Motion', () => {
     beforeEach(() => {
       // Mock matchMedia for reduced motion
-      window.matchMedia = jest.fn().mockImplementation(query => ({
+      window.matchMedia = jest.fn().mockImplementation((query) => ({
         matches: query === '(prefers-reduced-motion: reduce)',
         media: query,
         onchange: null,
@@ -446,12 +499,14 @@ describe('Animation and Performance', () => {
         removeListener: jest.fn(),
         addEventListener: jest.fn(),
         removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn()
+        dispatchEvent: jest.fn(),
       }));
     });
 
     it('respects prefers-reduced-motion media query', () => {
-      expect(window.matchMedia('(prefers-reduced-motion: reduce)').matches).toBe(true);
+      expect(
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      ).toBe(true);
     });
   });
 
@@ -469,7 +524,7 @@ describe('Responsive Design', () => {
     Object.defineProperty(window, 'innerWidth', {
       writable: true,
       configurable: true,
-      value: 375
+      value: 375,
     });
 
     renderWithProviders(<CheckoutPage />);
@@ -481,7 +536,7 @@ describe('Responsive Design', () => {
     Object.defineProperty(window, 'innerWidth', {
       writable: true,
       configurable: true,
-      value: 1200
+      value: 1200,
     });
 
     renderWithProviders(<CheckoutPage />);

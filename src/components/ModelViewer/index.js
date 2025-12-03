@@ -9,12 +9,14 @@
 import { lazy, Suspense, memo } from 'react';
 
 // Lazy load the actual ModelViewer component with Three.js
-const ModelViewerImpl = lazy(() =>
-  import(/* webpackChunkName: "three-viewer" */ './ModelViewer')
+const ModelViewerImpl = lazy(
+  () => import(/* webpackChunkName: "three-viewer" */ './ModelViewer')
 );
 
 // Loading placeholder that matches the viewer dimensions
-function LoadingPlaceholder({ previewColor = 'linear-gradient(135deg, #4A90E2, #357ABD)' }) {
+function LoadingPlaceholder({
+  previewColor = 'linear-gradient(135deg, #4A90E2, #357ABD)',
+}) {
   return (
     <div
       className="model-viewer model-viewer--loading"
@@ -64,7 +66,9 @@ function LoadingPlaceholder({ previewColor = 'linear-gradient(135deg, #4A90E2, #
 // Wrapper component that handles lazy loading
 const ModelViewer = memo(function ModelViewer(props) {
   return (
-    <Suspense fallback={<LoadingPlaceholder previewColor={props.previewColor} />}>
+    <Suspense
+      fallback={<LoadingPlaceholder previewColor={props.previewColor} />}
+    >
       <ModelViewerImpl {...props} />
     </Suspense>
   );
@@ -73,11 +77,13 @@ const ModelViewer = memo(function ModelViewer(props) {
 // Re-export preload helper
 ModelViewer.preload = (model) => {
   // Trigger the lazy load of the ModelViewer module first
-  import(/* webpackChunkName: "three-viewer" */ './ModelViewer').then((module) => {
-    if (module.default.preload) {
-      module.default.preload(model);
+  import(/* webpackChunkName: "three-viewer" */ './ModelViewer').then(
+    (module) => {
+      if (module.default.preload) {
+        module.default.preload(model);
+      }
     }
-  });
+  );
 };
 
 export default ModelViewer;

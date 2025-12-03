@@ -1,4 +1,11 @@
-import { Suspense, useState, useCallback, useRef, memo, useEffect } from 'react';
+import {
+  Suspense,
+  useState,
+  useCallback,
+  useRef,
+  memo,
+  useEffect,
+} from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
 import {
   OrbitControls,
@@ -59,7 +66,7 @@ function addToQueue(callback) {
 function removeFromQueue(id) {
   queueCallbacks.delete(id);
   // Also remove from pending queue if not yet processed
-  renderQueue = renderQueue.filter(item => item.id !== id);
+  renderQueue = renderQueue.filter((item) => item.id !== id);
 }
 
 function finishQueueItem() {
@@ -159,7 +166,7 @@ const ModelPreview = memo(function ModelPreview({
   previewColor = 'linear-gradient(135deg, #4A90E2, #357ABD)',
   alt = '3D Model Preview',
   skipCache = false,
-  disableCacheWrite = false
+  disableCacheWrite = false,
 }) {
   const [isVisible, setIsVisible] = useState(false);
   const [snapshot, setSnapshot] = useState(() =>
@@ -206,7 +213,14 @@ const ModelPreview = memo(function ModelPreview({
 
   // Queue rendering when visible and no snapshot exists
   useEffect(() => {
-    if (!isVisible || !model || snapshot || queueIdRef.current !== null || hasError) return;
+    if (
+      !isVisible ||
+      !model ||
+      snapshot ||
+      queueIdRef.current !== null ||
+      hasError
+    )
+      return;
 
     const id = addToQueue(() => {
       setIsRendering(true);
@@ -226,21 +240,24 @@ const ModelPreview = memo(function ModelPreview({
     setModelLoaded(true);
   }, []);
 
-  const handleSnapshot = useCallback((dataUrl) => {
-    if (model && !skipCache && !disableCacheWrite) {
-      snapshotCache.set(model.url, dataUrl);
-    }
-    setSnapshot(dataUrl);
-    setIsRendering(false);
-    setModelLoaded(false);
+  const handleSnapshot = useCallback(
+    (dataUrl) => {
+      if (model && !skipCache && !disableCacheWrite) {
+        snapshotCache.set(model.url, dataUrl);
+      }
+      setSnapshot(dataUrl);
+      setIsRendering(false);
+      setModelLoaded(false);
 
-    // Clean up queue tracking before signaling next item can process
-    if (queueIdRef.current !== null) {
-      removeFromQueue(queueIdRef.current);
-      queueIdRef.current = null;
-    }
-    finishQueueItem();
-  }, [model, skipCache, disableCacheWrite]);
+      // Clean up queue tracking before signaling next item can process
+      if (queueIdRef.current !== null) {
+        removeFromQueue(queueIdRef.current);
+        queueIdRef.current = null;
+      }
+      finishQueueItem();
+    },
+    [model, skipCache, disableCacheWrite]
+  );
 
   const handleError = useCallback(() => {
     setHasError(true);
@@ -305,7 +322,12 @@ const ModelPreview = memo(function ModelPreview({
         />
         {/* 3D Badge */}
         <div className="model-preview__badge" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <path d="M12 2L2 7l10 5 10-5-10-5z" />
             <path d="M2 17l10 5 10-5" />
             <path d="M2 12l10 5 10-5" />
@@ -362,13 +384,13 @@ const ModelPreview = memo(function ModelPreview({
             antialias: true,
             alpha: true,
             preserveDrawingBuffer: true, // Required for snapshot
-            powerPreference: 'low-power'
+            powerPreference: 'low-power',
           }}
           onError={handleError}
           // Use passive event listeners for better scroll performance
           events={(store) => ({
             ...store,
-            passive: true
+            passive: true,
           })}
         >
           <ambientLight intensity={0.6} />
@@ -398,7 +420,12 @@ const ModelPreview = memo(function ModelPreview({
 
       {/* 3D Badge */}
       <div className="model-preview__badge" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <path d="M12 2L2 7l10 5 10-5-10-5z" />
           <path d="M2 17l10 5 10-5" />
           <path d="M2 12l10 5 10-5" />

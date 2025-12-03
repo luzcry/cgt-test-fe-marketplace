@@ -132,11 +132,17 @@ function ProductPage() {
       <Helmet>
         <title>{product.name} | 3D Marketplace</title>
         <meta name="description" content={metaDescription} />
-        <meta name="keywords" content={`3D model, ${product.category}, ${product.tags.join(', ')}, ${product.fileFormat.join(', ')}`} />
+        <meta
+          name="keywords"
+          content={`3D model, ${product.category}, ${product.tags.join(', ')}, ${product.fileFormat.join(', ')}`}
+        />
 
         {/* Open Graph */}
         <meta property="og:type" content="product" />
-        <meta property="og:title" content={`${product.name} | 3D Marketplace`} />
+        <meta
+          property="og:title"
+          content={`${product.name} | 3D Marketplace`}
+        />
         <meta property="og:description" content={metaDescription} />
         <meta property="og:image" content={product.image} />
         <meta property="product:price:amount" content={product.price} />
@@ -144,7 +150,10 @@ function ProductPage() {
 
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={`${product.name} | 3D Marketplace`} />
+        <meta
+          name="twitter:title"
+          content={`${product.name} | 3D Marketplace`}
+        />
         <meta name="twitter:description" content={metaDescription} />
 
         {/* JSON-LD Structured Data */}
@@ -186,8 +195,7 @@ function ProductPage() {
             <p className="product-page__image-hint">
               {product.model
                 ? 'Interactive 3D preview available'
-                : 'High-resolution preview'
-              }
+                : 'High-resolution preview'}
             </p>
           </div>
 
@@ -228,9 +236,13 @@ function ProductPage() {
                     >
                       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                     </svg>
-                    <span className="product-page__rating-value">{product.rating}</span>
+                    <span className="product-page__rating-value">
+                      {product.rating}
+                    </span>
                   </div>
-                  <span className="product-page__rating-count">(Premium Asset)</span>
+                  <span className="product-page__rating-count">
+                    (Premium Asset)
+                  </span>
                 </div>
               )}
             </header>
@@ -250,7 +262,10 @@ function ProductPage() {
             </div>
 
             {/* Technical Specifications */}
-            <section className="product-page__specs" aria-labelledby="specs-title">
+            <section
+              className="product-page__specs"
+              aria-labelledby="specs-title"
+            >
               <h2 id="specs-title" className="product-page__specs-title">
                 Technical Specifications
               </h2>
@@ -280,7 +295,10 @@ function ProductPage() {
 
             {/* 3D Preview Badge */}
             {product.model && (
-              <div className="product-page__preview-badge" aria-label="3D preview available">
+              <div
+                className="product-page__preview-badge"
+                aria-label="3D preview available"
+              >
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
@@ -297,13 +315,19 @@ function ProductPage() {
             )}
 
             {/* Features */}
-            <section className="product-page__features" aria-labelledby="features-title">
+            <section
+              className="product-page__features"
+              aria-labelledby="features-title"
+            >
               <h2 id="features-title" className="product-page__features-title">
                 What's Included
               </h2>
               {features.map((feature) => (
                 <div key={feature} className="product-page__feature">
-                  <span className="product-page__feature-icon" aria-hidden="true">
+                  <span
+                    className="product-page__feature-icon"
+                    aria-hidden="true"
+                  >
                     <svg
                       viewBox="0 0 24 24"
                       fill="none"
@@ -328,11 +352,18 @@ function ProductPage() {
               itemType="https://schema.org/Offer"
             >
               <meta itemProp="priceCurrency" content={product.currency} />
-              <meta itemProp="availability" content="https://schema.org/InStock" />
+              <meta
+                itemProp="availability"
+                content="https://schema.org/InStock"
+              />
               <div className="product-page__price-row">
                 <div>
                   <p className="product-page__price-label">Price</p>
-                  <p className="product-page__price" itemProp="price" content={product.price}>
+                  <p
+                    className="product-page__price"
+                    itemProp="price"
+                    content={product.price}
+                  >
                     ${product.price}
                   </p>
                 </div>

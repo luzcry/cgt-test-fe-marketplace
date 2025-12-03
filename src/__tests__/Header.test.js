@@ -43,6 +43,8 @@ describe('Header', () => {
   it('has accessible navigation', () => {
     renderHeader();
     expect(screen.getByRole('banner')).toBeInTheDocument();
-    expect(screen.getByRole('navigation', { name: /main/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('navigation', { name: /main/i })
+    ).toBeInTheDocument();
   });
 });

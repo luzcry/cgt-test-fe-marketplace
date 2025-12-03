@@ -99,7 +99,9 @@ describe('CartNotification', () => {
     it('hides notification when "Continue Shopping" is clicked', () => {
       renderNotification(true);
 
-      fireEvent.click(screen.getByRole('button', { name: /continue shopping/i }));
+      fireEvent.click(
+        screen.getByRole('button', { name: /continue shopping/i })
+      );
 
       expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     });
@@ -107,7 +109,9 @@ describe('CartNotification', () => {
     it('does not navigate when "Continue Shopping" is clicked', () => {
       renderNotification(true);
 
-      fireEvent.click(screen.getByRole('button', { name: /continue shopping/i }));
+      fireEvent.click(
+        screen.getByRole('button', { name: /continue shopping/i })
+      );
 
       expect(mockNavigate).not.toHaveBeenCalled();
     });
@@ -115,7 +119,9 @@ describe('CartNotification', () => {
     it('hides notification when close button is clicked', () => {
       renderNotification(true);
 
-      fireEvent.click(screen.getByRole('button', { name: /close notification/i }));
+      fireEvent.click(
+        screen.getByRole('button', { name: /close notification/i })
+      );
 
       expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     });
@@ -137,19 +143,25 @@ describe('CartNotification', () => {
     it('close button has accessible label', () => {
       renderNotification(true);
 
-      expect(screen.getByRole('button', { name: /close notification/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: /close notification/i })
+      ).toBeInTheDocument();
     });
 
     it('View Cart button is accessible', () => {
       renderNotification(true);
 
-      expect(screen.getByRole('button', { name: /view cart/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: /view cart/i })
+      ).toBeInTheDocument();
     });
 
     it('Continue Shopping button is accessible', () => {
       renderNotification(true);
 
-      expect(screen.getByRole('button', { name: /continue shopping/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: /continue shopping/i })
+      ).toBeInTheDocument();
     });
   });
 

@@ -16,11 +16,13 @@ The CartPage displays the user's shopping cart with a modern two-column layout f
 ## Visual Design
 
 ### Layout
+
 - **Two-column grid**: Cart items (left 2/3) + Order summary (right 1/3)
 - **Sticky summary**: Order summary stays visible while scrolling
 - **Single column**: Stacks vertically on mobile
 
 ### Cart Items
+
 - **Preview box**: Gradient background with "3D" text
 - **Item info**: Name, category, quantity controls, price
 - **Quantity controls**: +/- buttons with current value
@@ -28,12 +30,14 @@ The CartPage displays the user's shopping cart with a modern two-column layout f
 - **Remove button**: Trash icon with hover effect
 
 ### Order Summary
+
 - **Summary card**: Frosted glass card with gradient background
 - **Price breakdown**: Subtotal, tax, total
 - **Total display**: Large gradient text
 - **Actions**: Checkout button (primary), Continue shopping, Clear cart
 
 ### Empty State
+
 - **Shopping bag icon**: Large SVG illustration
 - **Message**: "Your Cart is Empty"
 - **CTA button**: "Browse Products" with glow effect
@@ -98,25 +102,28 @@ The CartPage displays the user's shopping cart with a modern two-column layout f
 ## Features
 
 ### Quantity Management
+
 - Increase/decrease buttons
 - Minimum quantity of 1 (decrease disabled at 1)
 - Real-time price updates
 
 ### Price Calculations
+
 - Subtotal: Sum of (price × quantity)
 - Tax: 10% of subtotal
 - Total: Subtotal + Tax
 
 ### Cart Actions
+
 - **Proceed to Checkout**: Primary CTA
 - **Continue Shopping**: Navigate to home
 - **Clear Cart**: Remove all items
 
 ## Responsive Behavior
 
-| Breakpoint | Layout | Summary |
-|------------|--------|---------|
-| Mobile | Single column | Bottom of page |
+| Breakpoint        | Layout            | Summary        |
+| ----------------- | ----------------- | -------------- |
+| Mobile            | Single column     | Bottom of page |
 | Desktop (1024px+) | Two columns (2:1) | Sticky sidebar |
 
 ## Dependencies
@@ -148,11 +155,13 @@ None. Uses `useCart()` hook for all cart data.
 Located at `src/__tests__/CartPage.test.js`
 
 ### Empty Cart Tests
+
 - Renders empty cart message
 - Renders browse products button
 - Shows shopping bag icon
 
 ### Cart with Items Tests
+
 - Renders cart title
 - Renders product info
 - Renders quantity controls
@@ -161,6 +170,7 @@ Located at `src/__tests__/CartPage.test.js`
 - Renders checkout button
 
 ### Interaction Tests
+
 - Increases quantity
 - Decreases quantity
 - Removes item on button click
@@ -168,6 +178,7 @@ Located at `src/__tests__/CartPage.test.js`
 - Navigates to continue shopping
 
 ### Calculation Tests
+
 - Calculates subtotal correctly
 - Calculates tax correctly
 - Calculates total correctly

@@ -1,7 +1,12 @@
 import { useEffect, useState, useCallback, memo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { useCheckout, CHECKOUT_STEPS, STEP_ORDER, STEP_TITLES } from '../context/CheckoutContext';
+import {
+  useCheckout,
+  CHECKOUT_STEPS,
+  STEP_ORDER,
+  STEP_TITLES,
+} from '../context/CheckoutContext';
 import { useCart } from '../context/CartContext';
 import { detectCardType } from '../services/checkoutService';
 import ModelPreview from '../components/ModelPreview/ModelPreview';
@@ -10,7 +15,12 @@ import './CheckoutPage.scss';
 // =============================================================================
 // Step Indicator Component
 // =============================================================================
-const StepIndicator = memo(function StepIndicator({ steps, currentStep, completedSteps, onStepClick }) {
+const StepIndicator = memo(function StepIndicator({
+  steps,
+  currentStep,
+  completedSteps,
+  onStepClick,
+}) {
   return (
     <nav className="checkout-steps" aria-label="Checkout progress">
       <ol className="checkout-steps__list">
@@ -33,17 +43,28 @@ const StepIndicator = memo(function StepIndicator({ steps, currentStep, complete
               >
                 <span className="checkout-steps__number">
                   {isCompleted ? (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      aria-hidden="true"
+                    >
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
                   ) : (
                     index + 1
                   )}
                 </span>
-                <span className="checkout-steps__label">{STEP_TITLES[step]}</span>
+                <span className="checkout-steps__label">
+                  {STEP_TITLES[step]}
+                </span>
               </button>
               {index < steps.length - 1 && (
-                <div className={`checkout-steps__connector ${isCompleted ? 'checkout-steps__connector--completed' : ''}`} aria-hidden="true" />
+                <div
+                  className={`checkout-steps__connector ${isCompleted ? 'checkout-steps__connector--completed' : ''}`}
+                  aria-hidden="true"
+                />
               )}
             </li>
           );
@@ -69,13 +90,17 @@ const FormInput = memo(function FormInput({
   maxLength,
   pattern,
   inputMode,
-  disabled = false
+  disabled = false,
 }) {
   return (
     <div className={`form-field ${error ? 'form-field--error' : ''}`}>
       <label htmlFor={id} className="form-field__label">
         {label}
-        {required && <span className="form-field__required" aria-hidden="true">*</span>}
+        {required && (
+          <span className="form-field__required" aria-hidden="true">
+            *
+          </span>
+        )}
       </label>
       <input
         id={id}
@@ -111,7 +136,7 @@ const ShippingStep = memo(function ShippingStep() {
     updateShippingInfo,
     submitShippingInfo,
     isLoading,
-    fieldErrors
+    fieldErrors,
   } = useCheckout();
 
   const handleSubmit = (e) => {
@@ -120,9 +145,14 @@ const ShippingStep = memo(function ShippingStep() {
   };
 
   return (
-    <section className="checkout-step checkout-step--shipping" aria-labelledby="shipping-heading">
+    <section
+      className="checkout-step checkout-step--shipping"
+      aria-labelledby="shipping-heading"
+    >
       <header className="checkout-step__header">
-        <h2 id="shipping-heading" className="checkout-step__title">Shipping Information</h2>
+        <h2 id="shipping-heading" className="checkout-step__title">
+          Shipping Information
+        </h2>
         <p className="checkout-step__description">
           Enter your contact and delivery information for your digital assets.
         </p>
@@ -239,7 +269,13 @@ const ShippingStep = memo(function ShippingStep() {
 
         <div className="checkout-step__actions">
           <Link to="/cart" className="checkout-step__back-link">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              aria-hidden="true"
+            >
               <polyline points="15 18 9 12 15 6" />
             </svg>
             Back to Cart
@@ -257,7 +293,13 @@ const ShippingStep = memo(function ShippingStep() {
             ) : (
               <>
                 Continue to Payment
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  aria-hidden="true"
+                >
                   <polyline points="9 18 15 12 9 6" />
                 </svg>
               </>
@@ -279,7 +321,7 @@ const PaymentStep = memo(function PaymentStep() {
     submitPaymentInfo,
     goToPreviousStep,
     isLoading,
-    fieldErrors
+    fieldErrors,
   } = useCheckout();
 
   const [cardType, setCardType] = useState('unknown');
@@ -300,16 +342,22 @@ const PaymentStep = memo(function PaymentStep() {
     return cleaned;
   }, []);
 
-  const handleCardNumberChange = useCallback((id, value) => {
-    const formatted = formatCardNumber(value);
-    updatePaymentInfo(id, formatted);
-    setCardType(detectCardType(formatted));
-  }, [formatCardNumber, updatePaymentInfo]);
+  const handleCardNumberChange = useCallback(
+    (id, value) => {
+      const formatted = formatCardNumber(value);
+      updatePaymentInfo(id, formatted);
+      setCardType(detectCardType(formatted));
+    },
+    [formatCardNumber, updatePaymentInfo]
+  );
 
-  const handleExpiryChange = useCallback((id, value) => {
-    const formatted = formatExpiryDate(value);
-    updatePaymentInfo(id, formatted);
-  }, [formatExpiryDate, updatePaymentInfo]);
+  const handleExpiryChange = useCallback(
+    (id, value) => {
+      const formatted = formatExpiryDate(value);
+      updatePaymentInfo(id, formatted);
+    },
+    [formatExpiryDate, updatePaymentInfo]
+  );
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -318,36 +366,84 @@ const PaymentStep = memo(function PaymentStep() {
 
   const cardIcons = {
     visa: (
-      <svg viewBox="0 0 48 32" className="card-icon card-icon--visa" aria-label="Visa">
-        <rect fill="#1A1F71" width="48" height="32" rx="4"/>
-        <text x="24" y="20" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">VISA</text>
+      <svg
+        viewBox="0 0 48 32"
+        className="card-icon card-icon--visa"
+        aria-label="Visa"
+      >
+        <rect fill="#1A1F71" width="48" height="32" rx="4" />
+        <text
+          x="24"
+          y="20"
+          textAnchor="middle"
+          fill="white"
+          fontSize="12"
+          fontWeight="bold"
+        >
+          VISA
+        </text>
       </svg>
     ),
     mastercard: (
-      <svg viewBox="0 0 48 32" className="card-icon card-icon--mastercard" aria-label="Mastercard">
-        <rect fill="#000" width="48" height="32" rx="4"/>
-        <circle cx="18" cy="16" r="10" fill="#EB001B"/>
-        <circle cx="30" cy="16" r="10" fill="#F79E1B"/>
+      <svg
+        viewBox="0 0 48 32"
+        className="card-icon card-icon--mastercard"
+        aria-label="Mastercard"
+      >
+        <rect fill="#000" width="48" height="32" rx="4" />
+        <circle cx="18" cy="16" r="10" fill="#EB001B" />
+        <circle cx="30" cy="16" r="10" fill="#F79E1B" />
       </svg>
     ),
     amex: (
-      <svg viewBox="0 0 48 32" className="card-icon card-icon--amex" aria-label="American Express">
-        <rect fill="#006FCF" width="48" height="32" rx="4"/>
-        <text x="24" y="20" textAnchor="middle" fill="white" fontSize="8" fontWeight="bold">AMEX</text>
+      <svg
+        viewBox="0 0 48 32"
+        className="card-icon card-icon--amex"
+        aria-label="American Express"
+      >
+        <rect fill="#006FCF" width="48" height="32" rx="4" />
+        <text
+          x="24"
+          y="20"
+          textAnchor="middle"
+          fill="white"
+          fontSize="8"
+          fontWeight="bold"
+        >
+          AMEX
+        </text>
       </svg>
     ),
     discover: (
-      <svg viewBox="0 0 48 32" className="card-icon card-icon--discover" aria-label="Discover">
-        <rect fill="#FF6000" width="48" height="32" rx="4"/>
-        <text x="24" y="20" textAnchor="middle" fill="white" fontSize="8" fontWeight="bold">DISCOVER</text>
+      <svg
+        viewBox="0 0 48 32"
+        className="card-icon card-icon--discover"
+        aria-label="Discover"
+      >
+        <rect fill="#FF6000" width="48" height="32" rx="4" />
+        <text
+          x="24"
+          y="20"
+          textAnchor="middle"
+          fill="white"
+          fontSize="8"
+          fontWeight="bold"
+        >
+          DISCOVER
+        </text>
       </svg>
-    )
+    ),
   };
 
   return (
-    <section className="checkout-step checkout-step--payment" aria-labelledby="payment-heading">
+    <section
+      className="checkout-step checkout-step--payment"
+      aria-labelledby="payment-heading"
+    >
       <header className="checkout-step__header">
-        <h2 id="payment-heading" className="checkout-step__title">Payment Details</h2>
+        <h2 id="payment-heading" className="checkout-step__title">
+          Payment Details
+        </h2>
         <p className="checkout-step__description">
           Enter your card information. Your payment is secure and encrypted.
         </p>
@@ -438,7 +534,13 @@ const PaymentStep = memo(function PaymentStep() {
         </div>
 
         <div className="checkout-form__security">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            aria-hidden="true"
+          >
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
             <path d="M7 11V7a5 5 0 0 1 10 0v4" />
           </svg>
@@ -451,7 +553,13 @@ const PaymentStep = memo(function PaymentStep() {
             className="checkout-step__back"
             onClick={goToPreviousStep}
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              aria-hidden="true"
+            >
               <polyline points="15 18 9 12 15 6" />
             </svg>
             Back
@@ -469,7 +577,13 @@ const PaymentStep = memo(function PaymentStep() {
             ) : (
               <>
                 Review Order
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  aria-hidden="true"
+                >
                   <polyline points="9 18 15 12 9 6" />
                 </svg>
               </>
@@ -499,7 +613,7 @@ const ReviewStep = memo(function ReviewStep() {
     goToStep,
     placeOrder,
     isLoading,
-    errors
+    errors,
   } = useCheckout();
 
   const [promoInput, setPromoInput] = useState('');
@@ -522,9 +636,14 @@ const ReviewStep = memo(function ReviewStep() {
   };
 
   return (
-    <section className="checkout-step checkout-step--review" aria-labelledby="review-heading">
+    <section
+      className="checkout-step checkout-step--review"
+      aria-labelledby="review-heading"
+    >
       <header className="checkout-step__header">
-        <h2 id="review-heading" className="checkout-step__title">Review Your Order</h2>
+        <h2 id="review-heading" className="checkout-step__title">
+          Review Your Order
+        </h2>
         <p className="checkout-step__description">
           Please review your order details before completing your purchase.
         </p>
@@ -535,7 +654,9 @@ const ReviewStep = memo(function ReviewStep() {
         <div className="checkout-review__section">
           <h3 className="checkout-review__section-title">
             Order Items
-            <span className="checkout-review__count">{cartItems.length} items</span>
+            <span className="checkout-review__count">
+              {cartItems.length} items
+            </span>
           </h3>
           <ul className="checkout-review__items">
             {cartItems.map((item) => (
@@ -565,7 +686,9 @@ const ReviewStep = memo(function ReviewStep() {
         {/* Shipping Info */}
         <div className="checkout-review__section">
           <div className="checkout-review__section-header">
-            <h3 className="checkout-review__section-title">Contact & Billing</h3>
+            <h3 className="checkout-review__section-title">
+              Contact & Billing
+            </h3>
             <button
               type="button"
               className="checkout-review__edit"
@@ -577,20 +700,27 @@ const ReviewStep = memo(function ReviewStep() {
           <div className="checkout-review__info-grid">
             <div className="checkout-review__info-item">
               <p className="checkout-review__info-label">Name</p>
-              <p className="checkout-review__info-value">{shippingInfo.firstName} {shippingInfo.lastName}</p>
+              <p className="checkout-review__info-value">
+                {shippingInfo.firstName} {shippingInfo.lastName}
+              </p>
             </div>
             <div className="checkout-review__info-item">
               <p className="checkout-review__info-label">Email</p>
-              <p className="checkout-review__info-value">{shippingInfo.email}</p>
+              <p className="checkout-review__info-value">
+                {shippingInfo.email}
+              </p>
             </div>
             <div className="checkout-review__info-item">
               <p className="checkout-review__info-label">Phone</p>
-              <p className="checkout-review__info-value">{shippingInfo.phone}</p>
+              <p className="checkout-review__info-value">
+                {shippingInfo.phone}
+              </p>
             </div>
             <div className="checkout-review__info-item">
               <p className="checkout-review__info-label">Address</p>
               <p className="checkout-review__info-value">
-                {shippingInfo.street}, {shippingInfo.city}, {shippingInfo.state} {shippingInfo.zipCode}
+                {shippingInfo.street}, {shippingInfo.city}, {shippingInfo.state}{' '}
+                {shippingInfo.zipCode}
               </p>
             </div>
           </div>
@@ -610,14 +740,23 @@ const ReviewStep = memo(function ReviewStep() {
           </div>
           <div className="checkout-review__payment">
             <div className="checkout-review__card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
                 <line x1="1" y1="10" x2="23" y2="10" />
               </svg>
             </div>
             <div className="checkout-review__card-info">
-              <p className="checkout-review__card-type">{cardType.charAt(0).toUpperCase() + cardType.slice(1)}</p>
-              <p className="checkout-review__card-number">**** **** **** {lastFour}</p>
+              <p className="checkout-review__card-type">
+                {cardType.charAt(0).toUpperCase() + cardType.slice(1)}
+              </p>
+              <p className="checkout-review__card-number">
+                **** **** **** {lastFour}
+              </p>
             </div>
           </div>
         </div>
@@ -626,7 +765,9 @@ const ReviewStep = memo(function ReviewStep() {
         <div className="checkout-review__section">
           <h3 className="checkout-review__section-title">Delivery Option</h3>
           <div className="checkout-review__delivery-options">
-            <label className={`checkout-review__delivery-option ${shippingOption === 'instant' ? 'checkout-review__delivery-option--selected' : ''}`}>
+            <label
+              className={`checkout-review__delivery-option ${shippingOption === 'instant' ? 'checkout-review__delivery-option--selected' : ''}`}
+            >
               <input
                 type="radio"
                 name="shippingOption"
@@ -636,12 +777,18 @@ const ReviewStep = memo(function ReviewStep() {
               />
               <span className="checkout-review__delivery-radio" />
               <div className="checkout-review__delivery-content">
-                <span className="checkout-review__delivery-name">Instant Download</span>
-                <span className="checkout-review__delivery-desc">Get immediate access to your files</span>
+                <span className="checkout-review__delivery-name">
+                  Instant Download
+                </span>
+                <span className="checkout-review__delivery-desc">
+                  Get immediate access to your files
+                </span>
               </div>
               <span className="checkout-review__delivery-price">FREE</span>
             </label>
-            <label className={`checkout-review__delivery-option ${shippingOption === 'priority' ? 'checkout-review__delivery-option--selected' : ''}`}>
+            <label
+              className={`checkout-review__delivery-option ${shippingOption === 'priority' ? 'checkout-review__delivery-option--selected' : ''}`}
+            >
               <input
                 type="radio"
                 name="shippingOption"
@@ -651,8 +798,12 @@ const ReviewStep = memo(function ReviewStep() {
               />
               <span className="checkout-review__delivery-radio" />
               <div className="checkout-review__delivery-content">
-                <span className="checkout-review__delivery-name">Priority Processing</span>
-                <span className="checkout-review__delivery-desc">Priority queue for download links</span>
+                <span className="checkout-review__delivery-name">
+                  Priority Processing
+                </span>
+                <span className="checkout-review__delivery-desc">
+                  Priority queue for download links
+                </span>
               </div>
               <span className="checkout-review__delivery-price">$4.99</span>
             </label>
@@ -665,20 +816,33 @@ const ReviewStep = memo(function ReviewStep() {
           {promoCode ? (
             <div className="checkout-review__promo-applied">
               <div className="checkout-review__promo-badge">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  aria-hidden="true"
+                >
                   <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
                   <line x1="7" y1="7" x2="7.01" y2="7" />
                 </svg>
                 <span>{promoCode}</span>
               </div>
-              <span className="checkout-review__promo-discount">-${totals.discount.toFixed(2)}</span>
+              <span className="checkout-review__promo-discount">
+                -${totals.discount.toFixed(2)}
+              </span>
               <button
                 type="button"
                 className="checkout-review__promo-remove"
                 onClick={removePromoCode}
                 aria-label="Remove promo code"
               >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
                   <line x1="18" y1="6" x2="6" y2="18" />
                   <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
@@ -704,7 +868,9 @@ const ReviewStep = memo(function ReviewStep() {
             </div>
           )}
           {errors.promo && (
-            <p className="checkout-review__promo-error" role="alert">{errors.promo}</p>
+            <p className="checkout-review__promo-error" role="alert">
+              {errors.promo}
+            </p>
           )}
           <p className="checkout-review__promo-hint">
             Try: WELCOME10, SAVE20, 3DFREE, or NEWUSER
@@ -731,7 +897,11 @@ const ReviewStep = memo(function ReviewStep() {
             </div>
             <div className="checkout-review__summary-line">
               <span>Delivery</span>
-              <span>{totals.shipping === 0 ? 'FREE' : `$${totals.shipping.toFixed(2)}`}</span>
+              <span>
+                {totals.shipping === 0
+                  ? 'FREE'
+                  : `$${totals.shipping.toFixed(2)}`}
+              </span>
             </div>
             <div className="checkout-review__summary-line checkout-review__summary-line--total">
               <span>Total</span>
@@ -743,7 +913,12 @@ const ReviewStep = memo(function ReviewStep() {
         {/* Errors */}
         {(errors.payment || errors.order || errors.general) && (
           <div className="checkout-review__error" role="alert">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <circle cx="12" cy="12" r="10" />
               <line x1="12" y1="8" x2="12" y2="12" />
               <line x1="12" y1="16" x2="12.01" y2="16" />
@@ -758,7 +933,13 @@ const ReviewStep = memo(function ReviewStep() {
             className="checkout-step__back"
             onClick={goToPreviousStep}
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              aria-hidden="true"
+            >
               <polyline points="15 18 9 12 15 6" />
             </svg>
             Back
@@ -775,7 +956,13 @@ const ReviewStep = memo(function ReviewStep() {
               </>
             ) : (
               <>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  aria-hidden="true"
+                >
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                   <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                 </svg>
@@ -834,16 +1021,23 @@ const ConfirmationStep = memo(function ConfirmationStep() {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
   });
 
   return (
-    <section className="checkout-step checkout-step--confirmation" aria-labelledby="confirmation-heading">
+    <section
+      className="checkout-step checkout-step--confirmation"
+      aria-labelledby="confirmation-heading"
+    >
       {/* Celebration background effect */}
       <div className="checkout-celebration" aria-hidden="true">
         <div className="checkout-celebration__particles">
           {[...Array(12)].map((_, i) => (
-            <span key={i} className="checkout-celebration__particle" style={{ '--i': i }} />
+            <span
+              key={i}
+              className="checkout-celebration__particle"
+              style={{ '--i': i }}
+            />
           ))}
         </div>
       </div>
@@ -851,9 +1045,16 @@ const ConfirmationStep = memo(function ConfirmationStep() {
       <div className="checkout-confirmation">
         <div className="checkout-confirmation__success">
           <div className="checkout-confirmation__icon-wrapper">
-            <div className="checkout-confirmation__icon-glow" aria-hidden="true" />
+            <div
+              className="checkout-confirmation__icon-glow"
+              aria-hidden="true"
+            />
             <div className="checkout-confirmation__icon">
-              <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg
+                viewBox="0 0 52 52"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 <circle
                   className="checkout-confirmation__icon-circle"
                   cx="26"
@@ -875,18 +1076,24 @@ const ConfirmationStep = memo(function ConfirmationStep() {
               </svg>
             </div>
           </div>
-          <h2 id="confirmation-heading" className="checkout-confirmation__title">
+          <h2
+            id="confirmation-heading"
+            className="checkout-confirmation__title"
+          >
             Order Confirmed!
           </h2>
           <p className="checkout-confirmation__subtitle">
-            Thank you for your purchase. Your order has been successfully placed.
+            Thank you for your purchase. Your order has been successfully
+            placed.
           </p>
         </div>
 
         <div className="checkout-confirmation__order-id">
           <span className="checkout-confirmation__order-label">Order ID</span>
           <div className="checkout-confirmation__order-row">
-            <span className="checkout-confirmation__order-number">{orderResult.orderId}</span>
+            <span className="checkout-confirmation__order-number">
+              {orderResult.orderId}
+            </span>
             <button
               type="button"
               className={`checkout-confirmation__copy-btn ${copied ? 'checkout-confirmation__copy-btn--copied' : ''}`}
@@ -894,11 +1101,21 @@ const ConfirmationStep = memo(function ConfirmationStep() {
               aria-label={copied ? 'Copied!' : 'Copy order ID'}
             >
               {copied ? (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               ) : (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
                   <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
                   <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
                 </svg>
@@ -910,13 +1127,21 @@ const ConfirmationStep = memo(function ConfirmationStep() {
 
         <div className="checkout-confirmation__details">
           <div className="checkout-confirmation__detail-section">
-            <h3 className="checkout-confirmation__detail-title">Order Summary</h3>
+            <h3 className="checkout-confirmation__detail-title">
+              Order Summary
+            </h3>
             <ul className="checkout-confirmation__items">
               {orderResult.items.map((item) => (
                 <li key={item.id} className="checkout-confirmation__item">
-                  <span className="checkout-confirmation__item-name">{item.name}</span>
-                  <span className="checkout-confirmation__item-qty">x{item.quantity}</span>
-                  <span className="checkout-confirmation__item-price">${item.subtotal.toFixed(2)}</span>
+                  <span className="checkout-confirmation__item-name">
+                    {item.name}
+                  </span>
+                  <span className="checkout-confirmation__item-qty">
+                    x{item.quantity}
+                  </span>
+                  <span className="checkout-confirmation__item-price">
+                    ${item.subtotal.toFixed(2)}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -931,7 +1156,11 @@ const ConfirmationStep = memo(function ConfirmationStep() {
               </div>
               <div className="checkout-confirmation__total-line">
                 <span>Shipping</span>
-                <span>{orderResult.totals.shipping === 0 ? 'FREE' : `$${orderResult.totals.shipping.toFixed(2)}`}</span>
+                <span>
+                  {orderResult.totals.shipping === 0
+                    ? 'FREE'
+                    : `$${orderResult.totals.shipping.toFixed(2)}`}
+                </span>
               </div>
               <div className="checkout-confirmation__total-line checkout-confirmation__total-line--total">
                 <span>Total Paid</span>
@@ -941,17 +1170,32 @@ const ConfirmationStep = memo(function ConfirmationStep() {
           </div>
 
           <div className="checkout-confirmation__detail-section">
-            <h3 className="checkout-confirmation__detail-title">Delivery Information</h3>
+            <h3 className="checkout-confirmation__detail-title">
+              Delivery Information
+            </h3>
             <div className="checkout-confirmation__delivery">
               <p className="checkout-confirmation__delivery-email">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  aria-hidden="true"
+                >
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                   <polyline points="22,6 12,13 2,6" />
                 </svg>
-                Download links will be sent to: <strong>{orderResult.shippingAddress.email}</strong>
+                Download links will be sent to:{' '}
+                <strong>{orderResult.shippingAddress.email}</strong>
               </p>
               <p className="checkout-confirmation__delivery-date">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  aria-hidden="true"
+                >
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                   <line x1="16" y1="2" x2="16" y2="6" />
                   <line x1="8" y1="2" x2="8" y2="6" />
@@ -963,7 +1207,9 @@ const ConfirmationStep = memo(function ConfirmationStep() {
           </div>
 
           <div className="checkout-confirmation__detail-section">
-            <h3 className="checkout-confirmation__detail-title">Order Timeline</h3>
+            <h3 className="checkout-confirmation__detail-title">
+              Order Timeline
+            </h3>
             <ol className="checkout-confirmation__timeline">
               {orderResult.timeline.map((step, index) => (
                 <li
@@ -972,7 +1218,12 @@ const ConfirmationStep = memo(function ConfirmationStep() {
                 >
                   <div className="checkout-confirmation__timeline-marker">
                     {step.completed ? (
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                      >
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
                     ) : (
@@ -980,8 +1231,12 @@ const ConfirmationStep = memo(function ConfirmationStep() {
                     )}
                   </div>
                   <div className="checkout-confirmation__timeline-content">
-                    <p className="checkout-confirmation__timeline-title">{step.status}</p>
-                    <p className="checkout-confirmation__timeline-desc">{step.description}</p>
+                    <p className="checkout-confirmation__timeline-title">
+                      {step.status}
+                    </p>
+                    <p className="checkout-confirmation__timeline-desc">
+                      {step.description}
+                    </p>
                   </div>
                 </li>
               ))}
@@ -995,7 +1250,13 @@ const ConfirmationStep = memo(function ConfirmationStep() {
             onClick={handleContinueShopping}
           >
             Continue Shopping
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              aria-hidden="true"
+            >
               <polyline points="9 18 15 12 9 6" />
             </svg>
           </button>
@@ -1003,7 +1264,13 @@ const ConfirmationStep = memo(function ConfirmationStep() {
             className="checkout-confirmation__btn checkout-confirmation__btn--secondary"
             onClick={() => window.print()}
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              aria-hidden="true"
+            >
               <polyline points="6 9 6 2 18 2 18 9" />
               <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
               <rect x="6" y="14" width="12" height="8" />
@@ -1044,12 +1311,13 @@ function CheckoutPage() {
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'CheckoutPage',
-    'name': '3D Marketplace Checkout',
-    'description': 'Complete your purchase of premium 3D models and digital assets',
-    'provider': {
+    name: '3D Marketplace Checkout',
+    description:
+      'Complete your purchase of premium 3D models and digital assets',
+    provider: {
       '@type': 'Organization',
-      'name': '3D Marketplace'
-    }
+      name: '3D Marketplace',
+    },
   };
 
   // Render current step
@@ -1072,7 +1340,10 @@ function CheckoutPage() {
     <>
       <Helmet>
         <title>Checkout | 3D Marketplace</title>
-        <meta name="description" content="Complete your purchase of premium 3D models and digital assets. Secure checkout with multiple payment options." />
+        <meta
+          name="description"
+          content="Complete your purchase of premium 3D models and digital assets. Secure checkout with multiple payment options."
+        />
         <meta name="robots" content="noindex, nofollow" />
         <link rel="canonical" href={`${window.location.origin}/checkout`} />
         <script type="application/ld+json">
@@ -1082,13 +1353,23 @@ function CheckoutPage() {
 
       <div className="checkout-page">
         <header className="checkout-page__header">
-          <Link to="/" className="checkout-page__logo" aria-label="Return to 3D Marketplace home">
+          <Link
+            to="/"
+            className="checkout-page__logo"
+            aria-label="Return to 3D Marketplace home"
+          >
             <span className="checkout-page__logo-text">3D</span>
             <span className="checkout-page__logo-sub">MARKETPLACE</span>
           </Link>
           <h1 className="checkout-page__title">Checkout</h1>
           <div className="checkout-page__secure">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              aria-hidden="true"
+            >
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
               <path d="M7 11V7a5 5 0 0 1 10 0v4" />
             </svg>
@@ -1098,20 +1379,19 @@ function CheckoutPage() {
 
         {currentStep !== CHECKOUT_STEPS.CONFIRMATION && (
           <StepIndicator
-            steps={STEP_ORDER.filter(s => s !== CHECKOUT_STEPS.CONFIRMATION)}
+            steps={STEP_ORDER.filter((s) => s !== CHECKOUT_STEPS.CONFIRMATION)}
             currentStep={currentStep}
             completedSteps={completedSteps}
             onStepClick={goToStep}
           />
         )}
 
-        <main className="checkout-page__main">
-          {renderStep()}
-        </main>
+        <main className="checkout-page__main">{renderStep()}</main>
 
         <footer className="checkout-page__footer">
           <p className="checkout-page__footer-text">
-            &copy; {new Date().getFullYear()} 3D Marketplace. All rights reserved.
+            &copy; {new Date().getFullYear()} 3D Marketplace. All rights
+            reserved.
           </p>
           <nav className="checkout-page__footer-links">
             <a href="/terms">Terms of Service</a>

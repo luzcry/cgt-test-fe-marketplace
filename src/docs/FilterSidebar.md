@@ -17,12 +17,14 @@ A responsive filter panel with collapsible sections for filtering products by ca
 ## Features
 
 ### Filter Types
+
 - **Category filter**: Checkbox list (Characters, Vehicles, Props, etc.)
 - **Price range**: Dual-thumb slider ($0 - $500)
 - **Polygon count**: Dual-thumb slider (0 - 100,000)
 - **File format**: Checkbox list (FBX, OBJ, GLTF, BLEND, MAX)
 
 ### UI Features
+
 - **Collapsible sections**: Expandable filter groups with animation
 - **Active filter count**: Badge showing number of active filters
 - **Reset all**: One-click filter reset
@@ -30,19 +32,20 @@ A responsive filter panel with collapsible sections for filtering products by ca
 - **Desktop sticky**: Fixed sidebar during scroll
 
 ### Performance
+
 - **React.memo**: On all sub-components
 - **useCallback**: Stable event handlers
 - **CSS animations**: Smooth transitions without JS
 
 ## Props
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `isOpen` | Boolean | Yes | Controls mobile sidebar visibility |
-| `onClose` | Function | Yes | Callback when sidebar should close |
-| `filters` | Object | Yes | Current filter state |
-| `onFilterChange` | Function | Yes | Callback when filters change |
-| `onReset` | Function | Yes | Callback to reset all filters |
+| Prop             | Type     | Required | Description                        |
+| ---------------- | -------- | -------- | ---------------------------------- |
+| `isOpen`         | Boolean  | Yes      | Controls mobile sidebar visibility |
+| `onClose`        | Function | Yes      | Callback when sidebar should close |
+| `filters`        | Object   | Yes      | Current filter state               |
+| `onFilterChange` | Function | Yes      | Callback when filters change       |
+| `onReset`        | Function | Yes      | Callback to reset all filters      |
 
 ### Filter State Shape
 
@@ -58,6 +61,7 @@ A responsive filter panel with collapsible sections for filtering products by ca
 ## Sub-Components
 
 ### FilterSection
+
 Collapsible container for filter groups.
 
 ```jsx
@@ -72,6 +76,7 @@ Collapsible container for filter groups.
 ```
 
 ### CheckboxFilter
+
 Individual checkbox item with custom styling.
 
 ```jsx
@@ -84,6 +89,7 @@ Individual checkbox item with custom styling.
 ```
 
 ### RangeSlider
+
 Dual-thumb range slider with value display.
 
 ```jsx
@@ -149,12 +155,13 @@ Dual-thumb range slider with value display.
 
 ## Responsive Behavior
 
-| Breakpoint | Behavior |
-|------------|----------|
-| Mobile (<1024px) | Slide-in panel from left, backdrop overlay |
-| Desktop (1024px+) | Sticky sidebar, always visible |
+| Breakpoint        | Behavior                                   |
+| ----------------- | ------------------------------------------ |
+| Mobile (<1024px)  | Slide-in panel from left, backdrop overlay |
+| Desktop (1024px+) | Sticky sidebar, always visible             |
 
 ### Mobile Animation
+
 ```scss
 .filter-sidebar {
   transform: translateX(-100%);
@@ -167,6 +174,7 @@ Dual-thumb range slider with value display.
 ```
 
 ### Desktop Sticky
+
 ```scss
 @media (min-width: 1024px) {
   .filter-sidebar {
@@ -180,11 +188,13 @@ Dual-thumb range slider with value display.
 ## Accessibility
 
 ### Semantic Structure
+
 - `<fieldset>` with `<legend>` for filter groups
 - `<label>` association with form inputs
 - Proper `id` and `for` attributes
 
 ### ARIA Attributes
+
 - `aria-expanded` on collapsible section buttons
 - `aria-controls` linking buttons to content
 - `aria-hidden` on collapsed content
@@ -192,6 +202,7 @@ Dual-thumb range slider with value display.
 - `aria-valuemin`, `aria-valuemax`, `aria-valuenow` on sliders
 
 ### Keyboard Navigation
+
 - Tab through all interactive elements
 - Enter/Space to toggle sections
 - Arrow keys for slider adjustment
@@ -215,9 +226,7 @@ function ProductsPage() {
         onFilterChange={setFilters}
         onReset={() => setFilters(initialFilters)}
       />
-      <div className="products__main">
-        {/* Product grid */}
-      </div>
+      <div className="products__main">{/* Product grid */}</div>
     </section>
   );
 }
@@ -253,12 +262,15 @@ const filteredProducts = useMemo(() => {
 ## Animation Details
 
 ### Section Expand/Collapse
+
 ```scss
 .filter-section__content {
   max-height: 0;
   overflow: hidden;
   opacity: 0;
-  transition: max-height 0.3s ease, opacity 0.3s ease;
+  transition:
+    max-height 0.3s ease,
+    opacity 0.3s ease;
 
   &--expanded {
     max-height: 500px;
@@ -268,6 +280,7 @@ const filteredProducts = useMemo(() => {
 ```
 
 ### Chevron Rotation
+
 ```scss
 .filter-section__chevron {
   transition: transform 0.3s ease;
@@ -279,11 +292,14 @@ const filteredProducts = useMemo(() => {
 ```
 
 ### Checkbox Animation
+
 ```scss
 .checkbox-filter__box svg {
   opacity: 0;
   transform: scale(0.5);
-  transition: opacity 0.15s, transform 0.15s;
+  transition:
+    opacity 0.15s,
+    transform 0.15s;
 }
 
 .checkbox-filter__input:checked + .checkbox-filter__box svg {

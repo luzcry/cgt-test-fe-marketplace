@@ -17,18 +17,21 @@ A reusable, SEO-optimized product card component that displays product informati
 ## Features
 
 ### SEO Optimization
+
 - **Schema.org Product markup**: Full microdata implementation
 - **Structured price data**: Offer schema with currency
 - **Aggregate rating**: Rating schema with best/worst values
 - **Semantic HTML**: Proper heading hierarchy within cards
 
 ### Performance
+
 - **React.memo**: Prevents unnecessary re-renders
 - **Lazy loading images**: `loading="lazy"` and `decoding="async"`
 - **CSS animations**: Hardware-accelerated transforms
 - **Staggered entrance**: Animation delay based on index
 
 ### Accessibility
+
 - **Descriptive links**: Full product info in aria-label
 - **Button labels**: Clear action descriptions
 - **Visual indicators**: Rating with aria-label
@@ -36,10 +39,10 @@ A reusable, SEO-optimized product card component that displays product informati
 
 ## Props
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `product` | Object | Yes | Product data object |
-| `index` | Number | No | Card index for staggered animation (default: 0) |
+| Prop      | Type   | Required | Description                                     |
+| --------- | ------ | -------- | ----------------------------------------------- |
+| `product` | Object | Yes      | Product data object                             |
+| `index`   | Number | No       | Card index for staggered animation (default: 0) |
 
 ### Product Object Shape
 
@@ -66,19 +69,23 @@ The component includes full Schema.org Product microdata:
 
 ```html
 <article itemScope itemType="https://schema.org/Product">
-  <img itemProp="image" />
-  <h3 itemProp="name">Product Name</h3>
-  <p itemProp="description">Description</p>
+  <img itemprop="image" />
+  <h3 itemprop="name">Product Name</h3>
+  <p itemprop="description">Description</p>
 
-  <span itemProp="aggregateRating" itemScope itemType="https://schema.org/AggregateRating">
-    <meta itemProp="ratingValue" content="4.8" />
-    <meta itemProp="bestRating" content="5" />
+  <span
+    itemProp="aggregateRating"
+    itemScope
+    itemType="https://schema.org/AggregateRating"
+  >
+    <meta itemprop="ratingValue" content="4.8" />
+    <meta itemprop="bestRating" content="5" />
   </span>
 
-  <div itemProp="offers" itemScope itemType="https://schema.org/Offer">
-    <meta itemProp="priceCurrency" content="USD" />
+  <div itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+    <meta itemprop="priceCurrency" content="USD" />
     <span itemProp="price" content="89">$89</span>
-    <meta itemProp="availability" content="https://schema.org/InStock" />
+    <meta itemprop="availability" content="https://schema.org/InStock" />
   </div>
 </article>
 ```
@@ -113,6 +120,7 @@ The component includes full Schema.org Product microdata:
 ## Animations
 
 ### Entrance Animation
+
 ```scss
 @keyframes fadeInUp {
   from {
@@ -127,18 +135,22 @@ The component includes full Schema.org Product microdata:
 ```
 
 ### Staggered Delay
+
 Animation delay is calculated based on card index:
+
 ```javascript
 const animationDelay = `${index * 0.05}s`;
 ```
 
 ### Hover Effects
+
 - Card lifts 8px (`translateY(-8px)`)
 - Border color changes to primary
 - Background preview scales 1.05x
 - Gradient overlay fades in
 
 ### Reduced Motion
+
 ```scss
 @media (prefers-reduced-motion: reduce) {
   .product-card {
@@ -157,11 +169,7 @@ function ProductGrid({ products }) {
   return (
     <div className="products__grid">
       {products.map((product, index) => (
-        <ProductCard
-          key={product.id}
-          product={product}
-          index={index}
-        />
+        <ProductCard key={product.id} product={product} index={index} />
       ))}
     </div>
   );
@@ -176,14 +184,14 @@ function ProductGrid({ products }) {
 
 ## Accessibility Features
 
-| Feature | Implementation |
-|---------|----------------|
-| Link description | `aria-label="View {name} details - ${price}"` |
-| Button description | `aria-label="Add {name} to cart for ${price}"` |
-| Rating | `aria-label="Rating: {rating} out of 5 stars"` |
-| Polygon count | `aria-label="{count} polygons"` |
-| Decorative elements | `aria-hidden="true"` |
-| Focus indication | `:focus-visible` outline styles |
+| Feature             | Implementation                                 |
+| ------------------- | ---------------------------------------------- |
+| Link description    | `aria-label="View {name} details - ${price}"`  |
+| Button description  | `aria-label="Add {name} to cart for ${price}"` |
+| Rating              | `aria-label="Rating: {rating} out of 5 stars"` |
+| Polygon count       | `aria-label="{count} polygons"`                |
+| Decorative elements | `aria-hidden="true"`                           |
+| Focus indication    | `:focus-visible` outline styles                |
 
 ## Performance Considerations
 
@@ -196,6 +204,7 @@ function ProductGrid({ products }) {
 ## Testing
 
 The component is tested via HomePage tests:
+
 - Schema markup presence
 - Add to cart functionality
 - Accessible labels

@@ -1,4 +1,11 @@
-import { createContext, useContext, useState, useMemo, useCallback, useEffect } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useMemo,
+  useCallback,
+  useEffect,
+} from 'react';
 
 const CART_STORAGE_KEY = 'marketplace_cart';
 
@@ -15,7 +22,10 @@ function getInitialCart() {
 
 export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState(getInitialCart);
-  const [notification, setNotification] = useState({ show: false, product: null });
+  const [notification, setNotification] = useState({
+    show: false,
+    product: null,
+  });
 
   useEffect(() => {
     try {

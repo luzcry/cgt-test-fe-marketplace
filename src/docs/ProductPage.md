@@ -16,17 +16,20 @@ The ProductPage displays detailed information about a single product with a mode
 ## Visual Design
 
 ### Layout
+
 - **Two-column grid**: Image viewer (left) + Product info (right) on desktop
 - **Sticky image viewer**: Stays visible while scrolling product details
 - **Single column**: Stacks vertically on mobile
 
 ### Image Viewer
+
 - **Container**: Rounded corners with gradient background
 - **Grid pattern overlay**: Subtle tech aesthetic
 - **Placeholder text**: Animated "3D" when no image
 - **Image**: Full-size product image
 
 ### Product Information
+
 - **Header**: Category badge, gradient title, rating with star
 - **Description**: Full product description
 - **Tags**: Hashtag-style badges
@@ -93,10 +96,10 @@ The ProductPage displays detailed information about a single product with a mode
 
 ## Responsive Behavior
 
-| Breakpoint | Layout | Image Viewer |
-|------------|--------|--------------|
-| Mobile | Single column | Static |
-| Desktop (1024px+) | Two columns | Sticky |
+| Breakpoint        | Layout        | Image Viewer |
+| ----------------- | ------------- | ------------ |
+| Mobile            | Single column | Static       |
+| Desktop (1024px+) | Two columns   | Sticky       |
 
 ## Dependencies
 
@@ -115,6 +118,7 @@ None. Uses hooks for routing and cart state.
 ## Not Found State
 
 Displays when product ID doesn't exist:
+
 - Centered layout
 - "Product Not Found" message
 - "Back to Products" button

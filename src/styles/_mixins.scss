@@ -106,12 +106,15 @@
 
 @mixin focus-ring {
   outline: none;
-  box-shadow: 0 0 0 2px var(--color-background),
-              0 0 0 4px var(--color-accent);
+  box-shadow:
+    0 0 0 2px var(--color-background),
+    0 0 0 4px var(--color-accent);
 }
 
 @mixin hover-lift {
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base);
 
   &:hover {
     transform: translateY(-4px);
@@ -162,7 +165,9 @@
     border-radius: inherit;
     padding: 1px;
     background: var(--gradient-primary);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
     mask-composite: xor;
     -webkit-mask-composite: xor;
     pointer-events: none;
@@ -256,7 +261,9 @@
   background: var(--color-background);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
 
   &::placeholder {
     color: var(--color-foreground-subtle);

@@ -1,4 +1,11 @@
-import React, { Suspense, useState, useCallback, useRef, memo, useEffect } from 'react';
+import React, {
+  Suspense,
+  useState,
+  useCallback,
+  useRef,
+  memo,
+  useEffect,
+} from 'react';
 import { Canvas } from '@react-three/fiber';
 import {
   OrbitControls,
@@ -8,7 +15,7 @@ import {
   ContactShadows,
   Center,
   Html,
-  useProgress
+  useProgress,
 } from '@react-three/drei';
 import './ModelViewer.scss';
 
@@ -44,7 +51,12 @@ function Loader() {
 }
 
 // Animated model component with animation support
-const AnimatedModel = memo(function AnimatedModel({ url, wireframe, onLoad, scale = 1 }) {
+const AnimatedModel = memo(function AnimatedModel({
+  url,
+  wireframe,
+  onLoad,
+  scale = 1,
+}) {
   const group = useRef();
   const { scene, animations } = useGLTF(url);
   const { actions, names } = useAnimations(animations, group);
@@ -86,7 +98,12 @@ function ErrorFallback({ error, onRetry }) {
   return (
     <div className="model-viewer__error" role="alert">
       <div className="model-viewer__error-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <circle cx="12" cy="12" r="10" />
           <path d="M12 8v4M12 16h.01" />
         </svg>
@@ -114,7 +131,7 @@ const ControlButton = memo(function ControlButton({
   label,
   active,
   onClick,
-  ariaPressed
+  ariaPressed,
 }) {
   return (
     <button
@@ -135,7 +152,7 @@ const ModelViewer = memo(function ModelViewer({
   model = null, // Single { name, url } object
   productName = '3D Model',
   fallbackImage,
-  previewColor = 'linear-gradient(135deg, #4A90E2, #357ABD)'
+  previewColor = 'linear-gradient(135deg, #4A90E2, #357ABD)',
 }) {
   const [autoRotate, setAutoRotate] = useState(true);
   const [wireframe, setWireframe] = useState(false);
@@ -146,12 +163,12 @@ const ModelViewer = memo(function ModelViewer({
 
   // Toggle auto-rotation
   const toggleAutoRotate = useCallback(() => {
-    setAutoRotate(prev => !prev);
+    setAutoRotate((prev) => !prev);
   }, []);
 
   // Toggle wireframe mode
   const toggleWireframe = useCallback(() => {
-    setWireframe(prev => !prev);
+    setWireframe((prev) => !prev);
   }, []);
 
   // Toggle fullscreen
@@ -178,7 +195,8 @@ const ModelViewer = memo(function ModelViewer({
     };
 
     document.addEventListener('fullscreenchange', handleFullscreenChange);
-    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    return () =>
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
   // Handle model load
@@ -250,20 +268,35 @@ const ModelViewer = memo(function ModelViewer({
   // Icons for controls
   const icons = {
     rotate: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
         <path d="M21 3v5h-5" />
       </svg>
     ),
     wireframe: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <path d="M12 2L2 7l10 5 10-5-10-5z" />
         <path d="M2 17l10 5 10-5" />
         <path d="M2 12l10 5 10-5" />
       </svg>
     ),
     fullscreen: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         {isFullscreen ? (
           <>
             <path d="M8 3v3a2 2 0 0 1-2 2H3" />
@@ -299,14 +332,14 @@ const ModelViewer = memo(function ModelViewer({
             antialias: true,
             alpha: true,
             preserveDrawingBuffer: true,
-            powerPreference: 'high-performance'
+            powerPreference: 'high-performance',
           }}
           onError={handleError}
           // Use passive event listeners for better scroll performance
           events={(store) => ({
             ...store,
             // Enable passive touch/wheel events for better scroll performance
-            passive: true
+            passive: true,
           })}
         >
           {/* Lighting Setup */}
@@ -398,7 +431,12 @@ const ModelViewer = memo(function ModelViewer({
       {isLoaded && !isFullscreen && (
         <p className="model-viewer__hint" aria-hidden="true">
           <span className="model-viewer__hint-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <path d="M12 19V5M5 12l7-7 7 7" />
             </svg>
           </span>
@@ -408,7 +446,8 @@ const ModelViewer = memo(function ModelViewer({
 
       {/* Screen reader description */}
       <div className="visually-hidden" aria-live="polite">
-        {isLoaded && `3D model ${model?.name} loaded. Use mouse or touch to interact.`}
+        {isLoaded &&
+          `3D model ${model?.name} loaded. Use mouse or touch to interact.`}
       </div>
     </div>
   );

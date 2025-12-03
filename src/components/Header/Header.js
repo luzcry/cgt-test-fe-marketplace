@@ -20,7 +20,11 @@ function Header() {
       <nav className="header__nav" aria-label="Main navigation">
         {/* Logo / Brand */}
         <div className="header__brand">
-          <Link to="/" className="header__logo" aria-label="NEXUS3D - Go to homepage">
+          <Link
+            to="/"
+            className="header__logo"
+            aria-label="NEXUS3D - Go to homepage"
+          >
             <span className="header__logo-icon" aria-hidden="true">
               {/* CPU/Chip Icon - represents 3D/tech */}
               <svg
@@ -51,7 +55,11 @@ function Header() {
             </Link>
           </li>
           <li className="header__nav-item">
-            <Link to="/cart" className="header__cart-btn" aria-label={`Shopping cart with ${cartCount} items`}>
+            <Link
+              to="/cart"
+              className="header__cart-btn"
+              aria-label={`Shopping cart with ${cartCount} items`}
+            >
               {/* Shopping Cart Icon */}
               <svg
                 className="header__cart-icon"
