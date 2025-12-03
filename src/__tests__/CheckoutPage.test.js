@@ -389,7 +389,6 @@ describe('Confirmation Step', () => {
     window.scrollTo = scrollToMock;
   });
 
-
   describe('Order Confirmation Display', () => {
     it('displays order confirmed title', () => {
       renderWithProviders(<CheckoutPage />);
