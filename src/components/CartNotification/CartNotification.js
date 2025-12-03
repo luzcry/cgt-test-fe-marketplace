@@ -245,8 +245,12 @@ function ProminentVariant({
       </div>
       <div className="cart-notification__summary">
         <div className="cart-notification__summary-row">
-          <span>Cart Total ({itemCount} {itemCount === 1 ? 'item' : 'items'})</span>
-          <span className="cart-notification__total">${cartTotal.toFixed(2)}</span>
+          <span>
+            Cart Total ({itemCount} {itemCount === 1 ? 'item' : 'items'})
+          </span>
+          <span className="cart-notification__total">
+            ${cartTotal.toFixed(2)}
+          </span>
         </div>
       </div>
       <div className="cart-notification__actions cart-notification__actions--stacked">

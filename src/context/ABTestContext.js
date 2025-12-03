@@ -1,4 +1,11 @@
-import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react';
 
 /**
  * A/B Testing Context
@@ -56,7 +63,7 @@ function hashString(str) {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
+    hash = (hash << 5) - hash + char;
     hash = hash & hash; // Convert to 32bit integer
   }
   return Math.abs(hash);
@@ -120,54 +127,69 @@ export function ABTestProvider({ children }) {
   /**
    * Get the assigned variant for an experiment
    */
-  const getVariant = useCallback((experimentId) => {
-    return assignments[experimentId] || 'control';
-  }, [assignments]);
+  const getVariant = useCallback(
+    (experimentId) => {
+      return assignments[experimentId] || 'control';
+    },
+    [assignments]
+  );
 
   /**
    * Track an experiment event (exposure, conversion, etc.)
    * In production, this would send to an analytics service
    */
-  const trackEvent = useCallback((experimentId, eventType, metadata = {}) => {
-    const event = {
-      experimentId,
-      variant: assignments[experimentId],
-      eventType,
-      metadata,
-      timestamp: new Date().toISOString(),
-      userId,
-    };
+  const trackEvent = useCallback(
+    (experimentId, eventType, metadata = {}) => {
+      const event = {
+        experimentId,
+        variant: assignments[experimentId],
+        eventType,
+        metadata,
+        timestamp: new Date().toISOString(),
+        userId,
+      };
 
-    // Log to console in development
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[A/B Test Event]', event);
-    }
+      // Log to console in development
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[A/B Test Event]', event);
+      }
 
-    // Store events (in production, send to analytics service)
-    setTrackedEvents((prev) => [...prev, event]);
+      // Store events (in production, send to analytics service)
+      setTrackedEvents((prev) => [...prev, event]);
 
-    // Example: Send to analytics endpoint
-    // fetch('/api/analytics/ab-test', {
-    //   method: 'POST',
-    //   body: JSON.stringify(event),
-    // });
+      // Example: Send to analytics endpoint
+      // fetch('/api/analytics/ab-test', {
+      //   method: 'POST',
+      //   body: JSON.stringify(event),
+      // });
 
-    return event;
-  }, [assignments, userId]);
+      return event;
+    },
+    [assignments, userId]
+  );
 
   /**
    * Track when a user is exposed to an experiment variant
    */
-  const trackExposure = useCallback((experimentId) => {
-    return trackEvent(experimentId, 'exposure');
-  }, [trackEvent]);
+  const trackExposure = useCallback(
+    (experimentId) => {
+      return trackEvent(experimentId, 'exposure');
+    },
+    [trackEvent]
+  );
 
   /**
    * Track a conversion event for an experiment
    */
-  const trackConversion = useCallback((experimentId, conversionType, metadata = {}) => {
-    return trackEvent(experimentId, 'conversion', { conversionType, ...metadata });
-  }, [trackEvent]);
+  const trackConversion = useCallback(
+    (experimentId, conversionType, metadata = {}) => {
+      return trackEvent(experimentId, 'conversion', {
+        conversionType,
+        ...metadata,
+      });
+    },
+    [trackEvent]
+  );
 
   /**
    * Force a specific variant (useful for testing/debugging)
@@ -189,33 +211,34 @@ export function ABTestProvider({ children }) {
     setAssignments({});
   }, []);
 
-  const value = useMemo(() => ({
-    userId,
-    assignments,
-    getVariant,
-    trackEvent,
-    trackExposure,
-    trackConversion,
-    forceVariant,
-    resetAssignments,
-    trackedEvents,
-    experiments: EXPERIMENTS,
-  }), [
-    userId,
-    assignments,
-    getVariant,
-    trackEvent,
-    trackExposure,
-    trackConversion,
-    forceVariant,
-    resetAssignments,
-    trackedEvents,
-  ]);
+  const value = useMemo(
+    () => ({
+      userId,
+      assignments,
+      getVariant,
+      trackEvent,
+      trackExposure,
+      trackConversion,
+      forceVariant,
+      resetAssignments,
+      trackedEvents,
+      experiments: EXPERIMENTS,
+    }),
+    [
+      userId,
+      assignments,
+      getVariant,
+      trackEvent,
+      trackExposure,
+      trackConversion,
+      forceVariant,
+      resetAssignments,
+      trackedEvents,
+    ]
+  );
 
   return (
-    <ABTestContext.Provider value={value}>
-      {children}
-    </ABTestContext.Provider>
+    <ABTestContext.Provider value={value}>{children}</ABTestContext.Provider>
   );
 }
 
@@ -242,9 +265,12 @@ export function useExperiment(experimentId) {
     trackExposure(experimentId);
   }, [experimentId, trackExposure]);
 
-  const trackConversionForExperiment = useCallback((conversionType, metadata) => {
-    trackConversion(experimentId, conversionType, metadata);
-  }, [experimentId, trackConversion]);
+  const trackConversionForExperiment = useCallback(
+    (conversionType, metadata) => {
+      trackConversion(experimentId, conversionType, metadata);
+    },
+    [experimentId, trackConversion]
+  );
 
   return {
     variant,

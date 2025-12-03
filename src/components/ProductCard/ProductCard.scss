@@ -340,10 +340,18 @@
     padding: var(--space-3) var(--space-4);
     font-size: var(--text-sm);
     font-weight: 600;
-    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    background: linear-gradient(
+      135deg,
+      var(--color-primary),
+      var(--color-accent)
+    );
 
     &:hover {
-      background: linear-gradient(135deg, var(--color-primary-hover), var(--color-accent));
+      background: linear-gradient(
+        135deg,
+        var(--color-primary-hover),
+        var(--color-accent)
+      );
       box-shadow: var(--glow-blue);
     }
   }

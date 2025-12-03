@@ -56,7 +56,10 @@ const ProductCard = memo(function ProductCard({ product, index = 0 }) {
     e.preventDefault();
     e.stopPropagation();
     // Track conversion with variant info
-    trackConversion('add_to_cart', { productId: product.id, price: product.price });
+    trackConversion('add_to_cart', {
+      productId: product.id,
+      price: product.price,
+    });
     addToCart(product);
   };
 
@@ -301,9 +304,7 @@ const ProductCard = memo(function ProductCard({ product, index = 0 }) {
       </Link>
 
       {/* CTA Button - Outside Link for proper semantics */}
-      <div className="product-card__cta">
-        {renderCTAButton()}
-      </div>
+      <div className="product-card__cta">{renderCTAButton()}</div>
 
       {/* Hover Overlay Effect */}
       <div className="product-card__hover-overlay" aria-hidden="true" />

@@ -316,9 +316,9 @@ describe('useExperiment hook', () => {
     expect(typeof result.current.trackConversion).toBe('function');
     // And should have received a variant
     expect(result.current.variant).toBeDefined();
-    expect(
-      EXPERIMENTS.CART_NOTIFICATION_STYLE.variants
-    ).toContain(result.current.variant);
+    expect(EXPERIMENTS.CART_NOTIFICATION_STYLE.variants).toContain(
+      result.current.variant
+    );
   });
 
   it('provides trackConversion scoped to experiment', () => {
