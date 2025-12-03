@@ -1,0 +1,72 @@
+// ==========================================================================
+// FormInput Component Styles
+// ==========================================================================
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+
+  &__label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--color-foreground);
+  }
+
+  &__required {
+    color: var(--color-error);
+  }
+
+  &__input {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--color-foreground);
+    background: var(--color-background-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    transition:
+      border-color var(--transition-fast),
+      box-shadow var(--transition-fast);
+
+    &::placeholder {
+      color: var(--color-foreground-subtle);
+    }
+
+    &:hover:not(:disabled) {
+      border-color: var(--color-border-hover);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 3px rgba(var(--color-accent-rgb), 0.15);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      background: var(--color-background);
+    }
+  }
+
+  &--error {
+    .form-field__input {
+      border-color: var(--color-error);
+
+      &:focus {
+        box-shadow: 0 0 0 3px rgba(var(--color-error-rgb), 0.15);
+      }
+    }
+  }
+
+  &__error {
+    margin: 0;
+    font-size: var(--text-xs);
+    color: var(--color-error);
+  }
+}

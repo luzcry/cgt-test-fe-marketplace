@@ -15,6 +15,7 @@ import {
 } from '../components/Icons/Icons';
 import ProductCard from '../components/ProductCard';
 import FilterSidebar from '../components/FilterSidebar';
+import EmptyState from '../components/EmptyState';
 import './HomePage.scss';
 
 const initialFilters = {
@@ -263,20 +264,15 @@ function HomePage() {
                 ))}
               </div>
             ) : (
-              <div className="products__empty" role="status" aria-live="polite">
-                <SearchEmptyIcon className="products__empty-icon" />
-                <p className="products__empty-title">No models found</p>
-                <p className="products__empty-text">
-                  Try adjusting your filters or search term
-                </p>
-                <button
-                  type="button"
-                  className="products__empty-reset"
-                  onClick={handleResetFilters}
-                >
-                  Reset Filters
-                </button>
-              </div>
+              <EmptyState
+                icon={<SearchEmptyIcon />}
+                title="No models found"
+                description="Try adjusting your filters or search term"
+                actionLabel="Reset Filters"
+                onAction={handleResetFilters}
+                actionVariant="secondary"
+                className="products__empty"
+              />
             )}
           </div>
         </section>

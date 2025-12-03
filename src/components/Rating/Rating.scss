@@ -1,0 +1,74 @@
+// ==========================================================================
+// Rating Component Styles
+// ==========================================================================
+
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+
+  &--sm {
+    .rating__icon {
+      width: 0.875rem;
+      height: 0.875rem;
+    }
+
+    .rating__value {
+      font-size: var(--text-xs);
+    }
+
+    .rating__label {
+      font-size: var(--text-xs);
+    }
+  }
+
+  &--md {
+    .rating__icon {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .rating__value {
+      font-size: var(--text-sm);
+    }
+
+    .rating__label {
+      font-size: var(--text-sm);
+    }
+  }
+
+  &--lg {
+    .rating__icon {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+
+    .rating__value {
+      font-size: var(--text-base);
+    }
+
+    .rating__label {
+      font-size: var(--text-base);
+    }
+  }
+
+  &__stars {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  &__icon {
+    color: var(--color-warning);
+    fill: var(--color-warning);
+  }
+
+  &__value {
+    font-weight: var(--font-semibold);
+    color: var(--color-foreground);
+  }
+
+  &__label {
+    color: var(--color-foreground-muted);
+  }
+}

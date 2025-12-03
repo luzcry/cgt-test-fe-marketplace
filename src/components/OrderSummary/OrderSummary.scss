@@ -1,0 +1,66 @@
+// ==========================================================================
+// OrderSummary Component Styles
+// ==========================================================================
+
+.order-summary {
+  &__title {
+    margin: 0 0 var(--space-4);
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    color: var(--color-foreground);
+  }
+
+  &__lines {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  &__line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--text-sm);
+    color: var(--color-foreground-muted);
+
+    &--total {
+      margin-top: var(--space-3);
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--color-border);
+      font-size: var(--text-base);
+      font-weight: var(--font-semibold);
+      color: var(--color-foreground);
+
+      .order-summary__value {
+        font-size: var(--text-lg);
+        color: var(--color-accent);
+      }
+    }
+
+    &--discount {
+      color: var(--color-success);
+
+      .order-summary__value {
+        color: var(--color-success);
+      }
+    }
+  }
+
+  &__label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  &__value {
+    font-weight: var(--font-medium);
+    color: var(--color-foreground);
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+  }
+}

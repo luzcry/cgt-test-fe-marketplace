@@ -5,6 +5,8 @@ import {
   PRICE_RANGE,
   POLY_COUNT_RANGE,
 } from '../../data/products';
+import { ChevronIcon, CheckIcon, FilterIcon, CloseIcon } from '../Icons';
+import Button from '../Button';
 import './FilterSidebar.scss';
 
 const FilterSection = memo(function FilterSection({
@@ -25,16 +27,10 @@ const FilterSection = memo(function FilterSection({
         aria-controls={id}
       >
         <span className="filter-section__title">{title}</span>
-        <svg
+        <ChevronIcon
           className={`filter-section__chevron ${isExpanded ? 'filter-section__chevron--expanded' : ''}`}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          aria-hidden="true"
-        >
-          <polyline points="6,9 12,15 18,9" />
-        </svg>
+          direction={isExpanded ? 'up' : 'down'}
+        />
       </button>
       <div
         id={id}
@@ -63,14 +59,7 @@ const CheckboxFilter = memo(function CheckboxFilter({
         onChange={onChange}
       />
       <span className="checkbox-filter__box" aria-hidden="true">
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="3"
-        >
-          <polyline points="20,6 9,17 4,12" />
-        </svg>
+        <CheckIcon />
       </span>
       <span className="checkbox-filter__label">{label}</span>
     </label>
@@ -261,43 +250,18 @@ const FilterSidebar = memo(function FilterSidebar({
         <header className="filter-sidebar__header">
           <div className="filter-sidebar__title-row">
             <div className="filter-sidebar__title-group">
-              <svg
-                className="filter-sidebar__icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                aria-hidden="true"
-              >
-                <line x1="4" y1="21" x2="4" y2="14" />
-                <line x1="4" y1="10" x2="4" y2="3" />
-                <line x1="12" y1="21" x2="12" y2="12" />
-                <line x1="12" y1="8" x2="12" y2="3" />
-                <line x1="20" y1="21" x2="20" y2="16" />
-                <line x1="20" y1="12" x2="20" y2="3" />
-                <line x1="1" y1="14" x2="7" y2="14" />
-                <line x1="9" y1="8" x2="15" y2="8" />
-                <line x1="17" y1="16" x2="23" y2="16" />
-              </svg>
+              <FilterIcon className="filter-sidebar__icon" />
               <h2 className="filter-sidebar__title">Filters</h2>
             </div>
-            <button
-              type="button"
+            <Button
+              variant="icon"
+              size="sm"
               className="filter-sidebar__close"
               onClick={onClose}
               aria-label="Close filters panel"
             >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                aria-hidden="true"
-              >
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            </button>
+              <CloseIcon />
+            </Button>
           </div>
 
           {activeFiltersCount > 0 && (
@@ -305,14 +269,15 @@ const FilterSidebar = memo(function FilterSidebar({
               <span className="filter-sidebar__active-count">
                 {activeFiltersCount} Active
               </span>
-              <button
-                type="button"
+              <Button
+                variant="ghost"
+                size="sm"
                 className="filter-sidebar__reset"
                 onClick={onReset}
                 aria-label="Reset all filters"
               >
                 Reset All
-              </button>
+              </Button>
             </div>
           )}
         </header>

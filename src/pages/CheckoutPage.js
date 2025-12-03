@@ -10,6 +10,26 @@ import {
 import { useCart } from '../context/CartContext';
 import { detectCardType } from '../services/checkoutService';
 import ModelPreview from '../components/ModelPreview/ModelPreview';
+import Button from '../components/Button';
+import FormInput from '../components/FormInput';
+import SectionHeader from '../components/SectionHeader';
+import InfoGrid from '../components/InfoGrid';
+import RadioOption from '../components/RadioOption';
+import OrderSummary from '../components/OrderSummary';
+import {
+  CheckIcon,
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  LockIcon,
+  TagIcon,
+  CloseIcon,
+  AlertIcon,
+  EmailIcon,
+  CalendarIcon,
+  PrintIcon,
+  CopyIcon,
+  CreditCardIcon,
+} from '../components/Icons';
 import './CheckoutPage.scss';
 
 const StepIndicator = memo(function StepIndicator({
@@ -39,19 +59,7 @@ const StepIndicator = memo(function StepIndicator({
                 aria-current={isCurrent ? 'step' : undefined}
               >
                 <span className="checkout-steps__number">
-                  {isCompleted ? (
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="3"
-                      aria-hidden="true"
-                    >
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                  ) : (
-                    index + 1
-                  )}
+                  {isCompleted ? <CheckIcon /> : index + 1}
                 </span>
                 <span className="checkout-steps__label">
                   {STEP_TITLES[step]}
@@ -68,56 +76,6 @@ const StepIndicator = memo(function StepIndicator({
         })}
       </ol>
     </nav>
-  );
-});
-
-const FormInput = memo(function FormInput({
-  id,
-  label,
-  type = 'text',
-  value,
-  onChange,
-  error,
-  placeholder,
-  required = false,
-  autoComplete,
-  maxLength,
-  pattern,
-  inputMode,
-  disabled = false,
-}) {
-  return (
-    <div className={`form-field ${error ? 'form-field--error' : ''}`}>
-      <label htmlFor={id} className="form-field__label">
-        {label}
-        {required && (
-          <span className="form-field__required" aria-hidden="true">
-            *
-          </span>
-        )}
-      </label>
-      <input
-        id={id}
-        name={id}
-        type={type}
-        value={value}
-        onChange={(e) => onChange(id, e.target.value)}
-        placeholder={placeholder}
-        autoComplete={autoComplete}
-        maxLength={maxLength}
-        pattern={pattern}
-        inputMode={inputMode}
-        disabled={disabled}
-        className="form-field__input"
-        aria-invalid={error ? 'true' : 'false'}
-        aria-describedby={error ? `${id}-error` : undefined}
-      />
-      {error && (
-        <p id={`${id}-error`} className="form-field__error" role="alert">
-          {error}
-        </p>
-      )}
-    </div>
   );
 });
 
@@ -140,14 +98,12 @@ const ShippingStep = memo(function ShippingStep() {
       className="checkout-step checkout-step--shipping"
       aria-labelledby="shipping-heading"
     >
-      <header className="checkout-step__header">
-        <h2 id="shipping-heading" className="checkout-step__title">
-          Shipping Information
-        </h2>
-        <p className="checkout-step__description">
-          Enter your contact and delivery information for your digital assets.
-        </p>
-      </header>
+      <SectionHeader
+        id="shipping-heading"
+        title="Shipping Information"
+        description="Enter your contact and delivery information for your digital assets."
+        className="checkout-step__header"
+      />
 
       <form onSubmit={handleSubmit} className="checkout-form" noValidate>
         <div className="checkout-form__section">
@@ -260,42 +216,20 @@ const ShippingStep = memo(function ShippingStep() {
 
         <div className="checkout-step__actions">
           <Link to="/cart" className="checkout-step__back-link">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden="true"
-            >
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
+            <ArrowLeftIcon />
             Back to Cart
           </Link>
-          <button
+          <Button
             type="submit"
+            variant="primary"
+            size="lg"
             className="checkout-step__submit"
-            disabled={isLoading}
+            isLoading={isLoading}
+            icon={!isLoading && <ArrowRightIcon />}
+            iconPosition="end"
           >
-            {isLoading ? (
-              <>
-                <span className="checkout-step__spinner" aria-hidden="true" />
-                Validating...
-              </>
-            ) : (
-              <>
-                Continue to Payment
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  aria-hidden="true"
-                >
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
-              </>
-            )}
-          </button>
+            {isLoading ? 'Validating...' : 'Continue to Payment'}
+          </Button>
         </div>
       </form>
     </section>
@@ -426,14 +360,12 @@ const PaymentStep = memo(function PaymentStep() {
       className="checkout-step checkout-step--payment"
       aria-labelledby="payment-heading"
     >
-      <header className="checkout-step__header">
-        <h2 id="payment-heading" className="checkout-step__title">
-          Payment Details
-        </h2>
-        <p className="checkout-step__description">
-          Enter your card information. Your payment is secure and encrypted.
-        </p>
-      </header>
+      <SectionHeader
+        id="payment-heading"
+        title="Payment Details"
+        description="Enter your card information. Your payment is secure and encrypted."
+        className="checkout-step__header"
+      />
 
       <form onSubmit={handleSubmit} className="checkout-form" noValidate>
         <div className="checkout-form__section">
@@ -520,61 +452,31 @@ const PaymentStep = memo(function PaymentStep() {
         </div>
 
         <div className="checkout-form__security">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            aria-hidden="true"
-          >
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-          </svg>
+          <LockIcon />
           <span>Your payment information is encrypted and secure</span>
         </div>
 
         <div className="checkout-step__actions">
-          <button
-            type="button"
+          <Button
+            variant="ghost"
+            size="lg"
             className="checkout-step__back"
             onClick={goToPreviousStep}
+            icon={<ArrowLeftIcon />}
           >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden="true"
-            >
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
             Back
-          </button>
-          <button
+          </Button>
+          <Button
             type="submit"
+            variant="primary"
+            size="lg"
             className="checkout-step__submit"
-            disabled={isLoading}
+            isLoading={isLoading}
+            icon={!isLoading && <ArrowRightIcon />}
+            iconPosition="end"
           >
-            {isLoading ? (
-              <>
-                <span className="checkout-step__spinner" aria-hidden="true" />
-                Validating...
-              </>
-            ) : (
-              <>
-                Review Order
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  aria-hidden="true"
-                >
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
-              </>
-            )}
-          </button>
+            {isLoading ? 'Validating...' : 'Review Order'}
+          </Button>
         </div>
       </form>
     </section>
@@ -623,14 +525,12 @@ const ReviewStep = memo(function ReviewStep() {
       className="checkout-step checkout-step--review"
       aria-labelledby="review-heading"
     >
-      <header className="checkout-step__header">
-        <h2 id="review-heading" className="checkout-step__title">
-          Review Your Order
-        </h2>
-        <p className="checkout-step__description">
-          Please review your order details before completing your purchase.
-        </p>
-      </header>
+      <SectionHeader
+        id="review-heading"
+        title="Review Your Order"
+        description="Please review your order details before completing your purchase."
+        className="checkout-step__header"
+      />
 
       <form onSubmit={handleSubmit} className="checkout-review">
         <div className="checkout-review__section">
@@ -670,65 +570,42 @@ const ReviewStep = memo(function ReviewStep() {
             <h3 className="checkout-review__section-title">
               Contact & Billing
             </h3>
-            <button
-              type="button"
+            <Button
+              variant="ghost"
+              size="sm"
               className="checkout-review__edit"
               onClick={() => goToStep(CHECKOUT_STEPS.SHIPPING)}
             >
               Edit
-            </button>
+            </Button>
           </div>
-          <div className="checkout-review__info-grid">
-            <div className="checkout-review__info-item">
-              <p className="checkout-review__info-label">Name</p>
-              <p className="checkout-review__info-value">
-                {shippingInfo.firstName} {shippingInfo.lastName}
-              </p>
-            </div>
-            <div className="checkout-review__info-item">
-              <p className="checkout-review__info-label">Email</p>
-              <p className="checkout-review__info-value">
-                {shippingInfo.email}
-              </p>
-            </div>
-            <div className="checkout-review__info-item">
-              <p className="checkout-review__info-label">Phone</p>
-              <p className="checkout-review__info-value">
-                {shippingInfo.phone}
-              </p>
-            </div>
-            <div className="checkout-review__info-item">
-              <p className="checkout-review__info-label">Address</p>
-              <p className="checkout-review__info-value">
-                {shippingInfo.street}, {shippingInfo.city}, {shippingInfo.state}{' '}
-                {shippingInfo.zipCode}
-              </p>
-            </div>
-          </div>
+          <InfoGrid
+            items={[
+              { label: 'Name', value: `${shippingInfo.firstName} ${shippingInfo.lastName}` },
+              { label: 'Email', value: shippingInfo.email },
+              { label: 'Phone', value: shippingInfo.phone },
+              { label: 'Address', value: `${shippingInfo.street}, ${shippingInfo.city}, ${shippingInfo.state} ${shippingInfo.zipCode}` },
+            ]}
+            columns={2}
+            className="checkout-review__info-grid"
+          />
         </div>
 
         <div className="checkout-review__section">
           <div className="checkout-review__section-header">
             <h3 className="checkout-review__section-title">Payment Method</h3>
-            <button
-              type="button"
+            <Button
+              variant="ghost"
+              size="sm"
               className="checkout-review__edit"
               onClick={() => goToStep(CHECKOUT_STEPS.PAYMENT)}
             >
               Edit
-            </button>
+            </Button>
           </div>
           <div className="checkout-review__payment">
             <div className="checkout-review__card-icon">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
-                <line x1="1" y1="10" x2="23" y2="10" />
-              </svg>
+              <CreditCardIcon />
             </div>
             <div className="checkout-review__card-info">
               <p className="checkout-review__card-type">
@@ -744,48 +621,24 @@ const ReviewStep = memo(function ReviewStep() {
         <div className="checkout-review__section">
           <h3 className="checkout-review__section-title">Delivery Option</h3>
           <div className="checkout-review__delivery-options">
-            <label
-              className={`checkout-review__delivery-option ${shippingOption === 'instant' ? 'checkout-review__delivery-option--selected' : ''}`}
-            >
-              <input
-                type="radio"
-                name="shippingOption"
-                value="instant"
-                checked={shippingOption === 'instant'}
-                onChange={() => setShippingOption('instant')}
-              />
-              <span className="checkout-review__delivery-radio" />
-              <div className="checkout-review__delivery-content">
-                <span className="checkout-review__delivery-name">
-                  Instant Download
-                </span>
-                <span className="checkout-review__delivery-desc">
-                  Get immediate access to your files
-                </span>
-              </div>
-              <span className="checkout-review__delivery-price">FREE</span>
-            </label>
-            <label
-              className={`checkout-review__delivery-option ${shippingOption === 'priority' ? 'checkout-review__delivery-option--selected' : ''}`}
-            >
-              <input
-                type="radio"
-                name="shippingOption"
-                value="priority"
-                checked={shippingOption === 'priority'}
-                onChange={() => setShippingOption('priority')}
-              />
-              <span className="checkout-review__delivery-radio" />
-              <div className="checkout-review__delivery-content">
-                <span className="checkout-review__delivery-name">
-                  Priority Processing
-                </span>
-                <span className="checkout-review__delivery-desc">
-                  Priority queue for download links
-                </span>
-              </div>
-              <span className="checkout-review__delivery-price">$4.99</span>
-            </label>
+            <RadioOption
+              name="shippingOption"
+              value="instant"
+              label="Instant Download"
+              description="Get immediate access to your files"
+              price="FREE"
+              checked={shippingOption === 'instant'}
+              onChange={setShippingOption}
+            />
+            <RadioOption
+              name="shippingOption"
+              value="priority"
+              label="Priority Processing"
+              description="Priority queue for download links"
+              price="$4.99"
+              checked={shippingOption === 'priority'}
+              onChange={setShippingOption}
+            />
           </div>
         </div>
 
@@ -794,37 +647,21 @@ const ReviewStep = memo(function ReviewStep() {
           {promoCode ? (
             <div className="checkout-review__promo-applied">
               <div className="checkout-review__promo-badge">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  aria-hidden="true"
-                >
-                  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
-                  <line x1="7" y1="7" x2="7.01" y2="7" />
-                </svg>
+                <TagIcon />
                 <span>{promoCode}</span>
               </div>
               <span className="checkout-review__promo-discount">
                 -${totals.discount.toFixed(2)}
               </span>
-              <button
-                type="button"
+              <Button
+                variant="icon"
+                size="sm"
                 className="checkout-review__promo-remove"
                 onClick={removePromoCode}
                 aria-label="Remove promo code"
               >
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-              </button>
+                <CloseIcon />
+              </Button>
             </div>
           ) : (
             <div className="checkout-review__promo-input">
@@ -835,14 +672,16 @@ const ReviewStep = memo(function ReviewStep() {
                 placeholder="Enter promo code"
                 className="checkout-review__promo-field"
               />
-              <button
-                type="button"
+              <Button
+                variant="secondary"
+                size="md"
                 className="checkout-review__promo-apply"
                 onClick={handleApplyPromo}
-                disabled={!promoInput.trim() || isApplyingPromo}
+                disabled={!promoInput.trim()}
+                isLoading={isApplyingPromo}
               >
                 {isApplyingPromo ? 'Applying...' : 'Apply'}
-              </button>
+              </Button>
             </div>
           )}
           {errors.promo && (
@@ -855,97 +694,49 @@ const ReviewStep = memo(function ReviewStep() {
           </p>
         </div>
 
-        <div className="checkout-review__summary">
-          <h3 className="checkout-review__summary-title">Order Summary</h3>
-          <div className="checkout-review__summary-lines">
-            <div className="checkout-review__summary-line">
-              <span>Subtotal</span>
-              <span>${totals.subtotal.toFixed(2)}</span>
-            </div>
-            {totals.discount > 0 && (
-              <div className="checkout-review__summary-line checkout-review__summary-line--discount">
-                <span>Discount</span>
-                <span>-${totals.discount.toFixed(2)}</span>
-              </div>
-            )}
-            <div className="checkout-review__summary-line">
-              <span>Tax (10%)</span>
-              <span>${totals.tax.toFixed(2)}</span>
-            </div>
-            <div className="checkout-review__summary-line">
-              <span>Delivery</span>
-              <span>
-                {totals.shipping === 0
-                  ? 'FREE'
-                  : `$${totals.shipping.toFixed(2)}`}
-              </span>
-            </div>
-            <div className="checkout-review__summary-line checkout-review__summary-line--total">
-              <span>Total</span>
-              <span>${totals.total.toFixed(2)}</span>
-            </div>
-          </div>
-        </div>
+        <OrderSummary
+          title="Order Summary"
+          className="checkout-review__summary"
+          items={[
+            { label: 'Subtotal', value: `$${totals.subtotal.toFixed(2)}` },
+            ...(totals.discount > 0
+              ? [{ label: 'Discount', value: `-$${totals.discount.toFixed(2)}`, isDiscount: true }]
+              : []),
+            { label: 'Tax (10%)', value: `$${totals.tax.toFixed(2)}` },
+            { label: 'Delivery', value: totals.shipping === 0 ? 'FREE' : `$${totals.shipping.toFixed(2)}` },
+            { label: 'Total', value: `$${totals.total.toFixed(2)}`, isTotal: true },
+          ]}
+        />
 
         {(errors.payment || errors.order || errors.general) && (
           <div className="checkout-review__error" role="alert">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="8" x2="12" y2="12" />
-              <line x1="12" y1="16" x2="12.01" y2="16" />
-            </svg>
+            <AlertIcon />
             <p>{errors.payment || errors.order || errors.general}</p>
           </div>
         )}
 
         <div className="checkout-step__actions">
-          <button
-            type="button"
+          <Button
+            variant="ghost"
+            size="lg"
             className="checkout-step__back"
             onClick={goToPreviousStep}
+            icon={<ArrowLeftIcon />}
           >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden="true"
-            >
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
             Back
-          </button>
-          <button
+          </Button>
+          <Button
             type="submit"
+            variant="primary"
+            size="lg"
             className="checkout-step__submit checkout-step__submit--primary"
-            disabled={isLoading}
+            isLoading={isLoading}
+            icon={!isLoading && <LockIcon />}
           >
-            {isLoading ? (
-              <>
-                <span className="checkout-step__spinner" aria-hidden="true" />
-                Processing...
-              </>
-            ) : (
-              <>
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  aria-hidden="true"
-                >
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                </svg>
-                Complete Purchase - ${totals.total.toFixed(2)}
-              </>
-            )}
-          </button>
+            {isLoading
+              ? 'Processing...'
+              : `Complete Purchase - $${totals.total.toFixed(2)}`}
+          </Button>
         </div>
       </form>
     </section>
@@ -1064,34 +855,16 @@ const ConfirmationStep = memo(function ConfirmationStep() {
             <span className="checkout-confirmation__order-number">
               {orderResult.orderId}
             </span>
-            <button
-              type="button"
+            <Button
+              variant="ghost"
+              size="sm"
               className={`checkout-confirmation__copy-btn ${copied ? 'checkout-confirmation__copy-btn--copied' : ''}`}
               onClick={handleCopyOrderId}
               aria-label={copied ? 'Copied!' : 'Copy order ID'}
+              icon={copied ? <CheckIcon /> : <CopyIcon />}
             >
-              {copied ? (
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-              ) : (
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                </svg>
-              )}
-              <span>{copied ? 'Copied!' : 'Copy'}</span>
-            </button>
+              {copied ? 'Copied!' : 'Copy'}
+            </Button>
           </div>
         </div>
 
@@ -1145,32 +918,12 @@ const ConfirmationStep = memo(function ConfirmationStep() {
             </h3>
             <div className="checkout-confirmation__delivery">
               <p className="checkout-confirmation__delivery-email">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  aria-hidden="true"
-                >
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                  <polyline points="22,6 12,13 2,6" />
-                </svg>
+                <EmailIcon />
                 Download links will be sent to:{' '}
                 <strong>{orderResult.shippingAddress.email}</strong>
               </p>
               <p className="checkout-confirmation__delivery-date">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  aria-hidden="true"
-                >
-                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                  <line x1="16" y1="2" x2="16" y2="6" />
-                  <line x1="8" y1="2" x2="8" y2="6" />
-                  <line x1="3" y1="10" x2="21" y2="10" />
-                </svg>
+                <CalendarIcon />
                 Estimated delivery by: <strong>{formattedDate}</strong>
               </p>
             </div>
@@ -1187,18 +940,7 @@ const ConfirmationStep = memo(function ConfirmationStep() {
                   className={`checkout-confirmation__timeline-step ${step.completed ? 'checkout-confirmation__timeline-step--completed' : ''}`}
                 >
                   <div className="checkout-confirmation__timeline-marker">
-                    {step.completed ? (
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="3"
-                      >
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                    ) : (
-                      <span>{index + 1}</span>
-                    )}
+                    {step.completed ? <CheckIcon /> : <span>{index + 1}</span>}
                   </div>
                   <div className="checkout-confirmation__timeline-content">
                     <p className="checkout-confirmation__timeline-title">
@@ -1215,38 +957,25 @@ const ConfirmationStep = memo(function ConfirmationStep() {
         </div>
 
         <div className="checkout-confirmation__actions">
-          <button
+          <Button
+            variant="primary"
+            size="lg"
             className="checkout-confirmation__btn checkout-confirmation__btn--primary"
             onClick={handleContinueShopping}
+            icon={<ArrowRightIcon />}
+            iconPosition="end"
           >
             Continue Shopping
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden="true"
-            >
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="secondary"
+            size="lg"
             className="checkout-confirmation__btn checkout-confirmation__btn--secondary"
             onClick={() => window.print()}
+            icon={<PrintIcon />}
           >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden="true"
-            >
-              <polyline points="6 9 6 2 18 2 18 9" />
-              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-              <rect x="6" y="14" width="12" height="8" />
-            </svg>
             Print Receipt
-          </button>
+          </Button>
         </div>
       </div>
     </section>
@@ -1325,16 +1054,7 @@ function CheckoutPage() {
           </Link>
           <h1 className="checkout-page__title">Checkout</h1>
           <div className="checkout-page__secure">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden="true"
-            >
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-            </svg>
+            <LockIcon />
             <span>Secure Checkout</span>
           </div>
         </header>

@@ -3,6 +3,18 @@ import { Helmet } from 'react-helmet-async';
 import { getProductById } from '../data/products';
 import { useCart } from '../context/CartContext';
 import ModelViewer from '../components/ModelViewer';
+import Button from '../components/Button';
+import FeatureList from '../components/Feature';
+import EmptyState from '../components/EmptyState';
+import InfoGrid from '../components/InfoGrid';
+import TagList from '../components/TagList';
+import Rating from '../components/Rating';
+import {
+  BackArrowIcon,
+  LayersIcon,
+  CartIcon,
+  SearchEmptyIcon,
+} from '../components/Icons';
 import './ProductPage.scss';
 
 function ProductPage() {
@@ -18,17 +30,14 @@ function ProductPage() {
           <title>Product Not Found | 3D Marketplace</title>
           <meta name="robots" content="noindex" />
         </Helmet>
-        <h1 className="product-page__not-found-title">Product Not Found</h1>
-        <p className="product-page__not-found-text">
-          The product you're looking for doesn't exist or has been removed.
-        </p>
-        <button
-          type="button"
-          className="product-page__not-found-btn"
-          onClick={() => navigate('/')}
-        >
-          Back to Products
-        </button>
+        <EmptyState
+          icon={<SearchEmptyIcon />}
+          title="Product Not Found"
+          description="The product you're looking for doesn't exist or has been removed."
+          actionLabel="Back to Products"
+          onAction={() => navigate('/')}
+          headingLevel={1}
+        />
       </div>
     );
   }
@@ -134,18 +143,7 @@ function ProductPage() {
 
       <nav className="product-page__nav" aria-label="Breadcrumb">
         <Link to="/" className="product-page__back">
-          <svg
-            className="product-page__back-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M19 12H5M12 19l-7-7 7-7" />
-          </svg>
+          <BackArrowIcon className="product-page__back-icon" />
           Back to Products
         </Link>
       </nav>
@@ -184,30 +182,11 @@ function ProductPage() {
                 {product.name}
               </h1>
               {product.rating && (
-                <div
+                <Rating
+                  value={product.rating}
+                  label="(Premium Asset)"
                   className="product-page__rating"
-                  itemProp="aggregateRating"
-                  itemScope
-                  itemType="https://schema.org/AggregateRating"
-                >
-                  <meta itemProp="ratingValue" content={product.rating} />
-                  <meta itemProp="bestRating" content="5" />
-                  <div className="product-page__rating-stars">
-                    <svg
-                      className="product-page__rating-icon"
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                    >
-                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                    </svg>
-                    <span className="product-page__rating-value">
-                      {product.rating}
-                    </span>
-                  </div>
-                  <span className="product-page__rating-count">
-                    (Premium Asset)
-                  </span>
-                </div>
+                />
               )}
             </header>
 
@@ -215,13 +194,11 @@ function ProductPage() {
               {product.description}
             </p>
 
-            <div className="product-page__tags" aria-label="Product tags">
-              {product.tags.map((tag) => (
-                <span key={tag} className="product-page__tag">
-                  #{tag}
-                </span>
-              ))}
-            </div>
+            <TagList
+              tags={product.tags}
+              ariaLabel="Product tags"
+              className="product-page__tags"
+            />
 
             <section
               className="product-page__specs"
@@ -230,28 +207,16 @@ function ProductPage() {
               <h2 id="specs-title" className="product-page__specs-title">
                 Technical Specifications
               </h2>
-              <div className="product-page__specs-grid">
-                <div>
-                  <p className="product-page__spec-label">Category</p>
-                  <p className="product-page__spec-value">{product.category}</p>
-                </div>
-                <div>
-                  <p className="product-page__spec-label">Polygons</p>
-                  <p className="product-page__spec-value">
-                    {product.polyCount.toLocaleString()}
-                  </p>
-                </div>
-                <div>
-                  <p className="product-page__spec-label">Formats</p>
-                  <p className="product-page__spec-value">
-                    {product.fileFormat.join(', ')}
-                  </p>
-                </div>
-                <div>
-                  <p className="product-page__spec-label">License</p>
-                  <p className="product-page__spec-value">Commercial</p>
-                </div>
-              </div>
+              <InfoGrid
+                items={[
+                  { label: 'Category', value: product.category },
+                  { label: 'Polygons', value: product.polyCount.toLocaleString() },
+                  { label: 'Formats', value: product.fileFormat.join(', ') },
+                  { label: 'License', value: 'Commercial' },
+                ]}
+                columns={2}
+                className="product-page__specs-grid"
+              />
             </section>
 
             {product.model && (
@@ -259,17 +224,7 @@ function ProductPage() {
                 className="product-page__preview-badge"
                 aria-label="3D preview available"
               >
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  aria-hidden="true"
-                >
-                  <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                  <path d="M2 17l10 5 10-5" />
-                  <path d="M2 12l10 5 10-5" />
-                </svg>
+                <LayersIcon />
                 <span>Interactive 3D Preview Available</span>
               </div>
             )}
@@ -281,26 +236,11 @@ function ProductPage() {
               <h2 id="features-title" className="product-page__features-title">
                 What's Included
               </h2>
-              {features.map((feature) => (
-                <div key={feature} className="product-page__feature">
-                  <span
-                    className="product-page__feature-icon"
-                    aria-hidden="true"
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                  </span>
-                  <span className="product-page__feature-text">{feature}</span>
-                </div>
-              ))}
+              <FeatureList
+                features={features}
+                icon="check"
+                className="product-page__feature-list"
+              />
             </section>
 
             <div
@@ -327,28 +267,16 @@ function ProductPage() {
                 </div>
               </div>
               <div className="product-page__buttons">
-                <button
-                  type="button"
+                <Button
+                  variant="primary"
+                  size="lg"
                   className="product-page__add-btn"
                   onClick={handleAddToCart}
                   aria-label={`Add ${product.name} to cart for $${product.price}`}
+                  icon={<CartIcon className="product-page__add-btn-icon" />}
                 >
-                  <svg
-                    className="product-page__add-btn-icon"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                  >
-                    <circle cx="9" cy="21" r="1" />
-                    <circle cx="20" cy="21" r="1" />
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-                  </svg>
                   Add to Cart
-                </button>
+                </Button>
               </div>
             </div>
           </article>

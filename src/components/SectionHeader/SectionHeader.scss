@@ -1,0 +1,21 @@
+// ==========================================================================
+// SectionHeader Component Styles
+// ==========================================================================
+
+.section-header {
+  margin-bottom: var(--space-6);
+
+  &__title {
+    margin: 0 0 var(--space-2);
+    font-size: var(--text-xl);
+    font-weight: var(--font-semibold);
+    color: var(--color-foreground);
+  }
+
+  &__description {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--color-foreground-muted);
+    max-width: 40rem;
+  }
+}

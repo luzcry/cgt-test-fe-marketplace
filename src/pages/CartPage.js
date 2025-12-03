@@ -2,6 +2,16 @@ import { lazy, Suspense } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from '../context/CartContext';
+import Button from '../components/Button';
+import EmptyState from '../components/EmptyState';
+import OrderSummary from '../components/OrderSummary';
+import {
+  EmptyCartIcon,
+  TrashIcon,
+  ArrowLongRightIcon,
+  MinusIcon,
+  PlusIcon,
+} from '../components/Icons';
 import './CartPage.scss';
 
 const ModelPreview = lazy(() => import('../components/ModelPreview'));
@@ -38,32 +48,13 @@ function CartPage() {
       <>
         <CartSEO />
         <div className="cart-page cart-page--empty">
-          <svg
-            className="cart-page__empty-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-            data-testid="empty-cart-icon"
-          >
-            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-            <line x1="3" y1="6" x2="21" y2="6" />
-            <path d="M16 10a4 4 0 0 1-8 0" />
-          </svg>
-          <h1 className="cart-page__empty-title">Your Cart is Empty</h1>
-          <p className="cart-page__empty-text">
-            Start adding some amazing products!
-          </p>
-          <button
-            type="button"
-            className="cart-page__empty-btn"
-            onClick={() => navigate('/')}
-          >
-            Browse Products
-          </button>
+          <EmptyState
+            icon={<EmptyCartIcon data-testid="empty-cart-icon" />}
+            title="Your Cart is Empty"
+            description="Start adding some amazing products!"
+            actionLabel="Browse Products"
+            onAction={() => navigate('/')}
+          />
         </div>
       </>
     );
@@ -125,8 +116,9 @@ function CartPage() {
 
                   <div className="cart-item__controls">
                     <div className="cart-item__quantity">
-                      <button
-                        type="button"
+                      <Button
+                        variant="icon"
+                        size="sm"
                         className="cart-item__quantity-btn"
                         onClick={() =>
                           updateQuantity(item.id, item.quantity - 1)
@@ -134,24 +126,25 @@ function CartPage() {
                         disabled={item.quantity <= 1}
                         aria-label={`Decrease quantity of ${item.name}`}
                       >
-                        -
-                      </button>
+                        <MinusIcon />
+                      </Button>
                       <span
                         className="cart-item__quantity-value"
                         aria-label={`Quantity: ${item.quantity}`}
                       >
                         {item.quantity}
                       </span>
-                      <button
-                        type="button"
+                      <Button
+                        variant="icon"
+                        size="sm"
                         className="cart-item__quantity-btn"
                         onClick={() =>
                           updateQuantity(item.id, item.quantity + 1)
                         }
                         aria-label={`Increase quantity of ${item.name}`}
                       >
-                        +
-                      </button>
+                        <PlusIcon />
+                      </Button>
                     </div>
 
                     <div className="cart-item__price">
@@ -167,99 +160,62 @@ function CartPage() {
                   </div>
                 </div>
 
-                <button
-                  type="button"
+                <Button
+                  variant="icon"
+                  size="md"
                   className="cart-item__remove"
                   onClick={() => removeFromCart(item.id)}
                   aria-label={`Remove ${item.name} from cart`}
                 >
-                  <svg
-                    className="cart-item__remove-icon"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                  >
-                    <polyline points="3 6 5 6 21 6" />
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                    <line x1="10" y1="11" x2="10" y2="17" />
-                    <line x1="14" y1="11" x2="14" y2="17" />
-                  </svg>
-                </button>
+                  <TrashIcon className="cart-item__remove-icon" />
+                </Button>
               </article>
             ))}
           </section>
 
           <aside className="cart-page__summary" aria-label="Order summary">
             <div className="cart-page__summary-card">
-              <h2 className="cart-page__summary-title">Order Summary</h2>
-
-              <div className="cart-page__summary-lines">
-                <div className="cart-page__summary-line">
-                  <span className="cart-page__summary-label">Subtotal</span>
-                  <span className="cart-page__summary-value">
-                    ${subtotal.toFixed(2)}
-                  </span>
-                </div>
-                <div className="cart-page__summary-line">
-                  <span className="cart-page__summary-label">
-                    Tax (estimated)
-                  </span>
-                  <span className="cart-page__summary-value">
-                    ${tax.toFixed(2)}
-                  </span>
-                </div>
-                <div className="cart-page__summary-line cart-page__summary-line--total">
-                  <span className="cart-page__summary-label cart-page__summary-label--total">
-                    Total
-                  </span>
-                  <span className="cart-page__summary-value cart-page__summary-value--total">
-                    ${total.toFixed(2)}
-                  </span>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                className="cart-page__checkout-btn"
-                aria-label="Proceed to checkout"
-                onClick={() => navigate('/checkout')}
+              <OrderSummary
+                title="Order Summary"
+                items={[
+                  { label: 'Subtotal', value: `$${subtotal.toFixed(2)}` },
+                  { label: 'Tax (estimated)', value: `$${tax.toFixed(2)}` },
+                  { label: 'Total', value: `$${total.toFixed(2)}`, isTotal: true },
+                ]}
               >
-                Proceed to Checkout
-                <svg
-                  className="cart-page__checkout-icon"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
+                <Button
+                  variant="primary"
+                  size="lg"
+                  className="cart-page__checkout-btn"
+                  aria-label="Proceed to checkout"
+                  onClick={() => navigate('/checkout')}
+                  icon={
+                    <ArrowLongRightIcon className="cart-page__checkout-icon" />
+                  }
+                  iconPosition="end"
                 >
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12 5 19 12 12 19" />
-                </svg>
-              </button>
+                  Proceed to Checkout
+                </Button>
 
-              <button
-                type="button"
-                className="cart-page__continue-btn"
-                onClick={() => navigate('/')}
-              >
-                Continue Shopping
-              </button>
+                <Button
+                  variant="secondary"
+                  size="md"
+                  className="cart-page__continue-btn"
+                  onClick={() => navigate('/')}
+                >
+                  Continue Shopping
+                </Button>
 
-              <button
-                type="button"
-                className="cart-page__clear-btn"
-                onClick={clearCart}
-                aria-label="Clear all items from cart"
-              >
-                Clear Cart
-              </button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="cart-page__clear-btn"
+                  onClick={clearCart}
+                  aria-label="Clear all items from cart"
+                >
+                  Clear Cart
+                </Button>
+              </OrderSummary>
             </div>
           </aside>
         </div>
