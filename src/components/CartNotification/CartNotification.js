@@ -4,26 +4,15 @@ import { useCart } from '../../context/CartContext';
 import { useExperiment, EXPERIMENTS } from '../../context/ABTestContext';
 import './CartNotification.scss';
 
-/**
- * CartNotification Component with A/B Testing
- *
- * Experiment: CART_NOTIFICATION_STYLE
- * Variants:
- * - control: Current design with "Continue Shopping" and "View Cart" buttons
- * - minimal: Simplified single "View Cart" button, auto-dismisses faster
- * - prominent: Larger notification with cart total and "Checkout Now" CTA
- */
 function CartNotification() {
   const navigate = useNavigate();
   const { notification, hideNotification, cartTotal, cartCount } = useCart();
   const { show, product } = notification;
 
-  // A/B Test: Get variant and track exposure
   const { variant, trackConversion } = useExperiment(
     EXPERIMENTS.CART_NOTIFICATION_STYLE.id
   );
 
-  // Auto-hide timing varies by variant
   const autoHideDelay = variant === 'minimal' ? 3000 : 5000;
 
   useEffect(() => {
@@ -54,7 +43,6 @@ function CartNotification() {
 
   if (!show || !product) return null;
 
-  // Render variant-specific UI
   const renderVariant = () => {
     switch (variant) {
       case 'minimal':
@@ -94,9 +82,6 @@ function CartNotification() {
   );
 }
 
-/**
- * Control Variant: Original two-button design
- */
 function ControlVariant({ product, onViewCart, onContinueShopping }) {
   return (
     <>
@@ -164,10 +149,6 @@ function ControlVariant({ product, onViewCart, onContinueShopping }) {
   );
 }
 
-/**
- * Minimal Variant: Simplified single-button design
- * Hypothesis: Fewer choices = faster decision = higher conversion
- */
 function MinimalVariant({ product, onViewCart }) {
   return (
     <div className="cart-notification__minimal">
@@ -196,10 +177,6 @@ function MinimalVariant({ product, onViewCart }) {
   );
 }
 
-/**
- * Prominent Variant: Larger notification with checkout emphasis
- * Hypothesis: Showing total + direct checkout CTA increases checkout rate
- */
 function ProminentVariant({
   product,
   cartTotal,

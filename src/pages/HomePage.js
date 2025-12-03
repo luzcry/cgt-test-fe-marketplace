@@ -10,25 +10,6 @@ import ProductCard from '../components/ProductCard';
 import FilterSidebar from '../components/FilterSidebar';
 import './HomePage.scss';
 
-/**
- * HomePage Component
- *
- * Landing page with tech-forward hero section, filter sidebar, and product grid.
- *
- * SEO Features:
- * - Dynamic meta tags via react-helmet-async
- * - JSON-LD structured data for product listings
- * - Semantic HTML with proper heading hierarchy
- * - Accessible markup with ARIA labels
- *
- * Performance Features:
- * - Memoized filtered products
- * - Stable callback functions
- * - Lazy-loaded product images
- * - CSS-based animations
- */
-
-// Initial filter state
 const initialFilters = {
   categories: [],
   priceRange: [PRICE_RANGE.min, PRICE_RANGE.max],
@@ -41,12 +22,10 @@ function HomePage() {
   const [filters, setFilters] = useState(initialFilters);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Memoized filtered products for performance
   const filteredProducts = useMemo(() => {
     return filterProducts({ ...filters, searchTerm });
   }, [filters, searchTerm]);
 
-  // Stable callbacks to prevent re-renders
   const handleFilterChange = useCallback((newFilters) => {
     setFilters(newFilters);
   }, []);
@@ -68,7 +47,6 @@ function HomePage() {
     setSearchTerm(e.target.value);
   }, []);
 
-  // Calculate active filters count for display
   const activeFiltersCount =
     filters.categories.length +
     filters.fileFormats.length +
@@ -82,7 +60,6 @@ function HomePage() {
       : 0) +
     (searchTerm ? 1 : 0);
 
-  // Generate JSON-LD structured data for SEO
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
@@ -118,7 +95,6 @@ function HomePage() {
 
   return (
     <>
-      {/* Dynamic SEO Meta Tags */}
       <Helmet>
         <title>3D Marketplace | Premium Digital Assets & 3D Models</title>
         <meta
@@ -157,15 +133,12 @@ function HomePage() {
       </Helmet>
 
       <div className="home">
-        {/* Hero Section */}
         <section className="hero" aria-labelledby="hero-title">
-          {/* Animated Background */}
           <div className="hero__background" aria-hidden="true">
             <div className="hero__pattern-grid" />
             <div className="hero__scanlines" />
           </div>
 
-          {/* Floating Particles */}
           <div className="hero__particles" aria-hidden="true">
             {[...Array(20)].map((_, i) => (
               <div
@@ -181,10 +154,8 @@ function HomePage() {
             ))}
           </div>
 
-          {/* Hero Content */}
           <div className="hero__content">
             <div className="hero__grid">
-              {/* Left: Text Content */}
               <div className="hero__text">
                 <span className="hero__badge">Premium 3D Marketplace</span>
 
@@ -221,7 +192,6 @@ function HomePage() {
                 </p>
               </div>
 
-              {/* Right: Visual Element */}
               <div className="hero__visual" aria-hidden="true">
                 <div className="hero__visual-ring" />
                 <div className="hero__visual-ring hero__visual-ring--inner" />
@@ -237,9 +207,7 @@ function HomePage() {
           </div>
         </section>
 
-        {/* Products Section with Filter Sidebar */}
         <section className="products" aria-labelledby="products-title">
-          {/* Filter Sidebar */}
           <FilterSidebar
             isOpen={isFilterOpen}
             onClose={closeFilterSidebar}
@@ -248,9 +216,7 @@ function HomePage() {
             onReset={handleResetFilters}
           />
 
-          {/* Main Content */}
           <div className="products__main">
-            {/* Header with Search and Filter Toggle */}
             <header className="products__header">
               <div className="products__header-top">
                 <div className="products__title-group">
@@ -263,7 +229,6 @@ function HomePage() {
                   </p>
                 </div>
 
-                {/* Mobile Filter Toggle */}
                 <button
                   type="button"
                   className="products__filter-toggle"
@@ -300,7 +265,6 @@ function HomePage() {
                 </button>
               </div>
 
-              {/* Search Bar */}
               <div className="products__search">
                 <svg
                   className="products__search-icon"
@@ -343,7 +307,6 @@ function HomePage() {
               </div>
             </header>
 
-            {/* Products Grid */}
             {filteredProducts.length > 0 ? (
               <div
                 className="products__grid"

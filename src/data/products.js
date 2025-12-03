@@ -369,35 +369,18 @@ export const getProductById = (id) => {
   return products.find((product) => product.id === id);
 };
 
-/**
- * Get unique categories from products
- * @returns {string[]} Array of unique category names
- */
 export const getCategories = () => {
   return [...new Set(products.map((product) => product.category))];
 };
 
-/**
- * Get all unique file formats from products
- * @returns {string[]} Array of unique file format names
- */
 export const getFileFormats = () => {
   return [...new Set(products.flatMap((product) => product.fileFormat))];
 };
 
-/**
- * Get featured products
- * @returns {Object[]} Array of featured products
- */
 export const getFeaturedProducts = () => {
   return products.filter((product) => product.featured);
 };
 
-/**
- * Filter products based on criteria
- * @param {Object} filters - Filter criteria
- * @returns {Object[]} Filtered products array
- */
 export const filterProducts = (filters = {}) => {
   const {
     searchTerm = '',
@@ -408,7 +391,6 @@ export const filterProducts = (filters = {}) => {
   } = filters;
 
   return products.filter((product) => {
-    // Search filter
     const matchesSearch =
       !searchTerm ||
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -417,20 +399,16 @@ export const filterProducts = (filters = {}) => {
         tag.toLowerCase().includes(searchTerm.toLowerCase())
       );
 
-    // Category filter
     const matchesCategory =
       categories.length === 0 || categories.includes(product.category);
 
-    // Price filter
     const matchesPrice =
       product.price >= priceRange[0] && product.price <= priceRange[1];
 
-    // Polygon count filter
     const matchesPolyCount =
       product.polyCount >= polyCountRange[0] &&
       product.polyCount <= polyCountRange[1];
 
-    // File format filter
     const matchesFormat =
       fileFormats.length === 0 ||
       product.fileFormat.some((format) => fileFormats.includes(format));

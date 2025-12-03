@@ -12,9 +12,6 @@ import { detectCardType } from '../services/checkoutService';
 import ModelPreview from '../components/ModelPreview/ModelPreview';
 import './CheckoutPage.scss';
 
-// =============================================================================
-// Step Indicator Component
-// =============================================================================
 const StepIndicator = memo(function StepIndicator({
   steps,
   currentStep,
@@ -74,9 +71,6 @@ const StepIndicator = memo(function StepIndicator({
   );
 });
 
-// =============================================================================
-// Form Input Component
-// =============================================================================
 const FormInput = memo(function FormInput({
   id,
   label,
@@ -127,9 +121,6 @@ const FormInput = memo(function FormInput({
   );
 });
 
-// =============================================================================
-// Shipping Step Component
-// =============================================================================
 const ShippingStep = memo(function ShippingStep() {
   const {
     shippingInfo,
@@ -311,9 +302,6 @@ const ShippingStep = memo(function ShippingStep() {
   );
 });
 
-// =============================================================================
-// Payment Step Component
-// =============================================================================
 const PaymentStep = memo(function PaymentStep() {
   const {
     paymentInfo,
@@ -326,14 +314,12 @@ const PaymentStep = memo(function PaymentStep() {
 
   const [cardType, setCardType] = useState('unknown');
 
-  // Format card number with spaces
   const formatCardNumber = useCallback((value) => {
     const cleaned = value.replace(/\D/g, '');
     const formatted = cleaned.replace(/(\d{4})(?=\d)/g, '$1 ');
-    return formatted.substring(0, 19); // Max 16 digits + 3 spaces
+    return formatted.substring(0, 19);
   }, []);
 
-  // Format expiry date
   const formatExpiryDate = useCallback((value) => {
     const cleaned = value.replace(/\D/g, '');
     if (cleaned.length >= 2) {
@@ -595,9 +581,6 @@ const PaymentStep = memo(function PaymentStep() {
   );
 });
 
-// =============================================================================
-// Review Step Component
-// =============================================================================
 const ReviewStep = memo(function ReviewStep() {
   const {
     shippingInfo,
@@ -650,7 +633,6 @@ const ReviewStep = memo(function ReviewStep() {
       </header>
 
       <form onSubmit={handleSubmit} className="checkout-review">
-        {/* Order Items */}
         <div className="checkout-review__section">
           <h3 className="checkout-review__section-title">
             Order Items
@@ -683,7 +665,6 @@ const ReviewStep = memo(function ReviewStep() {
           </ul>
         </div>
 
-        {/* Shipping Info */}
         <div className="checkout-review__section">
           <div className="checkout-review__section-header">
             <h3 className="checkout-review__section-title">
@@ -726,7 +707,6 @@ const ReviewStep = memo(function ReviewStep() {
           </div>
         </div>
 
-        {/* Payment Info */}
         <div className="checkout-review__section">
           <div className="checkout-review__section-header">
             <h3 className="checkout-review__section-title">Payment Method</h3>
@@ -761,7 +741,6 @@ const ReviewStep = memo(function ReviewStep() {
           </div>
         </div>
 
-        {/* Delivery Option */}
         <div className="checkout-review__section">
           <h3 className="checkout-review__section-title">Delivery Option</h3>
           <div className="checkout-review__delivery-options">
@@ -810,7 +789,6 @@ const ReviewStep = memo(function ReviewStep() {
           </div>
         </div>
 
-        {/* Promo Code */}
         <div className="checkout-review__section">
           <h3 className="checkout-review__section-title">Promo Code</h3>
           {promoCode ? (
@@ -877,7 +855,6 @@ const ReviewStep = memo(function ReviewStep() {
           </p>
         </div>
 
-        {/* Order Summary */}
         <div className="checkout-review__summary">
           <h3 className="checkout-review__summary-title">Order Summary</h3>
           <div className="checkout-review__summary-lines">
@@ -910,7 +887,6 @@ const ReviewStep = memo(function ReviewStep() {
           </div>
         </div>
 
-        {/* Errors */}
         {(errors.payment || errors.order || errors.general) && (
           <div className="checkout-review__error" role="alert">
             <svg
@@ -976,15 +952,11 @@ const ReviewStep = memo(function ReviewStep() {
   );
 });
 
-// =============================================================================
-// Confirmation Step Component
-// =============================================================================
 const ConfirmationStep = memo(function ConfirmationStep() {
   const { orderResult, resetCheckout } = useCheckout();
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
 
-  // Scroll to top when confirmation page loads
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -1001,7 +973,6 @@ const ConfirmationStep = memo(function ConfirmationStep() {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       } catch (err) {
-        // Fallback for older browsers
         console.error('Failed to copy:', err);
       }
     }
@@ -1029,7 +1000,6 @@ const ConfirmationStep = memo(function ConfirmationStep() {
       className="checkout-step checkout-step--confirmation"
       aria-labelledby="confirmation-heading"
     >
-      {/* Celebration background effect */}
       <div className="checkout-celebration" aria-hidden="true">
         <div className="checkout-celebration__particles">
           {[...Array(12)].map((_, i) => (
@@ -1283,31 +1253,24 @@ const ConfirmationStep = memo(function ConfirmationStep() {
   );
 });
 
-// =============================================================================
-// Main Checkout Page Component
-// =============================================================================
 function CheckoutPage() {
   const navigate = useNavigate();
   const { cartItems } = useCart();
   const { currentStep, completedSteps, goToStep } = useCheckout();
 
-  // Redirect to cart if empty (except on confirmation)
   useEffect(() => {
     if (cartItems.length === 0 && currentStep !== CHECKOUT_STEPS.CONFIRMATION) {
       navigate('/cart');
     }
   }, [cartItems.length, currentStep, navigate]);
 
-  // Reset checkout when unmounting (unless on confirmation)
   useEffect(() => {
     return () => {
       if (currentStep !== CHECKOUT_STEPS.CONFIRMATION) {
-        // Don't reset if user is on confirmation page
       }
     };
   }, [currentStep]);
 
-  // SEO structured data
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'CheckoutPage',
@@ -1320,7 +1283,6 @@ function CheckoutPage() {
     },
   };
 
-  // Render current step
   const renderStep = () => {
     switch (currentStep) {
       case CHECKOUT_STEPS.SHIPPING:

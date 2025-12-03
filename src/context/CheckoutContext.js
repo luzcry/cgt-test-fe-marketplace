@@ -1,14 +1,3 @@
-/**
- * CheckoutContext - Multi-step Checkout State Management
- *
- * Manages the complete checkout flow state including:
- * - Current step tracking
- * - Shipping information
- * - Payment details
- * - Order confirmation
- * - Loading and error states
- */
-
 import {
   createContext,
   useContext,
@@ -26,7 +15,6 @@ import {
 } from '../services/checkoutService';
 import { useCart } from './CartContext';
 
-// Checkout steps configuration
 export const CHECKOUT_STEPS = {
   SHIPPING: 'shipping',
   PAYMENT: 'payment',
@@ -48,7 +36,6 @@ export const STEP_TITLES = {
   [CHECKOUT_STEPS.CONFIRMATION]: 'Confirmation',
 };
 
-// Initial state
 const initialState = {
   currentStep: CHECKOUT_STEPS.SHIPPING,
   completedSteps: [],
@@ -80,7 +67,6 @@ const initialState = {
   fieldErrors: {},
 };
 
-// Action types
 const ACTIONS = {
   SET_STEP: 'SET_STEP',
   COMPLETE_STEP: 'COMPLETE_STEP',
@@ -99,7 +85,6 @@ const ACTIONS = {
   RESET: 'RESET',
 };
 
-// Reducer
 function checkoutReducer(state, action) {
   switch (action.type) {
     case ACTIONS.SET_STEP:
@@ -170,17 +155,13 @@ function checkoutReducer(state, action) {
   }
 }
 
-// Create separate contexts for state and actions to prevent unnecessary re-renders
-// Components that only need actions won't re-render when state changes
 const CheckoutStateContext = createContext(null);
 const CheckoutActionsContext = createContext(null);
 
-// Provider component
 export function CheckoutProvider({ children }) {
   const [state, dispatch] = useReducer(checkoutReducer, initialState);
   const { cartItems, cartTotal, clearCart } = useCart();
 
-  // Calculate totals
   const totals = useMemo(() => {
     const subtotal = cartTotal;
     const discount = state.discount;
@@ -199,7 +180,6 @@ export function CheckoutProvider({ children }) {
     };
   }, [cartTotal, state.discount, state.shippingOption]);
 
-  // Navigation helpers
   const getCurrentStepIndex = useCallback(() => {
     return STEP_ORDER.indexOf(state.currentStep);
   }, [state.currentStep]);
@@ -209,10 +189,8 @@ export function CheckoutProvider({ children }) {
       const targetIndex = STEP_ORDER.indexOf(step);
       const currentIndex = getCurrentStepIndex();
 
-      // Can always go back
       if (targetIndex < currentIndex) return true;
 
-      // Can go forward only if all previous steps are completed
       const requiredSteps = STEP_ORDER.slice(0, targetIndex);
       return requiredSteps.every((s) => state.completedSteps.includes(s));
     },
@@ -246,7 +224,6 @@ export function CheckoutProvider({ children }) {
     }
   }, [getCurrentStepIndex, goToStep]);
 
-  // Shipping handlers
   const updateShippingInfo = useCallback((field, value) => {
     dispatch({ type: ACTIONS.UPDATE_SHIPPING, payload: { [field]: value } });
     dispatch({ type: ACTIONS.CLEAR_FIELD_ERROR, payload: field });
@@ -289,7 +266,6 @@ export function CheckoutProvider({ children }) {
     }
   }, [state.shippingInfo, cartItems.length]);
 
-  // Payment handlers
   const updatePaymentInfo = useCallback((field, value) => {
     dispatch({ type: ACTIONS.UPDATE_PAYMENT, payload: { [field]: value } });
     dispatch({ type: ACTIONS.CLEAR_FIELD_ERROR, payload: field });
@@ -326,7 +302,6 @@ export function CheckoutProvider({ children }) {
     }
   }, [state.paymentInfo, cartItems.length]);
 
-  // Promo code handler
   const applyPromoCode = useCallback(
     async (code) => {
       dispatch({ type: ACTIONS.SET_LOADING, payload: true });
@@ -366,18 +341,15 @@ export function CheckoutProvider({ children }) {
     dispatch({ type: ACTIONS.CLEAR_PROMO });
   }, []);
 
-  // Shipping option handler
   const setShippingOption = useCallback((option) => {
     dispatch({ type: ACTIONS.SET_SHIPPING_OPTION, payload: option });
   }, []);
 
-  // Place order
   const placeOrder = useCallback(async () => {
     dispatch({ type: ACTIONS.SET_LOADING, payload: true });
     dispatch({ type: ACTIONS.CLEAR_ERRORS });
 
     try {
-      // Process payment
       const paymentResult = await processPayment(
         state.paymentInfo,
         totals.total
@@ -394,7 +366,6 @@ export function CheckoutProvider({ children }) {
 
       dispatch({ type: ACTIONS.SET_PAYMENT_RESULT, payload: paymentResult });
 
-      // Create order
       const orderResult = await createOrder({
         items: cartItems,
         shippingAddress: state.shippingInfo,
@@ -419,7 +390,6 @@ export function CheckoutProvider({ children }) {
       });
       dispatch({ type: ACTIONS.SET_LOADING, payload: false });
 
-      // Clear cart after successful order
       clearCart();
 
       trackCheckoutStep(CHECKOUT_STEPS.CONFIRMATION, {
@@ -436,13 +406,10 @@ export function CheckoutProvider({ children }) {
     }
   }, [state.paymentInfo, state.shippingInfo, cartItems, totals, clearCart]);
 
-  // Reset checkout
   const resetCheckout = useCallback(() => {
     dispatch({ type: ACTIONS.RESET });
   }, []);
 
-  // Split context values for optimal re-render behavior
-  // State context - changes trigger re-renders for consumers
   const stateValue = useMemo(
     () => ({
       ...state,
@@ -454,7 +421,6 @@ export function CheckoutProvider({ children }) {
     [state, cartItems, totals, getCurrentStepIndex]
   );
 
-  // Actions context - stable references, won't cause re-renders
   const actionsValue = useMemo(
     () => ({
       canGoToStep,
@@ -497,12 +463,6 @@ export function CheckoutProvider({ children }) {
   );
 }
 
-// Custom hooks
-
-/**
- * useCheckoutState - Access checkout state only
- * Use this when you only need to read state (e.g., display current step)
- */
 export function useCheckoutState() {
   const context = useContext(CheckoutStateContext);
   if (!context) {
@@ -511,11 +471,6 @@ export function useCheckoutState() {
   return context;
 }
 
-/**
- * useCheckoutActions - Access checkout actions only
- * Use this when you only need to dispatch actions (e.g., button handlers)
- * This won't cause re-renders when state changes
- */
 export function useCheckoutActions() {
   const context = useContext(CheckoutActionsContext);
   if (!context) {
@@ -526,10 +481,6 @@ export function useCheckoutActions() {
   return context;
 }
 
-/**
- * useCheckout - Access both state and actions (backward compatible)
- * Use this when you need both state and actions in the same component
- */
 export function useCheckout() {
   const state = useCheckoutState();
   const actions = useCheckoutActions();

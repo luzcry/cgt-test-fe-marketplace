@@ -5,41 +5,12 @@ import { useCart } from '../context/CartContext';
 import ModelViewer from '../components/ModelViewer';
 import './ProductPage.scss';
 
-/**
- * ProductPage Component
- *
- * Detailed product view with interactive 3D model viewer and purchase options.
- *
- * Features:
- * - Interactive 3D model viewer with Three.js
- * - Fallback to static image for unsupported browsers
- * - Two-column responsive layout
- * - Sticky price/action section
- *
- * SEO Best Practices:
- * - JSON-LD structured data for Product schema
- * - Dynamic meta tags via react-helmet-async
- * - Semantic HTML with proper heading hierarchy
- * - Open Graph and Twitter meta tags
- *
- * Performance Optimizations:
- * - Lazy-loaded 3D models with Suspense
- * - Efficient re-renders with proper component structure
- * - GPU-accelerated CSS animations
- *
- * Accessibility:
- * - ARIA labels on interactive elements
- * - Proper heading hierarchy (h1 > h2)
- * - Keyboard navigable controls
- * - Screen reader announcements for 3D viewer
- */
 function ProductPage() {
   const { productId } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const product = getProductById(productId);
 
-  // Not found state
   if (!product) {
     return (
       <div className="product-page product-page--not-found">
@@ -66,7 +37,6 @@ function ProductPage() {
     addToCart(product);
   };
 
-  // Features list (can be extended from product data)
   const features = [
     'High-quality digital asset',
     'Instant download after purchase',
@@ -74,7 +44,6 @@ function ProductPage() {
     'Commercial license included',
   ];
 
-  // Generate JSON-LD structured data for SEO
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -123,12 +92,10 @@ function ProductPage() {
     ],
   };
 
-  // Meta description for SEO
   const metaDescription = `${product.name} - ${product.description} Available in ${product.fileFormat.join(', ')} formats. ${product.polyCount.toLocaleString()} polygons. $${product.price} USD.`;
 
   return (
     <main className="product-page">
-      {/* SEO Meta Tags */}
       <Helmet>
         <title>{product.name} | 3D Marketplace</title>
         <meta name="description" content={metaDescription} />
@@ -148,7 +115,6 @@ function ProductPage() {
         <meta property="product:price:amount" content={product.price} />
         <meta property="product:price:currency" content={product.currency} />
 
-        {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:title"
@@ -156,19 +122,16 @@ function ProductPage() {
         />
         <meta name="twitter:description" content={metaDescription} />
 
-        {/* Canonical URL */}
         <link
           rel="canonical"
           href={`${window.location.origin}/products/${product.id}`}
         />
 
-        {/* JSON-LD Structured Data */}
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
         </script>
       </Helmet>
 
-      {/* Back Navigation */}
       <nav className="product-page__nav" aria-label="Breadcrumb">
         <Link to="/" className="product-page__back">
           <svg
@@ -187,10 +150,8 @@ function ProductPage() {
         </Link>
       </nav>
 
-      {/* Main Content */}
       <div className="product-page__content">
         <div className="product-page__grid">
-          {/* Left: 3D Model Viewer */}
           <div className="product-page__viewer">
             <ModelViewer
               model={product.model}
@@ -205,17 +166,14 @@ function ProductPage() {
             </p>
           </div>
 
-          {/* Right: Product Details */}
           <article
             className="product-page__details"
             itemScope
             itemType="https://schema.org/Product"
           >
-            {/* Hidden structured data */}
             <meta itemProp="sku" content={product.id} />
             <meta itemProp="image" content={product.image} />
 
-            {/* Header */}
             <header className="product-page__header">
               {product.category && (
                 <p className="product-page__category" itemProp="category">
@@ -253,12 +211,10 @@ function ProductPage() {
               )}
             </header>
 
-            {/* Description */}
             <p className="product-page__description" itemProp="description">
               {product.description}
             </p>
 
-            {/* Tags */}
             <div className="product-page__tags" aria-label="Product tags">
               {product.tags.map((tag) => (
                 <span key={tag} className="product-page__tag">
@@ -267,7 +223,6 @@ function ProductPage() {
               ))}
             </div>
 
-            {/* Technical Specifications */}
             <section
               className="product-page__specs"
               aria-labelledby="specs-title"
@@ -299,7 +254,6 @@ function ProductPage() {
               </div>
             </section>
 
-            {/* 3D Preview Badge */}
             {product.model && (
               <div
                 className="product-page__preview-badge"
@@ -320,7 +274,6 @@ function ProductPage() {
               </div>
             )}
 
-            {/* Features */}
             <section
               className="product-page__features"
               aria-labelledby="features-title"
@@ -350,7 +303,6 @@ function ProductPage() {
               ))}
             </section>
 
-            {/* Sticky Price & Actions */}
             <div
               className="product-page__actions"
               itemProp="offers"

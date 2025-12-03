@@ -4,21 +4,8 @@ import { Helmet } from 'react-helmet-async';
 import { useCart } from '../context/CartContext';
 import './CartPage.scss';
 
-// Lazy load ModelPreview to avoid loading Three.js until needed
 const ModelPreview = lazy(() => import('../components/ModelPreview'));
 
-/**
- * CartPage Component
- *
- * Shopping cart with item management and order summary.
- * Features:
- * - Responsive two-column layout
- * - Quantity controls with +/- buttons
- * - Sticky order summary on desktop
- * - Empty cart state with CTA
- * - Accessible controls with ARIA labels
- * - SEO optimized with Helmet meta tags
- */
 function CartPage() {
   const navigate = useNavigate();
   const {
@@ -30,7 +17,6 @@ function CartPage() {
     clearCart,
   } = useCart();
 
-  // SEO meta component
   const CartSEO = () => (
     <Helmet>
       <title>Shopping Cart | 3D Marketplace</title>
@@ -47,7 +33,6 @@ function CartPage() {
     </Helmet>
   );
 
-  // Empty cart state
   if (cartItems.length === 0) {
     return (
       <>
@@ -84,7 +69,6 @@ function CartPage() {
     );
   }
 
-  // Calculate totals
   const subtotal = cartTotal;
   const tax = subtotal * 0.1;
   const total = subtotal + tax;
@@ -96,11 +80,9 @@ function CartPage() {
         <h1 className="cart-page__title">Shopping Cart</h1>
 
         <div className="cart-page__content">
-          {/* Cart Items */}
           <section className="cart-page__items" aria-label="Cart items">
             {cartItems.map((item) => (
               <article key={item.id} className="cart-item">
-                {/* Preview */}
                 <Link
                   to={`/products/${item.id}`}
                   className="cart-item__preview"
@@ -133,7 +115,6 @@ function CartPage() {
                   </Suspense>
                 </Link>
 
-                {/* Item Info */}
                 <div className="cart-item__info">
                   <Link to={`/products/${item.id}`} className="cart-item__name">
                     {item.name}
@@ -143,7 +124,6 @@ function CartPage() {
                   )}
 
                   <div className="cart-item__controls">
-                    {/* Quantity Controls */}
                     <div className="cart-item__quantity">
                       <button
                         type="button"
@@ -174,7 +154,6 @@ function CartPage() {
                       </button>
                     </div>
 
-                    {/* Price */}
                     <div className="cart-item__price">
                       <p className="cart-item__price-total">
                         ${(item.price * item.quantity).toFixed(2)}
@@ -188,7 +167,6 @@ function CartPage() {
                   </div>
                 </div>
 
-                {/* Remove Button */}
                 <button
                   type="button"
                   className="cart-item__remove"
@@ -215,7 +193,6 @@ function CartPage() {
             ))}
           </section>
 
-          {/* Order Summary */}
           <aside className="cart-page__summary" aria-label="Order summary">
             <div className="cart-page__summary-card">
               <h2 className="cart-page__summary-title">Order Summary</h2>

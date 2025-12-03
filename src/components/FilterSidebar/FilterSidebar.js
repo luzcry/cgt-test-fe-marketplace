@@ -7,22 +7,6 @@ import {
 } from '../../data/products';
 import './FilterSidebar.scss';
 
-/**
- * FilterSidebar Component
- *
- * SEO Best Practices:
- * - Semantic HTML with fieldset/legend for filter groups
- * - Proper label associations for form inputs
- * - ARIA attributes for accessibility
- * - Keyboard navigable controls
- *
- * Performance Best Practices:
- * - React.memo for preventing unnecessary re-renders
- * - useCallback for stable event handlers
- * - CSS-only animations for smooth performance
- * - Controlled component pattern for predictable state
- */
-
 const FilterSection = memo(function FilterSection({
   title,
   isExpanded,
@@ -105,7 +89,6 @@ const RangeSlider = memo(function RangeSlider({
 }) {
   const [localValue, setLocalValue] = useState(value);
 
-  // Use functional updates to avoid stale closure issues
   const handleMinChange = useCallback(
     (e) => {
       const inputValue = Number(e.target.value);
@@ -132,7 +115,6 @@ const RangeSlider = memo(function RangeSlider({
     [onChange, step]
   );
 
-  // Sync local value when prop changes (e.g., reset filters)
   React.useEffect(() => {
     setLocalValue(value);
   }, [value]);
@@ -252,7 +234,6 @@ const FilterSidebar = memo(function FilterSidebar({
     [filters, onFilterChange]
   );
 
-  // Calculate active filters count
   const activeFiltersCount =
     filters.categories.length +
     filters.fileFormats.length +
@@ -267,19 +248,16 @@ const FilterSidebar = memo(function FilterSidebar({
 
   return (
     <>
-      {/* Mobile Backdrop */}
       <div
         className={`filter-backdrop ${isOpen ? 'filter-backdrop--visible' : ''}`}
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Sidebar */}
       <aside
         className={`filter-sidebar ${isOpen ? 'filter-sidebar--open' : ''}`}
         aria-label="Product filters"
       >
-        {/* Header */}
         <header className="filter-sidebar__header">
           <div className="filter-sidebar__title-row">
             <div className="filter-sidebar__title-group">
@@ -322,7 +300,6 @@ const FilterSidebar = memo(function FilterSidebar({
             </button>
           </div>
 
-          {/* Active Filters Badge */}
           {activeFiltersCount > 0 && (
             <div className="filter-sidebar__active">
               <span className="filter-sidebar__active-count">
@@ -340,9 +317,7 @@ const FilterSidebar = memo(function FilterSidebar({
           )}
         </header>
 
-        {/* Filter Sections */}
         <div className="filter-sidebar__content">
-          {/* Categories */}
           <FilterSection
             title="Category"
             id="filter-categories"
@@ -362,7 +337,6 @@ const FilterSidebar = memo(function FilterSidebar({
             </div>
           </FilterSection>
 
-          {/* Price Range */}
           <FilterSection
             title="Price Range"
             id="filter-price"
@@ -381,7 +355,6 @@ const FilterSidebar = memo(function FilterSidebar({
             />
           </FilterSection>
 
-          {/* Polygon Count */}
           <FilterSection
             title="Polygon Count"
             id="filter-polycount"
@@ -400,7 +373,6 @@ const FilterSidebar = memo(function FilterSidebar({
             />
           </FilterSection>
 
-          {/* File Formats */}
           <FilterSection
             title="File Format"
             id="filter-formats"
@@ -421,7 +393,6 @@ const FilterSidebar = memo(function FilterSidebar({
           </FilterSection>
         </div>
 
-        {/* Decorative Elements */}
         <div
           className="filter-sidebar__decor filter-sidebar__decor--top"
           aria-hidden="true"

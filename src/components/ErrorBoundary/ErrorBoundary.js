@@ -1,18 +1,6 @@
 import { Component } from 'react';
 import './ErrorBoundary.scss';
 
-/**
- * ErrorBoundary Component
- *
- * Catches JavaScript errors anywhere in the child component tree,
- * logs the errors, and displays a fallback UI instead of crashing the app.
- *
- * Best Practices:
- * - Uses class component (required for error boundaries)
- * - Provides user-friendly error message
- * - Includes retry functionality
- * - Logs errors for debugging
- */
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
@@ -26,13 +14,9 @@ class ErrorBoundary extends Component {
   componentDidCatch(error, errorInfo) {
     this.setState({ errorInfo });
 
-    // Log error to console in development
     if (process.env.NODE_ENV === 'development') {
       console.error('ErrorBoundary caught an error:', error, errorInfo);
     }
-
-    // In production, you would send this to an error reporting service
-    // Example: errorReportingService.log({ error, errorInfo });
   }
 
   handleRetry = () => {
@@ -41,12 +25,10 @@ class ErrorBoundary extends Component {
 
   render() {
     if (this.state.hasError) {
-      // Custom fallback UI if provided
       if (this.props.fallback) {
         return this.props.fallback;
       }
 
-      // Default fallback UI
       return (
         <div className="error-boundary" role="alert">
           <div className="error-boundary__content">

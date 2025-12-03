@@ -1,34 +1,17 @@
-/**
- * Checkout Service - Mock API for simulating checkout flow
- *
- * Provides realistic async operations with simulated network delays
- * and validation logic for a complete checkout experience.
- */
-
-// Simulated network delay range (ms)
 const DELAY_MIN = 800;
 const DELAY_MAX = 1500;
 
-/**
- * Generates a random delay to simulate network latency
- */
 const simulateNetworkDelay = () =>
   new Promise((resolve) =>
     setTimeout(resolve, Math.random() * (DELAY_MAX - DELAY_MIN) + DELAY_MIN)
   );
 
-/**
- * Generates a unique order ID with timestamp
- */
 const generateOrderId = () => {
   const timestamp = Date.now().toString(36).toUpperCase();
   const random = Math.random().toString(36).substring(2, 8).toUpperCase();
   return `3DM-${timestamp}-${random}`;
 };
 
-/**
- * Generates a unique transaction ID
- */
 const generateTransactionId = () => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let result = 'TXN-';
@@ -39,17 +22,6 @@ const generateTransactionId = () => {
   return result;
 };
 
-// =============================================================================
-// Address Validation Service
-// =============================================================================
-
-/**
- * Validates and normalizes a shipping address
- * Simulates real address validation API behavior
- *
- * @param {Object} address - The address to validate
- * @returns {Promise<Object>} - Validation result with normalized address
- */
 export const validateAddress = async (address) => {
   await simulateNetworkDelay();
 
@@ -98,7 +70,6 @@ export const validateAddress = async (address) => {
     };
   }
 
-  // Return normalized address
   return {
     success: true,
     normalizedAddress: {
@@ -118,13 +89,6 @@ export const validateAddress = async (address) => {
   };
 };
 
-// =============================================================================
-// Payment Processing Service
-// =============================================================================
-
-/**
- * Card type detection based on card number prefix
- */
 export const detectCardType = (cardNumber) => {
   const number = cardNumber.replace(/\s/g, '');
 
@@ -136,27 +100,18 @@ export const detectCardType = (cardNumber) => {
   return 'unknown';
 };
 
-/**
- * Validates payment card details
- * Implements Luhn algorithm for card number validation
- *
- * @param {Object} paymentDetails - Card details to validate
- * @returns {Promise<Object>} - Validation result
- */
 export const validatePaymentDetails = async (paymentDetails) => {
   await simulateNetworkDelay();
 
   const { cardNumber, cardHolder, expiryDate, cvv } = paymentDetails;
   const errors = {};
 
-  // Validate card number (Luhn algorithm)
   const cleanNumber = cardNumber?.replace(/\s/g, '') || '';
   if (!cleanNumber) {
     errors.cardNumber = 'Card number is required';
   } else if (!/^\d{13,19}$/.test(cleanNumber)) {
     errors.cardNumber = 'Please enter a valid card number';
   } else {
-    // Luhn algorithm check
     let sum = 0;
     let isEven = false;
     for (let i = cleanNumber.length - 1; i >= 0; i--) {
@@ -173,14 +128,12 @@ export const validatePaymentDetails = async (paymentDetails) => {
     }
   }
 
-  // Validate cardholder name
   if (!cardHolder?.trim()) {
     errors.cardHolder = 'Cardholder name is required';
   } else if (cardHolder.trim().length < 2) {
     errors.cardHolder = 'Please enter the full name as shown on card';
   }
 
-  // Validate expiry date
   if (!expiryDate?.trim()) {
     errors.expiryDate = 'Expiry date is required';
   } else {
@@ -203,7 +156,6 @@ export const validatePaymentDetails = async (paymentDetails) => {
     }
   }
 
-  // Validate CVV
   const cardType = detectCardType(cleanNumber);
   const cvvLength = cardType === 'amex' ? 4 : 3;
   if (!cvv?.trim()) {
@@ -228,24 +180,14 @@ export const validatePaymentDetails = async (paymentDetails) => {
   };
 };
 
-/**
- * Processes payment transaction
- * Simulates real payment gateway behavior with random success/failure scenarios
- *
- * @param {Object} paymentInfo - Payment information
- * @param {number} amount - Amount to charge
- * @returns {Promise<Object>} - Transaction result
- */
 export const processPayment = async (paymentInfo, amount) => {
   await simulateNetworkDelay();
 
   const { cardNumber, cardHolder } = paymentInfo;
   const cleanNumber = cardNumber?.replace(/\s/g, '') || '';
 
-  // Simulate specific test scenarios based on card number endings
   const lastDigit = cleanNumber.slice(-1);
 
-  // Card ending in 0 = insufficient funds
   if (lastDigit === '0') {
     return {
       success: false,
@@ -255,7 +197,6 @@ export const processPayment = async (paymentInfo, amount) => {
     };
   }
 
-  // Card ending in 9 = card declined
   if (lastDigit === '9') {
     return {
       success: false,
@@ -265,7 +206,6 @@ export const processPayment = async (paymentInfo, amount) => {
     };
   }
 
-  // Successful transaction
   return {
     success: true,
     transactionId: generateTransactionId(),
@@ -279,16 +219,6 @@ export const processPayment = async (paymentInfo, amount) => {
   };
 };
 
-// =============================================================================
-// Order Service
-// =============================================================================
-
-/**
- * Creates a new order
- *
- * @param {Object} orderData - Complete order information
- * @returns {Promise<Object>} - Created order details
- */
 export const createOrder = async (orderData) => {
   await simulateNetworkDelay();
 
@@ -298,7 +228,7 @@ export const createOrder = async (orderData) => {
   const estimatedDelivery = new Date();
   estimatedDelivery.setDate(
     estimatedDelivery.getDate() + Math.floor(Math.random() * 3) + 3
-  ); // 3-5 days
+  );
 
   return {
     success: true,
@@ -363,17 +293,9 @@ export const createOrder = async (orderData) => {
   };
 };
 
-/**
- * Calculate shipping options based on address
- *
- * @param {Object} address - Shipping address
- * @returns {Promise<Object>} - Available shipping options
- */
 export const getShippingOptions = async (address) => {
   await simulateNetworkDelay();
 
-  // For digital products, shipping is instant/free
-  // But we provide options for the experience
   return {
     success: true,
     options: [
@@ -397,23 +319,11 @@ export const getShippingOptions = async (address) => {
   };
 };
 
-// =============================================================================
-// Promo/Discount Service
-// =============================================================================
-
-/**
- * Validates and applies a promo code
- *
- * @param {string} code - Promo code to validate
- * @param {number} subtotal - Current cart subtotal
- * @returns {Promise<Object>} - Promo validation result
- */
 export const validatePromoCode = async (code, subtotal) => {
   await simulateNetworkDelay();
 
   const normalizedCode = code.trim().toUpperCase();
 
-  // Mock promo codes
   const promoCodes = {
     WELCOME10: {
       type: 'percentage',
@@ -467,24 +377,13 @@ export const validatePromoCode = async (code, subtotal) => {
     code: normalizedCode,
     type: promo.type,
     value: promo.value,
-    discount: Math.min(discount, subtotal), // Can't discount more than subtotal
+    discount: Math.min(discount, subtotal),
     description: promo.description,
     message: `Promo code applied: ${promo.description}`,
   };
 };
 
-// =============================================================================
-// Analytics Service (for tracking checkout events)
-// =============================================================================
-
-/**
- * Tracks checkout step completion
- *
- * @param {string} step - Current checkout step
- * @param {Object} data - Additional tracking data
- */
 export const trackCheckoutStep = async (step, data = {}) => {
-  // In a real app, this would send to analytics
   console.log(`[Analytics] Checkout Step: ${step}`, {
     timestamp: new Date().toISOString(),
     ...data,

@@ -2,16 +2,6 @@ import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import './Header.scss';
 
-/**
- * Header Component
- *
- * Main navigation header with frosted glass effect.
- * Features:
- * - Sticky positioning with backdrop blur
- * - Animated logo with glow effect
- * - Responsive cart button with badge
- * - Accessible navigation with proper focus states
- */
 function Header() {
   const { cartCount } = useCart();
 

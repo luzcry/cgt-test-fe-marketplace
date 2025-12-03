@@ -5,43 +5,17 @@ import { useExperiment, EXPERIMENTS } from '../../context/ABTestContext';
 import { CartIcon, PlusIcon, StarIcon, LayersIcon } from '../Icons';
 import './ProductCard.scss';
 
-// Lazy load ModelPreview - only imported when actually rendered
 const ModelPreview = lazy(() => import('../ModelPreview'));
 
-/**
- * ProductCard Component with A/B Testing
- *
- * Experiment: PRODUCT_CARD_CTA
- * Variants:
- * - control: "Add to Cart" with cart icon (original)
- * - quick_add: "Quick Add" with plus icon, more compact style
- * - price_in_button: "Add • $XX" showing price directly in button
- *
- * SEO Best Practices:
- * - Semantic HTML with proper heading hierarchy (h3 for product names)
- * - Schema.org Product markup via data attributes
- * - Descriptive alt text and accessible labels
- * - Proper link structure for crawlability
- *
- * Performance Best Practices:
- * - React.memo for preventing unnecessary re-renders
- * - Lazy loading for images
- * - CSS-based animations (hardware accelerated)
- * - Minimal DOM depth
- */
 const ProductCard = memo(function ProductCard({ product, index = 0 }) {
   const { addToCart } = useCart();
-  // Defer 3D loading until after initial paint for better LCP
   const [enable3D, setEnable3D] = useState(false);
 
-  // A/B Test: Get variant and track exposure
   const { variant, trackConversion } = useExperiment(
     EXPERIMENTS.PRODUCT_CARD_CTA.id
   );
 
   useEffect(() => {
-    // Use requestIdleCallback to load 3D after page is interactive
-    // Falls back to setTimeout for browsers without support
     const enablePreview = () => setEnable3D(true);
 
     if ('requestIdleCallback' in window) {
@@ -56,7 +30,6 @@ const ProductCard = memo(function ProductCard({ product, index = 0 }) {
   const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    // Track conversion with variant info
     trackConversion('add_to_cart', {
       productId: product.id,
       price: product.price,
@@ -64,10 +37,8 @@ const ProductCard = memo(function ProductCard({ product, index = 0 }) {
     addToCart(product);
   };
 
-  // Animation delay based on card index for staggered entrance
   const animationDelay = `${index * 0.05}s`;
 
-  // Render variant-specific CTA button
   const renderCTAButton = () => {
     switch (variant) {
       case 'quick_add':
@@ -130,9 +101,7 @@ const ProductCard = memo(function ProductCard({ product, index = 0 }) {
         className="product-card__link"
         aria-label={`View ${product.name} details - $${product.price}`}
       >
-        {/* Preview Section */}
         <div className="product-card__preview">
-          {/* 3D Model Preview (deferred) or Static Placeholder */}
           {product.model && enable3D ? (
             <Suspense
               fallback={
@@ -189,7 +158,6 @@ const ProductCard = memo(function ProductCard({ product, index = 0 }) {
             </>
           )}
 
-          {/* Rating Badge */}
           <div
             className="product-card__rating"
             aria-label={`Rating: ${product.rating} out of 5 stars`}
@@ -207,7 +175,6 @@ const ProductCard = memo(function ProductCard({ product, index = 0 }) {
           </div>
         </div>
 
-        {/* Content Section */}
         <div className="product-card__content">
           <p className="product-card__category">{product.category}</p>
 
@@ -219,7 +186,6 @@ const ProductCard = memo(function ProductCard({ product, index = 0 }) {
             {product.description}
           </p>
 
-          {/* Specs Row */}
           <div className="product-card__specs">
             <span
               className="product-card__spec"
@@ -233,7 +199,6 @@ const ProductCard = memo(function ProductCard({ product, index = 0 }) {
             </span>
           </div>
 
-          {/* Price - Hidden in price_in_button variant */}
           {variant !== 'price_in_button' && (
             <div
               className="product-card__price"
@@ -254,10 +219,8 @@ const ProductCard = memo(function ProductCard({ product, index = 0 }) {
         </div>
       </Link>
 
-      {/* CTA Button - Outside Link for proper semantics */}
       <div className="product-card__cta">{renderCTAButton()}</div>
 
-      {/* Hover Overlay Effect */}
       <div className="product-card__hover-overlay" aria-hidden="true" />
     </article>
   );

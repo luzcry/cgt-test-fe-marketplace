@@ -19,23 +19,6 @@ import {
 } from '@react-three/drei';
 import './ModelViewer.scss';
 
-/**
- * ModelViewer Component
- *
- * Interactive 3D model viewer built with Three.js (react-three-fiber)
- * Now supports multiple models per product with model selector
- *
- * Features:
- * - Multiple model support with thumbnail selector
- * - Animation playback for animated models
- * - Orbit controls (rotate, zoom, pan)
- * - Wireframe toggle
- * - Fullscreen mode
- * - Loading states with progress
- * - WebGL fallback handling
- */
-
-// Loading indicator component inside Canvas
 function Loader() {
   const { progress } = useProgress();
   return (
@@ -50,7 +33,6 @@ function Loader() {
   );
 }
 
-// Animated model component with animation support
 const AnimatedModel = memo(function AnimatedModel({
   url,
   wireframe,
@@ -63,11 +45,9 @@ const AnimatedModel = memo(function AnimatedModel({
 
   useEffect(() => {
     if (scene) {
-      // Apply wireframe to all meshes
       scene.traverse((child) => {
         if (child.isMesh) {
           child.material.wireframe = wireframe;
-          // Enable shadows
           child.castShadow = true;
           child.receiveShadow = true;
         }
@@ -76,7 +56,6 @@ const AnimatedModel = memo(function AnimatedModel({
     }
   }, [scene, wireframe, onLoad]);
 
-  // Play first animation if available
   useEffect(() => {
     if (names.length > 0 && actions[names[0]]) {
       actions[names[0]].reset().fadeIn(0.5).play();
@@ -93,7 +72,6 @@ const AnimatedModel = memo(function AnimatedModel({
   );
 });
 
-// Error Fallback component
 function ErrorFallback({ error, onRetry }) {
   return (
     <div className="model-viewer__error" role="alert">
@@ -125,7 +103,6 @@ function ErrorFallback({ error, onRetry }) {
   );
 }
 
-// Control Button component
 const ControlButton = memo(function ControlButton({
   icon,
   label,
@@ -147,9 +124,8 @@ const ControlButton = memo(function ControlButton({
   );
 });
 
-// Main ModelViewer component
 const ModelViewer = memo(function ModelViewer({
-  model = null, // Single { name, url } object
+  model = null,
   productName = '3D Model',
   fallbackImage,
   previewColor = 'linear-gradient(135deg, #4A90E2, #357ABD)',
@@ -161,17 +137,14 @@ const ModelViewer = memo(function ModelViewer({
   const [isLoaded, setIsLoaded] = useState(false);
   const containerRef = useRef(null);
 
-  // Toggle auto-rotation
   const toggleAutoRotate = useCallback(() => {
     setAutoRotate((prev) => !prev);
   }, []);
 
-  // Toggle wireframe mode
   const toggleWireframe = useCallback(() => {
     setWireframe((prev) => !prev);
   }, []);
 
-  // Toggle fullscreen
   const toggleFullscreen = useCallback(async () => {
     if (!containerRef.current) return;
 
@@ -188,7 +161,6 @@ const ModelViewer = memo(function ModelViewer({
     }
   }, []);
 
-  // Handle fullscreen change events
   useEffect(() => {
     const handleFullscreenChange = () => {
       setIsFullscreen(!!document.fullscreenElement);
@@ -199,24 +171,20 @@ const ModelViewer = memo(function ModelViewer({
       document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  // Handle model load
   const handleModelLoad = useCallback(() => {
     setIsLoaded(true);
   }, []);
 
-  // Handle WebGL errors
   const handleError = useCallback((error) => {
     console.error('ModelViewer error:', error);
     setHasError(true);
   }, []);
 
-  // Retry loading
   const handleRetry = useCallback(() => {
     setHasError(false);
     setIsLoaded(false);
   }, []);
 
-  // Check WebGL support
   const isWebGLSupported = useCallback(() => {
     try {
       const canvas = document.createElement('canvas');
@@ -229,7 +197,6 @@ const ModelViewer = memo(function ModelViewer({
     }
   }, []);
 
-  // If no model or WebGL not supported, show fallback
   if (!model || !isWebGLSupported()) {
     return (
       <div
@@ -256,7 +223,6 @@ const ModelViewer = memo(function ModelViewer({
     );
   }
 
-  // Show error state
   if (hasError) {
     return (
       <div className="model-viewer model-viewer--error">
@@ -265,7 +231,6 @@ const ModelViewer = memo(function ModelViewer({
     );
   }
 
-  // Icons for controls
   const icons = {
     rotate: (
       <svg
@@ -323,7 +288,6 @@ const ModelViewer = memo(function ModelViewer({
       role="img"
       aria-label={`Interactive 3D model of ${productName}. Use mouse to rotate and zoom.`}
     >
-      {/* Canvas Container */}
       <div className="model-viewer__canvas">
         <Canvas
           camera={{ position: [0, 0, 5], fov: 45 }}
@@ -335,14 +299,11 @@ const ModelViewer = memo(function ModelViewer({
             powerPreference: 'high-performance',
           }}
           onError={handleError}
-          // Use passive event listeners for better scroll performance
           events={(store) => ({
             ...store,
-            // Enable passive touch/wheel events for better scroll performance
             passive: true,
           })}
         >
-          {/* Lighting Setup */}
           <ambientLight intensity={0.5} />
           <spotLight
             position={[10, 10, 10]}
@@ -353,10 +314,8 @@ const ModelViewer = memo(function ModelViewer({
           />
           <pointLight position={[-10, -10, -10]} intensity={0.5} />
 
-          {/* Environment for reflections */}
           <Environment preset="city" />
 
-          {/* Model with Suspense */}
           <Suspense fallback={<Loader />}>
             {model && (
               <AnimatedModel
@@ -376,7 +335,6 @@ const ModelViewer = memo(function ModelViewer({
             />
           </Suspense>
 
-          {/* Orbit Controls */}
           <OrbitControls
             autoRotate={autoRotate}
             autoRotateSpeed={2}
@@ -391,7 +349,6 @@ const ModelViewer = memo(function ModelViewer({
         </Canvas>
       </div>
 
-      {/* Controls Overlay */}
       <div
         className="model-viewer__controls"
         role="toolbar"
@@ -420,14 +377,12 @@ const ModelViewer = memo(function ModelViewer({
         />
       </div>
 
-      {/* Current Model Name */}
       {model && isLoaded && (
         <div className="model-viewer__model-name" aria-live="polite">
           {model.name}
         </div>
       )}
 
-      {/* Interaction Hint */}
       {isLoaded && !isFullscreen && (
         <p className="model-viewer__hint" aria-hidden="true">
           <span className="model-viewer__hint-icon">
@@ -444,7 +399,6 @@ const ModelViewer = memo(function ModelViewer({
         </p>
       )}
 
-      {/* Screen reader description */}
       <div className="visually-hidden" aria-live="polite">
         {isLoaded &&
           `3D model ${model?.name} loaded. Use mouse or touch to interact.`}
@@ -453,7 +407,6 @@ const ModelViewer = memo(function ModelViewer({
   );
 });
 
-// Preload helper for performance
 ModelViewer.preload = (model) => {
   if (model && model.url) {
     useGLTF.preload(model.url);

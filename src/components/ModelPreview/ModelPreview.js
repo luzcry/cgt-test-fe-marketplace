@@ -17,23 +17,6 @@ import {
 } from '@react-three/drei';
 import './ModelPreview.scss';
 
-/**
- * ModelPreview Component
- *
- * Lightweight 3D model preview for product cards on the home page.
- * Uses a snapshot approach: renders 3D once, captures image, releases context.
- *
- * Features:
- * - Renders 3D model and captures snapshot
- * - Caches snapshots to avoid re-rendering (LRU cache with max size)
- * - Hover to show live 3D (optional)
- * - No WebGL context limits since contexts are released after capture
- */
-
-/**
- * Simple LRU Cache implementation for snapshot storage
- * Prevents unbounded memory growth in long sessions
- */
 class LRUCache {
   constructor(maxSize = 50) {
     this.maxSize = maxSize;
@@ -42,7 +25,6 @@ class LRUCache {
 
   get(key) {
     if (!this.cache.has(key)) return undefined;
-    // Move to end (most recently used)
     const value = this.cache.get(key);
     this.cache.delete(key);
     this.cache.set(key, value);
@@ -50,12 +32,9 @@ class LRUCache {
   }
 
   set(key, value) {
-    // Delete existing to refresh position
     if (this.cache.has(key)) {
       this.cache.delete(key);
-    }
-    // Evict oldest if at capacity
-    else if (this.cache.size >= this.maxSize) {
+    } else if (this.cache.size >= this.maxSize) {
       const oldestKey = this.cache.keys().next().value;
       this.cache.delete(oldestKey);
     }
@@ -75,11 +54,8 @@ class LRUCache {
   }
 }
 
-// Global cache for model snapshots with LRU eviction (max 50 items)
 const snapshotCache = new LRUCache(50);
 
-// Queue system for rendering models one at a time
-// Uses a Map to track callbacks by ID for cleanup on unmount
 let renderQueue = [];
 let isProcessingQueue = false;
 let queueIdCounter = 0;
@@ -91,11 +67,9 @@ function processQueue() {
 
   const { id, callback } = renderQueue.shift();
 
-  // Only execute if callback hasn't been removed (component still mounted)
   if (queueCallbacks.has(id)) {
     callback();
   } else {
-    // Skip this item and process next
     isProcessingQueue = false;
     processQueue();
   }
@@ -111,7 +85,6 @@ function addToQueue(callback) {
 
 function removeFromQueue(id) {
   queueCallbacks.delete(id);
-  // Also remove from pending queue if not yet processed
   renderQueue = renderQueue.filter((item) => item.id !== id);
 }
 
@@ -120,7 +93,6 @@ function finishQueueItem() {
   processQueue();
 }
 
-// Component to capture canvas snapshot
 function SnapshotCapture({ onCapture }) {
   const { gl, scene, camera } = useThree();
   const capturedRef = useRef(false);
@@ -131,12 +103,9 @@ function SnapshotCapture({ onCapture }) {
 
     let rafId;
 
-    // Wait for a few frames to ensure the model is fully rendered
-    // This is more reliable than a fixed timeout as it adapts to actual render cycles
     const waitForRender = () => {
       frameCountRef.current++;
 
-      // Wait for 3 frames to ensure model geometry and textures are loaded
       if (frameCountRef.current < 3) {
         rafId = requestAnimationFrame(waitForRender);
         return;
@@ -145,7 +114,6 @@ function SnapshotCapture({ onCapture }) {
       if (capturedRef.current) return;
       capturedRef.current = true;
 
-      // Render and capture
       gl.render(scene, camera);
       const dataUrl = gl.domElement.toDataURL('image/png');
       onCapture(dataUrl);
@@ -161,7 +129,6 @@ function SnapshotCapture({ onCapture }) {
   return null;
 }
 
-// Simple model component with animation support
 const SimpleModel = memo(function SimpleModel({ url, onLoad, scale = 1 }) {
   const group = useRef();
   const { scene, animations } = useGLTF(url);
@@ -196,7 +163,6 @@ const SimpleModel = memo(function SimpleModel({ url, onLoad, scale = 1 }) {
   );
 });
 
-// Simple loading spinner
 function LoadingSpinner() {
   return (
     <div className="model-preview__loading">
@@ -205,7 +171,6 @@ function LoadingSpinner() {
   );
 }
 
-// Main ModelPreview component
 const ModelPreview = memo(function ModelPreview({
   model = null,
   fallbackImage,
@@ -224,17 +189,12 @@ const ModelPreview = memo(function ModelPreview({
   const containerRef = useRef(null);
   const queueIdRef = useRef(null);
 
-  // Check if we already have a cached snapshot
   useEffect(() => {
     if (model && !skipCache && snapshotCache.has(model.url)) {
       setSnapshot(snapshotCache.get(model.url));
     }
   }, [model, skipCache]);
 
-  // Lazy load with IntersectionObserver
-  // Note: Observer continues after first intersection (doesn't disconnect early)
-  // to support potential future hover-to-show-live-3D feature that would need
-  // to know when the element leaves viewport. Cleanup happens on unmount.
   useEffect(() => {
     if (typeof IntersectionObserver === 'undefined') {
       setIsVisible(true);
@@ -257,7 +217,6 @@ const ModelPreview = memo(function ModelPreview({
     return () => observer.disconnect();
   }, []);
 
-  // Queue rendering when visible and no snapshot exists
   useEffect(() => {
     if (
       !isVisible ||
@@ -273,7 +232,6 @@ const ModelPreview = memo(function ModelPreview({
     });
     queueIdRef.current = id;
 
-    // Cleanup: remove from queue if component unmounts before processing
     return () => {
       if (queueIdRef.current !== null) {
         removeFromQueue(queueIdRef.current);
@@ -295,7 +253,6 @@ const ModelPreview = memo(function ModelPreview({
       setIsRendering(false);
       setModelLoaded(false);
 
-      // Clean up queue tracking before signaling next item can process
       if (queueIdRef.current !== null) {
         removeFromQueue(queueIdRef.current);
         queueIdRef.current = null;
@@ -309,7 +266,6 @@ const ModelPreview = memo(function ModelPreview({
     setHasError(true);
     setIsRendering(false);
 
-    // Clean up queue tracking before signaling next item can process
     if (queueIdRef.current !== null) {
       removeFromQueue(queueIdRef.current);
       queueIdRef.current = null;
@@ -317,7 +273,6 @@ const ModelPreview = memo(function ModelPreview({
     finishQueueItem();
   }, []);
 
-  // Check WebGL support once and cache result
   const isWebGLSupported = useMemo(() => {
     try {
       const canvas = document.createElement('canvas');
@@ -330,7 +285,6 @@ const ModelPreview = memo(function ModelPreview({
     }
   }, []);
 
-  // If no model, WebGL not supported, or error, show fallback
   if (!model || !isWebGLSupported || hasError) {
     return (
       <div
@@ -353,7 +307,6 @@ const ModelPreview = memo(function ModelPreview({
     );
   }
 
-  // Show cached snapshot
   if (snapshot) {
     return (
       <div
@@ -366,7 +319,6 @@ const ModelPreview = memo(function ModelPreview({
           alt={alt}
           className="model-preview__snapshot-image"
         />
-        {/* 3D Badge */}
         <div className="model-preview__badge" aria-hidden="true">
           <svg
             viewBox="0 0 24 24"
@@ -384,7 +336,6 @@ const ModelPreview = memo(function ModelPreview({
     );
   }
 
-  // Show loading state while waiting in queue or rendering
   if (!isRendering) {
     return (
       <div
@@ -408,20 +359,16 @@ const ModelPreview = memo(function ModelPreview({
     );
   }
 
-  // Render 3D and capture snapshot
   return (
     <div
       ref={containerRef}
       className={`model-preview ${modelLoaded ? 'model-preview--loaded' : ''}`}
       style={{ '--preview-color': previewColor }}
     >
-      {/* Background gradient */}
       <div className="model-preview__bg" aria-hidden="true" />
 
-      {/* Loading state */}
       {!modelLoaded && <LoadingSpinner />}
 
-      {/* Canvas for rendering */}
       <div className="model-preview__canvas">
         <Canvas
           camera={{ position: [0, 0, 4], fov: 45 }}
@@ -429,11 +376,10 @@ const ModelPreview = memo(function ModelPreview({
           gl={{
             antialias: true,
             alpha: true,
-            preserveDrawingBuffer: true, // Required for snapshot
+            preserveDrawingBuffer: true,
             powerPreference: 'low-power',
           }}
           onError={handleError}
-          // Use passive event listeners for better scroll performance
           events={(store) => ({
             ...store,
             passive: true,
@@ -459,12 +405,10 @@ const ModelPreview = memo(function ModelPreview({
             enableRotate={false}
           />
 
-          {/* Capture snapshot after model loads */}
           {modelLoaded && <SnapshotCapture onCapture={handleSnapshot} />}
         </Canvas>
       </div>
 
-      {/* 3D Badge */}
       <div className="model-preview__badge" aria-hidden="true">
         <svg
           viewBox="0 0 24 24"
@@ -482,7 +426,6 @@ const ModelPreview = memo(function ModelPreview({
   );
 });
 
-// Preload helper
 ModelPreview.preload = (model) => {
   if (model && model.url) {
     useGLTF.preload(model.url);

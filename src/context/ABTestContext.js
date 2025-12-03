@@ -7,41 +7,19 @@ import {
   useMemo,
 } from 'react';
 
-/**
- * A/B Testing Context
- *
- * Provides a lightweight A/B testing infrastructure for running experiments.
- * Features:
- * - Persistent user assignment via localStorage
- * - Deterministic variant assignment based on user ID
- * - Analytics event tracking
- * - Support for multiple concurrent experiments
- */
-
 const ABTestContext = createContext(null);
 
-// Experiment configurations
 export const EXPERIMENTS = {
   CART_NOTIFICATION_STYLE: {
     id: 'cart_notification_style',
     variants: ['control', 'minimal', 'prominent'],
-    // control: Current design with two buttons
-    // minimal: Simplified single-button design
-    // prominent: Larger notification with checkout emphasis
   },
   PRODUCT_CARD_CTA: {
     id: 'product_card_cta',
     variants: ['control', 'quick_add', 'price_in_button'],
-    // control: "Add to Cart" with cart icon
-    // quick_add: "Quick Add" with plus icon, more compact
-    // price_in_button: "Add • $XX" showing price in button
   },
 };
 
-/**
- * Generate a persistent user ID for experiment assignment
- * Uses localStorage to maintain consistent experience across sessions
- */
 function getOrCreateUserId() {
   const STORAGE_KEY = 'ab_test_user_id';
   let userId = localStorage.getItem(STORAGE_KEY);
@@ -55,10 +33,6 @@ function getOrCreateUserId() {
   return userId;
 }
 
-/**
- * Deterministic hash function for consistent variant assignment
- * Same user + experiment always gets the same variant
- */
 function hashString(str) {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
@@ -69,18 +43,12 @@ function hashString(str) {
   return Math.abs(hash);
 }
 
-/**
- * Assign a variant to a user for a given experiment
- */
 function assignVariant(userId, experiment) {
   const hash = hashString(`${userId}_${experiment.id}`);
   const variantIndex = hash % experiment.variants.length;
   return experiment.variants[variantIndex];
 }
 
-/**
- * Get stored variant assignments from localStorage
- */
 function getStoredAssignments() {
   try {
     const stored = localStorage.getItem('ab_test_assignments');
@@ -90,14 +58,11 @@ function getStoredAssignments() {
   }
 }
 
-/**
- * Store variant assignments to localStorage
- */
 function storeAssignments(assignments) {
   try {
     localStorage.setItem('ab_test_assignments', JSON.stringify(assignments));
   } catch {
-    // Silently fail if localStorage is unavailable
+    // localStorage unavailable
   }
 }
 
@@ -106,7 +71,6 @@ export function ABTestProvider({ children }) {
   const [assignments, setAssignments] = useState(getStoredAssignments);
   const [trackedEvents, setTrackedEvents] = useState([]);
 
-  // Initialize assignments for all experiments
   useEffect(() => {
     const newAssignments = { ...assignments };
     let hasChanges = false;
@@ -124,9 +88,6 @@ export function ABTestProvider({ children }) {
     }
   }, [userId, assignments]);
 
-  /**
-   * Get the assigned variant for an experiment
-   */
   const getVariant = useCallback(
     (experimentId) => {
       return assignments[experimentId] || 'control';
@@ -134,10 +95,6 @@ export function ABTestProvider({ children }) {
     [assignments]
   );
 
-  /**
-   * Track an experiment event (exposure, conversion, etc.)
-   * In production, this would send to an analytics service
-   */
   const trackEvent = useCallback(
     (experimentId, eventType, metadata = {}) => {
       const event = {
@@ -149,28 +106,17 @@ export function ABTestProvider({ children }) {
         userId,
       };
 
-      // Log to console in development
       if (process.env.NODE_ENV === 'development') {
         console.log('[A/B Test Event]', event);
       }
 
-      // Store events (in production, send to analytics service)
       setTrackedEvents((prev) => [...prev, event]);
-
-      // Example: Send to analytics endpoint
-      // fetch('/api/analytics/ab-test', {
-      //   method: 'POST',
-      //   body: JSON.stringify(event),
-      // });
 
       return event;
     },
     [assignments, userId]
   );
 
-  /**
-   * Track when a user is exposed to an experiment variant
-   */
   const trackExposure = useCallback(
     (experimentId) => {
       return trackEvent(experimentId, 'exposure');
@@ -178,9 +124,6 @@ export function ABTestProvider({ children }) {
     [trackEvent]
   );
 
-  /**
-   * Track a conversion event for an experiment
-   */
   const trackConversion = useCallback(
     (experimentId, conversionType, metadata = {}) => {
       return trackEvent(experimentId, 'conversion', {
@@ -191,9 +134,6 @@ export function ABTestProvider({ children }) {
     [trackEvent]
   );
 
-  /**
-   * Force a specific variant (useful for testing/debugging)
-   */
   const forceVariant = useCallback((experimentId, variant) => {
     setAssignments((prev) => {
       const updated = { ...prev, [experimentId]: variant };
@@ -202,9 +142,6 @@ export function ABTestProvider({ children }) {
     });
   }, []);
 
-  /**
-   * Reset all assignments (useful for testing)
-   */
   const resetAssignments = useCallback(() => {
     localStorage.removeItem('ab_test_assignments');
     localStorage.removeItem('ab_test_user_id');
@@ -242,9 +179,6 @@ export function ABTestProvider({ children }) {
   );
 }
 
-/**
- * Hook to access A/B testing context
- */
 export function useABTest() {
   const context = useContext(ABTestContext);
   if (!context) {
@@ -253,14 +187,10 @@ export function useABTest() {
   return context;
 }
 
-/**
- * Hook to get variant and auto-track exposure for a specific experiment
- */
 export function useExperiment(experimentId) {
   const { getVariant, trackExposure, trackConversion } = useABTest();
   const variant = getVariant(experimentId);
 
-  // Track exposure on mount
   useEffect(() => {
     trackExposure(experimentId);
   }, [experimentId, trackExposure]);
