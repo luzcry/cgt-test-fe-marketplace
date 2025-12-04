@@ -28,13 +28,6 @@ function CheckoutPage() {
     }
   }, [cartItems.length, currentStep, navigate]);
 
-  useEffect(() => {
-    return () => {
-      if (currentStep !== CHECKOUT_STEPS.CONFIRMATION) {
-      }
-    };
-  }, [currentStep]);
-
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'CheckoutPage',

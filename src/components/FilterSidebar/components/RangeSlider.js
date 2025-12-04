@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, memo } from 'react';
+import { useState, useCallback, useEffect, memo } from 'react';
 
 const RangeSlider = memo(function RangeSlider({
   id,

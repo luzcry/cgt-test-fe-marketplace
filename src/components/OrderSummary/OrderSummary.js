@@ -16,12 +16,23 @@ import './OrderSummary.scss';
  */
 const OrderSummary = memo(
   forwardRef(function OrderSummary(
-    { title = 'Order Summary', items = [], className = '', children, ...props },
+    {
+      title = 'Order Summary',
+      items = [],
+      className = '',
+      children,
+      headingLevel = 2,
+      ...props
+    },
     ref
   ) {
+    const HeadingTag = `h${headingLevel}`;
+
     return (
       <div ref={ref} className={`order-summary ${className}`} {...props}>
-        {title && <h3 className="order-summary__title">{title}</h3>}
+        {title && (
+          <HeadingTag className="order-summary__title">{title}</HeadingTag>
+        )}
         <div className="order-summary__lines">
           {items.map((item, index) => (
             <div
@@ -53,6 +64,7 @@ OrderSummary.propTypes = {
   ),
   className: PropTypes.string,
   children: PropTypes.node,
+  headingLevel: PropTypes.oneOf([1, 2, 3, 4, 5, 6]),
 };
 
 export default OrderSummary;
