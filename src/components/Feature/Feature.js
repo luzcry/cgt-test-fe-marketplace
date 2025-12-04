@@ -64,7 +64,10 @@ const FeatureList = memo(function FeatureList({
   ...props
 }) {
   return (
-    <div className={`feature-list feature-list--${direction} ${className}`} {...props}>
+    <div
+      className={`feature-list feature-list--${direction} ${className}`}
+      {...props}
+    >
       {features.map((feature, index) => (
         <FeatureItem
           key={typeof feature === 'string' ? feature : index}

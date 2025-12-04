@@ -75,7 +75,10 @@ describe('FeatureItem Component', () => {
 
     it('accepts iconClassName for icon', () => {
       render(
-        <FeatureItem iconClassName="custom-icon-class" data-testid="feature-item">
+        <FeatureItem
+          iconClassName="custom-icon-class"
+          data-testid="feature-item"
+        >
           Test
         </FeatureItem>
       );
@@ -98,7 +101,9 @@ describe('FeatureList Component', () => {
     });
 
     it('renders correct number of FeatureItems', () => {
-      render(<FeatureList features={mockFeatures} data-testid="feature-list" />);
+      render(
+        <FeatureList features={mockFeatures} data-testid="feature-list" />
+      );
       const featureList = screen.getByTestId('feature-list');
 
       expect(within(featureList).getByText('Feature 1')).toBeInTheDocument();
@@ -107,14 +112,18 @@ describe('FeatureList Component', () => {
     });
 
     it('applies feature-list class to container', () => {
-      render(<FeatureList features={mockFeatures} data-testid="feature-list" />);
+      render(
+        <FeatureList features={mockFeatures} data-testid="feature-list" />
+      );
       expect(screen.getByTestId('feature-list')).toHaveClass('feature-list');
     });
   });
 
   describe('Direction', () => {
     it('applies column direction by default', () => {
-      render(<FeatureList features={mockFeatures} data-testid="feature-list" />);
+      render(
+        <FeatureList features={mockFeatures} data-testid="feature-list" />
+      );
       expect(screen.getByTestId('feature-list')).toHaveClass(
         'feature-list--column'
       );
@@ -128,7 +137,9 @@ describe('FeatureList Component', () => {
           data-testid="feature-list"
         />
       );
-      expect(screen.getByTestId('feature-list')).toHaveClass('feature-list--row');
+      expect(screen.getByTestId('feature-list')).toHaveClass(
+        'feature-list--row'
+      );
     });
   });
 

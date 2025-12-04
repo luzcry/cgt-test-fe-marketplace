@@ -13,7 +13,10 @@ import './InfoGrid.scss';
  * - Forwards refs for parent component access
  */
 const InfoItem = memo(
-  forwardRef(function InfoItem({ label, value, className = '', ...props }, ref) {
+  forwardRef(function InfoItem(
+    { label, value, className = '', ...props },
+    ref
+  ) {
     return (
       <div ref={ref} className={`info-item ${className}`} {...props}>
         <p className="info-item__label">{label}</p>

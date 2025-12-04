@@ -465,3 +465,76 @@ export const MinusIcon = memo(function MinusIcon({ className = '' }) {
     </svg>
   );
 });
+
+// Payment Card Brand Icons
+export const VisaIcon = memo(function VisaIcon({ className = '' }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 48 32"
+      fill="none"
+      aria-label="Visa"
+    >
+      <rect width="48" height="32" rx="4" fill="#1A1F71" />
+      <path
+        d="M20.5 21h-2.2l1.4-8.5h2.2L20.5 21zm11.1-8.3c-.4-.2-1.1-.4-2-.4-2.2 0-3.7 1.2-3.7 2.8 0 1.2 1.1 1.9 2 2.3.9.4 1.2.7 1.2 1.1 0 .6-.7.9-1.4.9-.9 0-1.4-.1-2.2-.5l-.3-.1-.3 2c.5.2 1.5.5 2.5.5 2.3 0 3.9-1.2 3.9-2.9 0-1-.6-1.7-1.8-2.3-.8-.4-1.2-.7-1.2-1.1 0-.4.4-.8 1.2-.8.7 0 1.2.1 1.6.3l.2.1.3-1.9zm5.7-.2h-1.7c-.5 0-.9.2-1.1.7l-3.2 7.8h2.3l.5-1.3h2.8l.3 1.3h2l-1.9-8.5zm-2.7 5.5l.9-2.4.5 2.4h-1.4zM17 12.5l-2.1 5.8-.2-1.2-.8-4c-.1-.5-.5-.6-1-.6H9.2l-.1.3c.8.2 1.5.5 2 .8l1.9 7.3h2.3l3.5-8.4H17z"
+        fill="white"
+      />
+    </svg>
+  );
+});
+
+export const MastercardIcon = memo(function MastercardIcon({ className = '' }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 48 32"
+      fill="none"
+      aria-label="Mastercard"
+    >
+      <rect width="48" height="32" rx="4" fill="#000" />
+      <circle cx="18" cy="16" r="10" fill="#EB001B" />
+      <circle cx="30" cy="16" r="10" fill="#F79E1B" />
+      <path
+        d="M24 8.5a9.96 9.96 0 0 0-6 7.5 9.96 9.96 0 0 0 6 7.5 9.96 9.96 0 0 0 6-7.5 9.96 9.96 0 0 0-6-7.5z"
+        fill="#FF5F00"
+      />
+    </svg>
+  );
+});
+
+export const AmexIcon = memo(function AmexIcon({ className = '' }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 48 32"
+      fill="none"
+      aria-label="American Express"
+    >
+      <rect width="48" height="32" rx="4" fill="#006FCF" />
+      <path
+        d="M13.2 20h1.7l-.8-2-.9 2zm18.9-5.6v1h3.1v1.2h-3.1v1.1h3.5l1.6-1.7-1.5-1.6h-3.6zm-21-1.9h-3l-2.7 6.5h1.9l.5-1.2h2.8l.5 1.2h2l-2-6.5zm15.5 0h-2.3l-1.4 4.4-1.5-4.4h-2.3l2.5 6.5h2.3l2.7-6.5zm8 0h-5.5v6.5h5.5l2.1-2.2v-2.1l-2.1-2.2zm2.9 0l2.7 3.3-2.7 3.2h2.4l1.6-2 1.6 2H45l-2.7-3.2 2.7-3.3h-2.4l-1.5 1.9-1.5-1.9h-2.1z"
+        fill="white"
+      />
+    </svg>
+  );
+});
+
+export const DiscoverIcon = memo(function DiscoverIcon({ className = '' }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 48 32"
+      fill="none"
+      aria-label="Discover"
+    >
+      <rect width="48" height="32" rx="4" fill="#F9F9F9" />
+      <path d="M0 16h28a12 12 0 0 0 20 0v16H0V16z" fill="#F76F00" />
+      <ellipse cx="28" cy="16" rx="7" ry="7" fill="#F76F00" />
+      <path
+        d="M9.2 19.5h-2v-7h2c1.7 0 3 1.3 3 3.5s-1.3 3.5-3 3.5zm-.2-5.7h-.6v4.4h.6c1 0 1.7-.9 1.7-2.2s-.7-2.2-1.7-2.2zm5.8 5.7h-1.3v-7h1.3v7zm4.5-5.2c-.6 0-1 .3-1 .7 0 1.4 2.8.7 2.8 3 0 1.1-.9 1.7-2.1 1.7-.7 0-1.4-.2-1.9-.5l.4-1.1c.4.3.9.4 1.4.4.5 0 .9-.2.9-.6 0-1.4-2.8-.7-2.8-3 0-1 .8-1.7 2-1.7.6 0 1.2.1 1.7.4l-.4 1c-.4-.2-.8-.3-1-.3z"
+        fill="#000"
+      />
+    </svg>
+  );
+});

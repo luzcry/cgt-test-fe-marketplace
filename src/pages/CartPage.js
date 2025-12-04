@@ -180,7 +180,11 @@ function CartPage() {
                 items={[
                   { label: 'Subtotal', value: `$${subtotal.toFixed(2)}` },
                   { label: 'Tax (estimated)', value: `$${tax.toFixed(2)}` },
-                  { label: 'Total', value: `$${total.toFixed(2)}`, isTotal: true },
+                  {
+                    label: 'Total',
+                    value: `$${total.toFixed(2)}`,
+                    isTotal: true,
+                  },
                 ]}
               >
                 <Button

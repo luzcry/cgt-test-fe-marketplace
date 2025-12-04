@@ -4,8 +4,8 @@
 // Multi-step checkout flow with shipping, payment, review, and confirmation
 // Follows ITCSS architecture and BEM naming convention
 
-@use '../styles/variables' as *;
-@use '../styles/mixins' as *;
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
 
 // ==========================================================================
 // Checkout Page Container
@@ -659,6 +659,12 @@
     .model-preview__badge {
       display: none;
     }
+  }
+
+  &__item-preview-fallback {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-md);
   }
 
   &__item-details {

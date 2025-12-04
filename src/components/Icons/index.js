@@ -25,4 +25,8 @@ export {
   EmptyCartIcon,
   LogoIcon,
   MinusIcon,
+  VisaIcon,
+  MastercardIcon,
+  AmexIcon,
+  DiscoverIcon,
 } from './Icons';

@@ -210,7 +210,10 @@ function ProductPage() {
               <InfoGrid
                 items={[
                   { label: 'Category', value: product.category },
-                  { label: 'Polygons', value: product.polyCount.toLocaleString() },
+                  {
+                    label: 'Polygons',
+                    value: product.polyCount.toLocaleString(),
+                  },
                   { label: 'Formats', value: product.fileFormat.join(', ') },
                   { label: 'License', value: 'Commercial' },
                 ]}
