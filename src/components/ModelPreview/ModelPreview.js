@@ -188,6 +188,7 @@ const ModelPreview = memo(function ModelPreview({
   const [hasError, setHasError] = useState(false);
   const containerRef = useRef(null);
   const queueIdRef = useRef(null);
+  const isRenderingRef = useRef(false);
 
   useEffect(() => {
     if (model && !skipCache && snapshotCache.has(model.url)) {
@@ -228,6 +229,7 @@ const ModelPreview = memo(function ModelPreview({
       return;
 
     const id = addToQueue(() => {
+      isRenderingRef.current = true;
       setIsRendering(true);
     });
     queueIdRef.current = id;
@@ -236,6 +238,11 @@ const ModelPreview = memo(function ModelPreview({
       if (queueIdRef.current !== null) {
         removeFromQueue(queueIdRef.current);
         queueIdRef.current = null;
+      }
+      // If we were actively rendering when unmounting, unblock the queue
+      if (isRenderingRef.current) {
+        isRenderingRef.current = false;
+        finishQueueItem();
       }
     };
   }, [isVisible, model, snapshot, hasError]);
@@ -252,6 +259,7 @@ const ModelPreview = memo(function ModelPreview({
       setSnapshot(dataUrl);
       setIsRendering(false);
       setModelLoaded(false);
+      isRenderingRef.current = false;
 
       if (queueIdRef.current !== null) {
         removeFromQueue(queueIdRef.current);
@@ -265,6 +273,7 @@ const ModelPreview = memo(function ModelPreview({
   const handleError = useCallback(() => {
     setHasError(true);
     setIsRendering(false);
+    isRenderingRef.current = false;
 
     if (queueIdRef.current !== null) {
       removeFromQueue(queueIdRef.current);
